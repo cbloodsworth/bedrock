@@ -8,7 +8,7 @@ const Homepage: React.FC = () => {
     return (
         <>
             <h1>Vite + React</h1>
-            <Link to="/NewPage">New Page</Link>
+            <Link to="/Account">New Page</Link>
             <div className="card">
                 <button onClick={() => setCount((count) => count + 1)}>
                     count is {count}

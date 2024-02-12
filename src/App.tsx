@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 import './App.css'
-import NewPage from './pages/NewPage'
+import Account from './pages/Account'
 import Homepage from './pages/Homepage'
 
 const App: React.FC = () => {
@@ -17,7 +17,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/NewPage" element={<NewPage />} />
+        <Route path="/Account" element={<Account />} />
       </Routes>
     </Router>
   )

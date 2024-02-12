@@ -1,0 +1,10 @@
+.boxContainer{
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    position: relative;
+}
+
+.boxContainer:hover{
+    cursor: pointer;
+}
