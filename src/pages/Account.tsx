@@ -11,7 +11,27 @@ const Entries = {
             header: "Entry 1",
             text: "Text 1",
             id: "Box1"
-        }
+        },
+        {
+            header: "Entry 4",
+            text: "Text 4",
+            id: "Box4"
+        },
+        {
+            header: "Entry 5",
+            text: "Text 5",
+            id: "Box5"
+        },
+        {
+            header: "Entry 6",
+            text: "Text 6",
+            id: "Box6"
+        },
+        {
+            header: "Entry 7",
+            text: "Text 7",
+            id: "Box7"
+        },
     ],
     EntryBox2 : [
     {   
@@ -78,14 +98,14 @@ const Account: React.FC = () => {
         <Main align="center">
         <Heading>
           <Card background="#f0f0f0">
-            <CardHeader pad="medium">Drag and Drop Trial</CardHeader>
+            <CardHeader pad="small">Drag and Drop Trial</CardHeader>
           </Card>
         </Heading>
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Box align="center">
-            <Box pad="large" direction="row" gap="xlarge">
-            <DroppableContainer text="Resume" box={entries.EntryBox1 || []} id="EntryBox1"/>
-                    <DroppableContainer text="Entries" box={entries.EntryBox2 || []} id="EntryBox2"/>
+          <Box>
+                <Box pad="small" direction="row" gap="large">
+                <DroppableContainer text="Resume" box={entries.EntryBox1 || []} id="EntryBox1"/>
+                <DroppableContainer text="Entries" box={entries.EntryBox2 || []} id="EntryBox2"/>
             </Box>
           </Box>
         </DragDropContext>
