@@ -1,22 +1,96 @@
-import React from 'react';
-import Box from '../components/Box'
+import React, { useState } from 'react';
+import EntryBox from '../components/EntryBox'
 import { Link } from 'react-router-dom';
+import { DragDropContext, Droppable , DropResult} from 'react-beautiful-dnd';
+import DroppableContainer from '../components/DroppableContainer';
+import {Box, Card, Heading, Main, CardHeader} from 'grommet';
+
+const Entries = {
+    EntryBox1 : [
+        {
+            header: "Entry 1",
+            text: "Text 1",
+            id: "Box1"
+        }
+    ],
+    EntryBox2 : [
+    {   
+            header: "Entry 2",
+            text: "Text 2",
+            id: "Box2"
+        },  
+        {
+            header: "Entry 3",
+            text: "Text 3",
+            id: "Box3"
+        },  
+    ],
+}
 
 const Account: React.FC = () => {
+    const [entries, setEntries] = React.useState(Entries);
+
+    const handleDragEnd = (result: DropResult) => {
+        console.log("here");
+        const src = result.source;
+        const dest = result.destination;
+        console.log(result);
+    
+        if (!dest) { //not in any droppable area
+            return;
+        }
+    
+        let srcDrop = src.droppableId as keyof typeof entries;
+        let destDrop = dest.droppableId as keyof typeof entries;
+
+        //stayed in original droppable area
+        if (src.droppableId === dest.droppableId) {
+            const res = [...entries[srcDrop]];
+            const [removed] = res.splice(src.index, 1);
+            res.splice(dest.index, 0, removed);
+            const updatedEntries = {...entries};
+            updatedEntries[srcDrop] = res;
+            setEntries({...updatedEntries});
+            return;
+        }
+    
+        //Moved to new droppable area
+        console.log("SRC: ", entries[srcDrop]);
+        console.log("DEST: ", entries[destDrop]);
+    
+        const srcArrayCopy = [...entries[srcDrop]];
+        const destArrayCopy = [...entries[destDrop]];
+        
+        const [removedItem] = srcArrayCopy.splice(src.index, 1);
+        destArrayCopy.splice(dest.index, 0, removedItem);
+    
+        const updatedEntries = {
+            ...entries,
+            [srcDrop]: srcArrayCopy,
+            [destDrop]: destArrayCopy,
+        };
+
+        setEntries({...updatedEntries});
+        console.log(entries);
+    };
+
     return (
-        <>
-            <div>
-                <h1>
-                <Link to="/">Home</Link>
-                </h1>
-            </div>
-            <div>
-                <Box></Box><br/>
-                <Box></Box><br/>
-                <Box></Box><br/>
-            </div>
-        </>
+        <Main align="center">
+        <Heading>
+          <Card background="#f0f0f0">
+            <CardHeader pad="medium">Drag and Drop Trial</CardHeader>
+          </Card>
+        </Heading>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Box align="center">
+            <Box pad="large" direction="row" gap="xlarge">
+            <DroppableContainer text="Resume" box={entries.EntryBox1 || []} id="EntryBox1"/>
+                    <DroppableContainer text="Entries" box={entries.EntryBox2 || []} id="EntryBox2"/>
+            </Box>
+          </Box>
+        </DragDropContext>
+      </Main>
     );
 };
- 
+
 export default Account;
