@@ -1,9 +1,7 @@
 import { Card, CardHeader, CardBody } from 'grommet';
-import React from 'react';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import {Draggable } from 'react-beautiful-dnd';
 // import EntryBox from './EntryBox';
 import { StrictModeDroppable } from './StrictModeDroppable';
-import '../styles/Account.css'
 
 interface Container {
   text: string;
@@ -13,7 +11,7 @@ interface Container {
 
 export default function DraggableContainer({ text, box, id }: Container) {
   return (
-    <Card background="#f0f0f0" pad="medium" align="center" gap="small" id={id}>
+    <Card round={false} background="#f0f0f0" pad="medium" align="center" gap="small" id={id} style={{width:"100%", height:"auto", overflow: "auto"}}>
       <CardHeader
         style={{
           fontSize: "20px",
@@ -22,7 +20,7 @@ export default function DraggableContainer({ text, box, id }: Container) {
       >
         {text}
       </CardHeader>
-      <CardBody style={{width: "100%"}}>
+      <CardBody style={{width: "100%", height:"auto"}}>
         <Card background="#ADD8E6" pad="small">
         <StrictModeDroppable droppableId={id}>
           {(provided, snapshot) => (
