@@ -29,7 +29,12 @@ export default function DraggableContainer({ text, box, id }: Container) {
       >
         {text}
       </CardHeader>
-      <CardBody style={{ width: "100%", height: "auto" }}>
+      <CardBody
+        style={{
+          width: "100%",
+          height: "auto",
+        }}
+      >
         <Card background="#ADD8E6" pad="small">
           <StrictModeDroppable droppableId={id}>
             {(provided, snapshot) => (
@@ -56,7 +61,7 @@ export default function DraggableContainer({ text, box, id }: Container) {
                             ...provided.draggableProps.style,
                             border: snapshot.isDraggingOver
                               ? "2px solid black"
-                              : "none",
+                              : "2px solid transparent",
                             marginBottom: "10px",
                           }}
                         >
