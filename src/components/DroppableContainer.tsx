@@ -2,6 +2,7 @@ import { Card, CardHeader, CardBody } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
 // import EntryBox from './EntryBox';
 import { StrictModeDroppable } from "./StrictModeDroppable";
+import { redirect } from "react-router-dom";
 
 interface Container {
   text: string;
