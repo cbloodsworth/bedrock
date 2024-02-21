@@ -37,4 +37,5 @@ sketch
 .ionide
 
 *.venv
+*.env
 *__pycache__
