@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { Card, CardHeader, CardBody } from "grommet";
+import React, { useEffect, useState } from "react";
+import { Box, Text, Card, Layer, Button, Image } from "grommet";
 import boxIcon from "../assets/box.svg";
 
 interface BoxProps {
@@ -7,8 +7,14 @@ interface BoxProps {
 }
 
 const BlockBox: React.FC<BoxProps> = ({ name }) => {
+  const [show, setShow] = React.useState(false);
+
+  const showModal = () => setShow(true);
+  const minimizeModal = () => setShow(false);
+
   return (
     <Card
+      onClick={showModal}
       id="resumeContainer"
       style={{
         color: "#242424",
@@ -23,6 +29,8 @@ const BlockBox: React.FC<BoxProps> = ({ name }) => {
         height: "10vw",
         maxHeight: "20em",
 
+        cursor: "pointer",
+
         display: "flex",
         margin: "auto",
         marginTop: "5vw",
@@ -32,7 +40,25 @@ const BlockBox: React.FC<BoxProps> = ({ name }) => {
       }}
     >
       <h2>{name}</h2>
-      <img src={boxIcon} width="60%" draggable="false" />
+      {show && (
+        <Layer onEsc={minimizeModal} onClickOutside={minimizeModal}>
+          <Box pad="medium">
+            <Text>You have opened {name}</Text>
+            <Image
+              onClick={minimizeModal}
+              src={boxIcon}
+              width="60%"
+              draggable="false"
+            />
+            <Button
+              margin={{ top: "medium" }}
+              onClick={() => setShow(false)}
+              label="Close"
+            />
+          </Box>
+        </Layer>
+      )}
+      <Image src={boxIcon} width="60%" draggable="false" />
     </Card>
   );
 };
