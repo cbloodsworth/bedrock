@@ -5,6 +5,7 @@ import DroppableContainer from "../components/DroppableContainer";
 import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
 import Resume from "../components/Resume";
 import "../styles/Account.css";
+import BlockBox from "../components/BlockBox";
 
 const createEntry = (id: string, header: string, content: string) => {
   return {
@@ -79,7 +80,12 @@ const Account: React.FC = () => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Grid columns={["75%", "23%"]} gap="medium">
+      <Grid columns={["20%", "50%", "20%"]} gap="medium">
+        <Grid rows={["20%", "20%", "20%"]} gap="3vw">
+          <BlockBox name="Education"></BlockBox>
+          <BlockBox name="Experience"></BlockBox>
+          <BlockBox name="Projects"></BlockBox>
+        </Grid>
         <Box>
           <Resume>
             <DroppableContainer
