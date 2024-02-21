@@ -44,15 +44,9 @@ const BlockBox: React.FC<BoxProps> = ({ name }) => {
         <Layer onEsc={minimizeModal} onClickOutside={minimizeModal}>
           <Box pad="medium">
             <Text>You have opened {name}</Text>
-            <Image
-              onClick={minimizeModal}
-              src={boxIcon}
-              width="60%"
-              draggable="false"
-            />
             <Button
               margin={{ top: "medium" }}
-              onClick={() => setShow(false)}
+              onClick={minimizeModal}
               label="Close"
             />
           </Box>
