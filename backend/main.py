@@ -1,6 +1,7 @@
 import json
 import os
 from flask import Flask, jsonify, request, redirect, url_for, session
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth
 from sqlalchemy import text 
@@ -9,6 +10,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
+
 app.secret_key = os.getenv('SECRET_KEY')
 
 # Database 
@@ -75,11 +78,34 @@ def authorized():
 
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    return 'Logged in as: ' + me.data['email']
+    redirect_url = "http://127.0.0.1:5173/"
+    return redirect(redirect_url)
 
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
+
+@app.route('/user-info', methods=['GET'])
+def get_user_info():
+    access_token = session.get('google_token')[0] if 'google_token' in session else None
+    if access_token:
+        user_info = get_user_info_using_access_token(access_token)
+        if user_info:
+            print(user_info)
+            return jsonify(user_info)
+        else:
+            return jsonify({'error': 'Failed to fetch user information'}), 500
+    else:
+        return jsonify({'error': 'Access token not found'}), 401
+    
+def get_user_info_using_access_token(access_token):
+    user_info_response = google.get('userinfo', token=(access_token, ''))
+
+    if user_info_response.status != 200:
+        return {'error': 'Failed to fetch user information'}
+
+    user_info = user_info_response.data
+    return user_info
 
 # @app.route("/backend", methods = ['GET'])
 # def backend_api():
