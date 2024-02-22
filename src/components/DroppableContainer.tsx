@@ -19,7 +19,7 @@ export default function DroppableContainer({ text, box, id }: Container) {
       align="center"
       gap="small"
       id={id}
-      style={{ width: "100%", height: "auto", overflow: "auto" }}
+      style={{ width: "100%", height: "auto", overflow: "auto"}}
     >
       <CardHeader
         style={{
@@ -35,6 +35,7 @@ export default function DroppableContainer({ text, box, id }: Container) {
           height: "auto",
         }}
       >
+        <span style={{backgroundColor:"black", width:"100%", height:"3px"}}></span><br/>
         <Card /*background="#ADD8E6"*/ pad="small">
           <StrictModeDroppable droppableId={id}>
             {(provided, snapshot) => (

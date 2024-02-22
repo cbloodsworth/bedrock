@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Box} from 'grommet';
-import Header from '../components/HomepageHeader';
+import Navbar from '../components/Navbar';
 import '../styles/Homepage.css'
 import '../index.css'
 import resumeBuilderImage from '../../src/assets/homepageResumeBuilder.png'
@@ -10,7 +10,7 @@ const Homepage: React.FC = () => {
 
     return (
         <>
-            <Header/>
+            <Navbar/>
             <h1>DynaCV: A Bedrock Product</h1>
             
             <div className="homepageContainer" id='resumeHomePageContainer'>

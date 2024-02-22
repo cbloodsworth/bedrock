@@ -7,7 +7,7 @@ import Resume from "../components/Resume";
 import "../styles/Resumes.css";
 import "../index.css"
 import EntriesContainer from "../components/Entries";
-import Header from "../components/HomepageHeader";
+import Navbar from "../components/Navbar";
 
 const createEntry = (id: string, header: string, content: string) => {
   return {
@@ -93,7 +93,7 @@ const Resumes: React.FC = () => {
 
   return (
     <>
-      <Header/>
+      <Navbar/>
       <div style={{width:"100%"}}>
       <DragDropContext onDragEnd={handleDragEnd} >
           <Grid columns={["74%", "20%"]} gap="5%" style={{marginLeft:"5%"}}>
