@@ -1,8 +1,7 @@
 import { Card, CardHeader, CardBody } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
-// import EntryBox from './EntryBox';
 import { StrictModeDroppable } from "./StrictModeDroppable";
-// import { redirect } from "react-router-dom";
+
 
 interface Container {
   text: string;
@@ -36,14 +35,16 @@ export default function DroppableContainer({ text, box, id }: Container) {
           height: "auto",
         }}
       >
-        <Card background="#ADD8E6" pad="small">
+        <Card /*background="#ADD8E6"*/ pad="small">
           <StrictModeDroppable droppableId={id}>
             {(provided, snapshot) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <CardBody
+                
                   style={{
                     minHeight: "7.5vh",
                     minWidth: "5vw",
+                    
                   }}
                 >
                   {box.map((entry, index) => (
@@ -60,14 +61,16 @@ export default function DroppableContainer({ text, box, id }: Container) {
                           draggable="true"
                           style={{
                             ...provided.draggableProps.style,
-                            border: snapshot.isDraggingOver
-                              ? "2px solid black"
-                              : "2px solid transparent",
-                            marginBottom: "10px",
+                            marginBottom: "5px",
+                            textAlign: "left",
+                            whiteSpace: "pre",
+                            background: snapshot.isDraggingOver ? 'rgba(152, 251, 152, 0.35)' : 'transparent',
                           }}
                         >
-                          <h3>{entry.header}</h3>
-                          {entry.text}
+                          {entry.header}
+                          <ul>
+                            <li>{entry.text}</li>
+                          </ul>
                           <br />
                         </div>
                       )}

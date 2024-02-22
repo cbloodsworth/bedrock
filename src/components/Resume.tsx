@@ -14,7 +14,8 @@ const Resume: React.FC<Props> = ({ children }) => {
         alignItems: "center",
         justifyContent: "flex-start",
         border: "2px solid #111111",
-        backgroundColor: "#f0f0f0"
+        backgroundColor: "#f0f0f0",
+        height: "auto"
       }}
     >
       <h3>Esteban's Resume</h3>

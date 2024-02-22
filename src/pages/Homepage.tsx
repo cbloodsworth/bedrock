@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Box} from 'grommet';
 import Header from '../components/HomepageHeader';
@@ -7,17 +7,10 @@ import '../index.css'
 import resumeBuilderImage from '../../src/assets/homepageResumeBuilder.png'
 
 const Homepage: React.FC = () => {
-    const handleLoginClick = () => {
-        console.log("Login button clicked");
-      };
-    
-      const handleSignUpClick = () => {
-        console.log("Sign Up button clicked");
-      };
 
     return (
         <>
-            <Header onLoginClick={handleLoginClick} onSignUpClick={handleSignUpClick}/>
+            <Header/>
             <h1>DynaCV: A Bedrock Product</h1>
             
             <div className="homepageContainer" id='resumeHomePageContainer'>

@@ -6,8 +6,8 @@ import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
 import Resume from "../components/Resume";
 import "../styles/Resumes.css";
 import "../index.css"
-import BlockBox from "../components/BlockBox";
 import EntriesContainer from "../components/Entries";
+import Header from "../components/HomepageHeader";
 
 const createEntry = (id: string, header: string, content: string) => {
   return {
@@ -92,42 +92,45 @@ const Resumes: React.FC = () => {
   };
 
   return (
-    <div style={{width:"100%"}}>
-    <DragDropContext onDragEnd={handleDragEnd} >
-        <Grid columns={["20%", "55%", "20%"]} gap="2%">
-          <Grid rows={["20%", "20%", "20%"]} gap="3vw">
-            <BlockBox name="Education" id='educationBox'></BlockBox>
-            <BlockBox name="Experience" id='experienceBox' ></BlockBox>
-            <BlockBox name="Projects" id='indexBox'></BlockBox>
-          </Grid>
-        <Box >
-          <Resume>
-            <DroppableContainer
-              text="Header 1"
-              box={entries.EntryBox1 || []}
-              id="EntryBox1"
+    <>
+      <Header/>
+      <div style={{width:"100%"}}>
+      <DragDropContext onDragEnd={handleDragEnd} >
+          <Grid columns={["74%", "20%"]} gap="5%" style={{marginLeft:"5%"}}>
+            {/* <Grid rows={["20%", "20%", "20%"]} gap="3vw">
+              <BlockBox name="Education" id='educationBox'></BlockBox>
+              <BlockBox name="Experience" id='experienceBox' ></BlockBox>
+              <BlockBox name="Projects" id='indexBox'></BlockBox>
+            </Grid> */}
+          <Box>
+            <Resume>
+              <DroppableContainer
+                text="Header 1"
+                box={entries.EntryBox1 || []}
+                id="EntryBox1"
+              />
+              <DroppableContainer
+                text="Header 2"
+                box={entries.EntryBox3 || []}
+                id="EntryBox3"
+              />
+              <DroppableContainer
+                text="Header 3"
+                box={entries.EntryBox4 || []}
+                id="EntryBox4"
+              />
+            </Resume>
+          </Box>
+          <Box style={{width: "100%", right: '0'}}>
+            <EntriesContainer
+              box={entries.EntryBox2 || []}
+              id="EntryBox2"
             />
-            <DroppableContainer
-              text="Header 2"
-              box={entries.EntryBox3 || []}
-              id="EntryBox3"
-            />
-            <DroppableContainer
-              text="Header 3"
-              box={entries.EntryBox4 || []}
-              id="EntryBox4"
-            />
-          </Resume>
-        </Box>
-        <Box style={{width: "100%", right: '0'}}>
-          <EntriesContainer
-            box={entries.EntryBox2 || []}
-            id="EntryBox2"
-          />
-        </Box>
-      </Grid>
-    </DragDropContext>
-    </div>
+          </Box>
+        </Grid>
+      </DragDropContext>
+      </div>
+    </>
   );
 };
 
