@@ -13,7 +13,7 @@ export default function EntriesContainer({box, id }: Container) {
     return (
         <div style={{
             right: '0',
-            width: "90%"
+            width: "100%"
         }}>
       <Card
         className="entriesContainer"

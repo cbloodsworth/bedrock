@@ -1,6 +1,6 @@
 .dropBoxCenterContent {
     position: relative;
-    height: 100%; /* Adjust as needed */
+    height: 100%;
   }
   .dropBoxCenterContent > * {
     position: absolute;

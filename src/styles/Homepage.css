@@ -1,0 +1,26 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.createResumeButton {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 50%;
+}
+
+.createResumeButton:hover {
+    background-color: #0056b3;
+}
+
+#resumeImage{
+    width: 100%;
+}

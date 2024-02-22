@@ -1,25 +1,45 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-import '../App.css'
+import { Grid, Box} from 'grommet';
+import Header from '../components/HomepageHeader';
+import '../styles/Homepage.css'
+import '../index.css'
+import resumeBuilderImage from '../../src/assets/homepageResumeBuilder.png'
 
 const Homepage: React.FC = () => {
-    const [count, setCount] = useState(0)
+    const handleLoginClick = () => {
+        console.log("Login button clicked");
+      };
+    
+      const handleSignUpClick = () => {
+        console.log("Sign Up button clicked");
+      };
+
     return (
         <>
-            <h1>Vite + React</h1>
-            <Link to="/Resumes">New Page</Link>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
+            <Header onLoginClick={handleLoginClick} onSignUpClick={handleSignUpClick}/>
+            <h1>DynaCV: A Bedrock Product</h1>
+            
+            <div className="homepageContainer" id='resumeHomePageContainer'>
+                <Grid columns={["40%", "55%"]} gap="medium">
+                    <Box style={{
+                    display: "flex", 
+                    flexDirection: "column", 
+                    justifyContent: "center", 
+                    alignItems: "center", 
+                    textAlign: "center",
+                 }}>
+                        <h2>Begin Making Your Resume Here</h2>
+                        <Link to="/Resumes" className="createResumeButton">Create your Resume</Link>
+                    </Box>
+                    <Box>
+                        <div>
+                            <img id='resumeImage' src={resumeBuilderImage} alt="resume builder" />
+                        </div>
+                    </Box>
+                </Grid>
             </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
+            
         </>
     )
 }

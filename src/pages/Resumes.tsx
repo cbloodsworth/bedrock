@@ -4,7 +4,8 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
 import DroppableContainer from "../components/DroppableContainer";
 import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
 import Resume from "../components/Resume";
-import "../styles/Account.css";
+import "../styles/Resumes.css";
+import "../index.css"
 import BlockBox from "../components/BlockBox";
 import EntriesContainer from "../components/Entries";
 
@@ -91,8 +92,9 @@ const Resumes: React.FC = () => {
   };
 
   return (
+    <div style={{width:"100%"}}>
     <DragDropContext onDragEnd={handleDragEnd} >
-        <Grid columns={["20%", "60%", "20%"]} gap="medium">
+        <Grid columns={["20%", "55%", "20%"]} gap="2%">
           <Grid rows={["20%", "20%", "20%"]} gap="3vw">
             <BlockBox name="Education" id='educationBox'></BlockBox>
             <BlockBox name="Experience" id='experienceBox' ></BlockBox>
@@ -117,7 +119,7 @@ const Resumes: React.FC = () => {
             />
           </Resume>
         </Box>
-        <Box>
+        <Box style={{width: "100%", right: '0'}}>
           <EntriesContainer
             box={entries.EntryBox2 || []}
             id="EntryBox2"
@@ -125,6 +127,7 @@ const Resumes: React.FC = () => {
         </Box>
       </Grid>
     </DragDropContext>
+    </div>
   );
 };
 
