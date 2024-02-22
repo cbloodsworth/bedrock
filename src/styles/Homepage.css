@@ -6,6 +6,10 @@ body{
     width: 100%;
 }
 
+.homepageContainer{
+    height: auto;
+}
+
 .createResumeButton {
     display: inline-block;
     padding: 10px 20px;
@@ -22,5 +26,19 @@ body{
 }
 
 #resumeImage{
+    height: auto;
     width: 100%;
+}
+
+.containerBoxResume{
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
+
+#resumeHomePageContainer{
+    background-color: #dfb6bd9d;
 }

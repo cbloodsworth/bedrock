@@ -21,21 +21,13 @@ const Homepage: React.FC = () => {
             <h1>DynaCV: A Bedrock Product</h1>
             
             <div className="homepageContainer" id='resumeHomePageContainer'>
-                <Grid columns={["40%", "55%"]} gap="medium">
-                    <Box style={{
-                    display: "flex", 
-                    flexDirection: "column", 
-                    justifyContent: "center", 
-                    alignItems: "center", 
-                    textAlign: "center",
-                 }}>
+                <Grid columns={["50%", "50%"]} gap="none"  style={{ height: "100%" }}>
+                    <Box className='containerBoxResume'>
                         <h2>Begin Making Your Resume Here</h2>
                         <Link to="/Resumes" className="createResumeButton">Create your Resume</Link>
                     </Box>
-                    <Box>
-                        <div>
+                    <Box className='containerBoxResume'>
                             <img id='resumeImage' src={resumeBuilderImage} alt="resume builder" />
-                        </div>
                     </Box>
                 </Grid>
             </div>
