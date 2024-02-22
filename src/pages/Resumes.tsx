@@ -4,7 +4,10 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
 import DroppableContainer from "../components/DroppableContainer";
 import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
 import Resume from "../components/Resume";
-import "../styles/Account.css";
+import "../styles/Resumes.css";
+import "../index.css"
+import BlockBox from "../components/BlockBox";
+import EntriesContainer from "../components/Entries";
 
 const createEntry = (id: string, header: string, content: string) => {
   return {
@@ -29,14 +32,12 @@ const Entries = {
   ),
 };
 
-const Account: React.FC = () => {
+const Resumes: React.FC = () => {
   const [entries, setEntries] = React.useState(Entries);
 
   const handleDragEnd = (result: DropResult) => {
-    console.log("here");
     const src = result.source;
     const dest = result.destination;
-    console.log(result);
 
     if (!dest) {
       //not in any droppable area
@@ -45,6 +46,20 @@ const Account: React.FC = () => {
 
     let srcDrop = src.droppableId as keyof typeof entries;
     let destDrop = dest.droppableId as keyof typeof entries;
+
+    if (!destDrop.startsWith("EntryBox")) {
+      // Entry was dropped in a DroppableContainer
+      console.log("Entry was dropped in DroppableContainer:", destDrop);
+      const srcArrayCopy = [...entries[srcDrop]];
+      srcArrayCopy.splice(src.index, 1);
+      setEntries({
+        ...entries,
+        [srcDrop]: srcArrayCopy,
+      });
+      // Your logic for handling DroppableContainer drop
+      return;
+    } 
+
 
     //stayed in original droppable area
     if (src.droppableId === dest.droppableId) {
@@ -58,8 +73,8 @@ const Account: React.FC = () => {
     }
 
     //Moved to new droppable area
-    console.log("SRC: ", entries[srcDrop]);
-    console.log("DEST: ", entries[destDrop]);
+    // console.log("SRC: ", entries[srcDrop]);
+    // console.log("DEST: ", entries[destDrop]);
 
     const srcArrayCopy = [...entries[srcDrop]];
     const destArrayCopy = [...entries[destDrop]];
@@ -74,13 +89,18 @@ const Account: React.FC = () => {
     };
 
     setEntries({ ...updatedEntries });
-    console.log(entries);
   };
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Grid columns={["75%", "23%"]} gap="medium">
-        <Box>
+    <div style={{width:"100%"}}>
+    <DragDropContext onDragEnd={handleDragEnd} >
+        <Grid columns={["20%", "55%", "20%"]} gap="2%">
+          <Grid rows={["20%", "20%", "20%"]} gap="3vw">
+            <BlockBox name="Education" id='educationBox'></BlockBox>
+            <BlockBox name="Experience" id='experienceBox' ></BlockBox>
+            <BlockBox name="Projects" id='indexBox'></BlockBox>
+          </Grid>
+        <Box >
           <Resume>
             <DroppableContainer
               text="Header 1"
@@ -99,16 +119,16 @@ const Account: React.FC = () => {
             />
           </Resume>
         </Box>
-        <Box>
-          <DroppableContainer
-            text="Entries"
+        <Box style={{width: "100%", right: '0'}}>
+          <EntriesContainer
             box={entries.EntryBox2 || []}
             id="EntryBox2"
           />
         </Box>
       </Grid>
     </DragDropContext>
+    </div>
   );
 };
 
-export default Account;
+export default Resumes;

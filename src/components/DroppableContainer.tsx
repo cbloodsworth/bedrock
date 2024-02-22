@@ -2,7 +2,7 @@ import { Card, CardHeader, CardBody } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
 // import EntryBox from './EntryBox';
 import { StrictModeDroppable } from "./StrictModeDroppable";
-import { redirect } from "react-router-dom";
+// import { redirect } from "react-router-dom";
 
 interface Container {
   text: string;
@@ -10,7 +10,7 @@ interface Container {
   id: string;
 }
 
-export default function DraggableContainer({ text, box, id }: Container) {
+export default function DroppableContainer({ text, box, id }: Container) {
   return (
     <Card
       className="boxContainer"

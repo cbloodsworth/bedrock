@@ -7,6 +7,8 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
+  user-select: none;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -27,12 +29,15 @@ body {
   /*display: flex;*/
   min-width: 320px;
   min-height: 100vh;
+  background-color: rgb(246, 245, 240);
+  color: black;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
 
 button {
   border-radius: 8px;

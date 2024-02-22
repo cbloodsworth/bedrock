@@ -8,7 +8,7 @@ import {
 
 
 import './App.css'
-import Account from './pages/Account'
+import Resumes from './pages/Resumes'
 import Homepage from './pages/Homepage'
 
 const App: React.FC = () => {
@@ -18,7 +18,7 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/Account" element={<Account />} />
+        <Route path="/Resumes" element={<Resumes />} />
       </Routes>
     </Router>
   )

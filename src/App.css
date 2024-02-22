@@ -1,12 +1,8 @@
 #root {
-    margin: 0 auto;
-    padding: 1rem;
-    justify-content: center;
-    align-items: center;
-    max-width: 100%;
-    display: flex;
+    margin: 10px;
+    width: 100%;
 }
 
-#root > * {
+/* #root > * {
   flex-grow: 1;
-}
+}  */

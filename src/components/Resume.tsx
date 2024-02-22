@@ -13,6 +13,8 @@ const Resume: React.FC<Props> = ({ children }) => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
+        border: "2px solid #111111",
+        backgroundColor: "#f0f0f0"
       }}
     >
       <h3>Esteban's Resume</h3>
