@@ -19,7 +19,10 @@ export default function EntriesContainer({box, id }: Container) {
           justifyContent: "flex-start",
           border: "2px solid #111111",
           backgroundColor: "#f0f0f0",
-          height: "auto"
+          height: "auto",
+          position: "sticky",
+          top: "10px",
+          zIndex: 1, 
           }}>
           <DroppableContainer 
               text="Entries"
