@@ -9,7 +9,7 @@ import "../index.css"
 import EntriesContainer from "../components/Entries";
 import Navbar from "../components/Navbar";
 
-const createEntry = (id: string, header: string, content: string) => {
+const createEntry = (id: string, header: string, content: string[]) => {
   return {
     id: id,
     header: header,
@@ -18,18 +18,29 @@ const createEntry = (id: string, header: string, content: string) => {
 };
 
 const Entries = {
-  EntryBox1: ["1", "2", "3"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
-  EntryBox2: ["4", "5", "6"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
-  EntryBox3: ["7", "8", "9"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
-  EntryBox4: ["10", "11", "12"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
+  // EntryBox1: ["1", "2", "3"].map((id) =>
+  //   createEntry(id, `Entry ${id}`, `Text ${id}`)
+  // ),
+  EntryBox1: [
+    createEntry("2", "University of Florida | Gainesville, FL", ["B.S in Computer Science and Minor in mathematics | GPA: 4.0/4.0"]),
+  ],
+  EntryBox2: [
+    createEntry("3", "Personal Website | React, Python", ["Created customized personal website as a portfolio"]),
+    createEntry("4", "ML Model for Image Classification | TensorFlow", ["Developed a convolutional neural network (CNN) that achieved an accuracy of 95% on the test dataset"]), 
+    createEntry("5", "Autoencoder | Python, Pytorch", ["Implemented autoencoder to compress and decompress images from the MNIST dataset"]),
+  ],
+  EntryBox4: [
+    createEntry("7", "Software Engineer Intern | Bank of America (2023)", ["Helped create API call for new feature and used tools like Splunk to review code defects"]),
+    createEntry("8", "Computer Science Tutor | University of Florida (Fall 2022 - Fall 2023)", ["Tutored students in introductory Computer Science classes such as Data Structures and intro to programming"]),
+    createEntry("9", "Software Engineer | Bank of America (2024)", ["Worked on API calls using Java"])
+  ],
+  EntryBox3: [
+    createEntry("10", "Interpreter | Junit, Java, Git", ["Created an interpreter consisting of a Lexer, Parser, Interpreter, Analyzer and Generator",
+  "Implemented more than 300 unit tests using Junit to ensure perfect functionality"]),
+    createEntry("11", "SFML Piano | SFML, C++, Git", ["Used SFML to create a piano visualizer that interprets midi files and then shows the notes falling"]),
+    createEntry("12", "Senior Project | React, Typescript, Git", ["Used react to create a resume drag and drop website",
+      "worked on the frontend interface using mostly Typescript"])
+  ],
 };
 
 const Resumes: React.FC = () => {
@@ -105,17 +116,17 @@ const Resumes: React.FC = () => {
           <Box>
             <Resume>
               <DroppableContainer
-                text="Header 1"
+                text="Education"
                 box={entries.EntryBox1 || []}
                 id="EntryBox1"
               />
               <DroppableContainer
-                text="Header 2"
+                text="Projects"
                 box={entries.EntryBox3 || []}
                 id="EntryBox3"
               />
               <DroppableContainer
-                text="Header 3"
+                text="Experience"
                 box={entries.EntryBox4 || []}
                 id="EntryBox4"
               />

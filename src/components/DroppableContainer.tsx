@@ -1,11 +1,11 @@
 import { Card, CardHeader, CardBody } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
-
+import '../styles/DroppableContainer.css'
 
 interface Container {
   text: string;
-  box: { id: string; header: string; text: string }[];
+  box: { id: string; header: string; text: string[] }[];
   id: string;
 }
 
@@ -67,11 +67,16 @@ export default function DroppableContainer({ text, box, id }: Container) {
                             whiteSpace: "pre",
                             background: snapshot.isDraggingOver ? 'rgba(152, 251, 152, 0.35)' : 'transparent',
                           }}
+                          className="draggableEntryBox"
                         >
-                          {entry.header}
-                          <ul>
-                            <li>{entry.text}</li>
-                          </ul>
+                          <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
+                          {entry.text.length > 0 && (
+                            <ul>
+                              {entry.text.map((textItem, index) => (
+                                <li key={index}>{textItem}</li>
+                              ))}
+                            </ul>
+                          )}
                           <br />
                         </div>
                       )}

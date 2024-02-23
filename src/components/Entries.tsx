@@ -1,11 +1,16 @@
 import DroppableContainer from "./DroppableContainer";
 
 interface Container {
-  box: { id: string; header: string; text: string }[];
+  box: { id: string; header: string; text: string[] }[];
   id: string;
 }
 
 export default function EntriesContainer({box, id }: Container) {
+  const emptyTextBox = box.map(item => ({
+    ...item,
+    text: []
+  }))
+
     return (
         <div style={{
           display: "flex",
@@ -18,7 +23,7 @@ export default function EntriesContainer({box, id }: Container) {
           }}>
           <DroppableContainer 
               text="Entries"
-              box={box || []}
+              box={emptyTextBox || []}
               id={id}
             />
           </div>

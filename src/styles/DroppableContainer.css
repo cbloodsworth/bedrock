@@ -1,0 +1,4 @@
+.draggableEntryBox:hover{
+    background-color: rgba(152, 251, 152, 0.35) !important;
+    cursor: pointer;
+}
