@@ -14,9 +14,10 @@ export default function DroppableContainer({ header, box, id }: Container) {
     <Card
       className="boxContainer"
       round={false}
-      pad="medium"
+      pad="small"
       gap="small"
       id={id}
+      elevation="none"
     >
       <CardHeader
         style={{
@@ -30,20 +31,18 @@ export default function DroppableContainer({ header, box, id }: Container) {
         style={{
           width: "100%",
           height: "auto",
+          alignContent: "center",
         }}
       >
-        <span style={{backgroundColor:"black", width:"100%", height:"3px"}}></span><br/>
-        <Card pad="small">
+        <span style={{ margin: "0 auto" , backgroundColor:"black", width:"100%", height:"3px"}}></span><br/>
+        <Card pad="small" round={false} elevation="none">
           <StrictModeDroppable droppableId={id}  type="entryBox">
             {(provided, snapshot) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <CardBody
-                // wrap={false}
                   style={{
                     minHeight: "7.5vh",
                     minWidth: "5vw",
-                    overflowX: "auto",
-                    whiteSpace: "text-wrap"
                   }}
                 >
                   {box.map((entry, index) => (
@@ -64,15 +63,22 @@ export default function DroppableContainer({ header, box, id }: Container) {
                           }}
                           className="draggableEntryBox"
                         >
-                          <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
-                          {entry.text.length > 0 && (
+                          {entry.text.length > 0 ? (
+                            <>
+                            <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
                             <ul>
                               {entry.text.map((textItem, index) => (
                                 <li key={id+index}>{textItem}</li>
                               ))}
                             </ul>
+                            </>
+                          ) : (
+                            <ul>
+                              <li>
+                              <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
+                              </li>
+                            </ul>
                           )}
-                          <br />
                         </div>
                       )}
                     </Draggable>

@@ -19,4 +19,5 @@
     margin-bottom: 5px;
     text-align: left;
     white-space: pre;
+    text-wrap: wrap;
 }

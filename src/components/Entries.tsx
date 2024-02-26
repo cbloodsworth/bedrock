@@ -12,7 +12,7 @@ export default function EntriesContainer({box, id }: Container) {
   }))
 
     return (
-        <div style={{
+        <div id='EntriesWrapper' style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

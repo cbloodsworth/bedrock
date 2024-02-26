@@ -143,7 +143,7 @@ const Resumes: React.FC = () => {
       <Navbar/>
       <div style={{width:"100%"}}>
       <DragDropContext onDragEnd={handleDragEnd} >
-          <Grid columns={["74%", "20%"]} gap="5%" style={{marginLeft:"5%"}}>
+          <Grid columns={["78%", "20%"]} gap="2%" style={{marginLeft:"2%"}}>
           <Box>
             <Resume children={resumeChildren} />
             
