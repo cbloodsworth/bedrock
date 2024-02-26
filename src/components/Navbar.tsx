@@ -7,14 +7,6 @@ const Navbar: React.FC = () => {
     console.log(action);
   };
 
-  const handleLoginClick = () => {
-    console.log("Login button clicked");
-  };
-
-  const handleSignUpClick = () => {
-    console.log("Sign Up button clicked");
-  };
- 
   return (
 
     <header style={{width:"100%"}}>
@@ -25,8 +17,7 @@ const Navbar: React.FC = () => {
                 <button className="navbarButton" onClick={() => handleClick("Button 3")}>Button 3</button> 
             </div>
             <div>
-                <button className="navbarButton"onClick={() => handleLoginClick()}>Login</button>
-                <button onClick={() => handleSignUpClick()} className="navbarButton">Sign Up</button>
+                <Link className="link-item" to='/Login'><button className="navbarButton">Login</button></Link>
             </div>
         </nav>
     </header>
