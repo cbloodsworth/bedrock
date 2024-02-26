@@ -11,8 +11,8 @@ const Login: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
 
-    const toggleMode = () => {
-        setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
+    const toggleMode = (toLoginMode : boolean) => {
+        setIsLoginMode(toLoginMode); // Toggle the mode between login and sign up
     };
 
     const togglePasswordVisibility = () => {
@@ -50,10 +50,10 @@ const Login: React.FC = () => {
                         >
                         <div className='toggleButtonWrapper'>
                         <Grid columns={["50%", "50%"]} gap="none"  alignContent="center" style={{ height: "100%" }}>
-                            <button onClick={toggleMode} className="toggleButton">
+                            <button style={{border: "2px solid black" , borderRight:"0"}} onClick={() => toggleMode(true)} className="toggleButton">
                                 <span className='toggleButtonText' id={isLoginMode ? 'active' : ''}>Login</span>
                             </button>
-                            <button onClick={toggleMode} className="toggleButton">
+                            <button style={{border: "2px solid black" , borderLeft:"0"}} onClick={() => toggleMode(false)} className="toggleButton">
                                 <span className='toggleButtonText' id={!isLoginMode ? 'active' : ''}>Sign Up</span>
                             </button>
                         </Grid>
@@ -131,7 +131,7 @@ const Login: React.FC = () => {
                             </div>
                         </div>
                         <div className='signInWrapper'>
-                            <a>{isLoginMode ? "Forgot Your Password?" : "Already have an account? Log in"}</a>
+                            <a style={{cursor: "pointer"}}>{isLoginMode ? "Forgot Your Password?" : "Already have an account? Log in"}</a>
                         </div>
                         </Card>
                     </Box>
