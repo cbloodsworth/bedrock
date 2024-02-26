@@ -6,7 +6,7 @@
 
 #loginPageContainer{
     justify-content: center;
-    margin-top: 5%;
+    margin-top: 3%;
     margin-left: 6%;
     width: 88%;
 }
@@ -22,7 +22,6 @@
 }
 
 #signinButton{
-    background-color:rgb(107, 156, 219);
     color:white;
     width: 50%
 }
@@ -61,6 +60,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
+    border: 2px solid gray;
+    border-radius: 5px;
 }
 
 .toggleButton {
@@ -74,8 +75,8 @@
     white-space: nowrap;
     margin: 0;
     padding: 0;
-    border-radius: 2px;
-    border-color: gray !important;
+    border-radius: 0px;
+    border: 0 !important;
 }
 
 .toggleButtonText {
@@ -88,6 +89,7 @@
 
 .toggleButton #active {
     background-color: rgb(107, 156, 219);
+    color: white;
 }
 
 .externalOauthButton{

@@ -59,11 +59,14 @@ const Login: React.FC = () => {
                         </Grid>
                         </div>
                         </CardHeader>
+                        <div className="signInWrapper" style={{marginBottom: "0"}}>
+                            <h3>{isLoginMode ? "Log In To Your Account" : "Create An Account"}</h3>
+                            {/* <p>{isLoginMode ? "Welcome back to DynaCV" : "Join us and get started today"}</p> */}
+                        </div>
                         <div className='signInWrapper'>
                             <p>Username or Email</p>
                             <TextInput
                                 className='signInArea'
-                                placeholder="Email or Username"
                                 id="usernameLogin"
                             />  
                         </div>
@@ -73,7 +76,6 @@ const Login: React.FC = () => {
                                 <TextInput
                                     className='signInArea'
                                     id='passwordLogin'
-                                    placeholder="Enter password here"
                                     type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
@@ -93,7 +95,6 @@ const Login: React.FC = () => {
                                     <TextInput
                                         className='signInArea'
                                         id='confirmPasswordLogin'
-                                        placeholder="Confirm password here"
                                         type={showPassword ? 'text' : 'password'}
                                         value={confirmPassword}
                                         onChange={(event) => setConfirmPassword(event.target.value)}
@@ -113,7 +114,7 @@ const Login: React.FC = () => {
                             <button id='signinButton'>{isLoginMode ? "Sign in" : "Sign up"}</button>
                         </div>
                         <div className='signInWrapper'>
-                            <p>{isLoginMode ? "Or sign up with" : "Or log in with"}</p>
+                            <p>{isLoginMode ? "Or Log In With" : "Or Sign Up With"}</p>
                             <div id='buttonWrapper'>
                                 <Button
                                     id='googleButton'
