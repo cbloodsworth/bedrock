@@ -4,22 +4,19 @@ import { StrictModeDroppable } from "./StrictModeDroppable";
 import '../styles/DroppableContainer.css'
 
 interface Container {
-  text: string;
+  header: string;
   box: { id: string; header: string; text: string[] }[];
   id: string;
 }
 
-export default function DroppableContainer({ text, box, id }: Container) {
+export default function DroppableContainer({ header, box, id }: Container) {
   return (
     <Card
       className="boxContainer"
       round={false}
-      background="#f0f0f0"
       pad="medium"
-      align="center"
       gap="small"
       id={id}
-      style={{ width: "100%", height: "auto", overflow: "auto"}}
     >
       <CardHeader
         style={{
@@ -27,7 +24,7 @@ export default function DroppableContainer({ text, box, id }: Container) {
           fontWeight: "600",
         }}
       >
-        {text}
+        {header}
       </CardHeader>
       <CardBody
         style={{
@@ -36,16 +33,17 @@ export default function DroppableContainer({ text, box, id }: Container) {
         }}
       >
         <span style={{backgroundColor:"black", width:"100%", height:"3px"}}></span><br/>
-        <Card /*background="#ADD8E6"*/ pad="small">
-          <StrictModeDroppable droppableId={id}>
+        <Card pad="small">
+          <StrictModeDroppable droppableId={id}  type="entryBox">
             {(provided, snapshot) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <CardBody
-                
+                // wrap={false}
                   style={{
                     minHeight: "7.5vh",
                     minWidth: "5vw",
-                    
+                    overflowX: "auto",
+                    whiteSpace: "text-wrap"
                   }}
                 >
                   {box.map((entry, index) => (
@@ -62,9 +60,6 @@ export default function DroppableContainer({ text, box, id }: Container) {
                           draggable="true"
                           style={{
                             ...provided.draggableProps.style,
-                            marginBottom: "5px",
-                            textAlign: "left",
-                            whiteSpace: "pre",
                             background: snapshot.isDraggingOver ? 'rgba(152, 251, 152, 0.35)' : 'transparent',
                           }}
                           className="draggableEntryBox"
@@ -73,7 +68,7 @@ export default function DroppableContainer({ text, box, id }: Container) {
                           {entry.text.length > 0 && (
                             <ul>
                               {entry.text.map((textItem, index) => (
-                                <li key={index}>{textItem}</li>
+                                <li key={id+index}>{textItem}</li>
                               ))}
                             </ul>
                           )}

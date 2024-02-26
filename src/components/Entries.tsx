@@ -25,7 +25,7 @@ export default function EntriesContainer({box, id }: Container) {
           zIndex: 1, 
           }}>
           <DroppableContainer 
-              text="Entries"
+              header="Entries"
               box={emptyTextBox || []}
               id={id}
             />
