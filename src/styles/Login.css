@@ -22,8 +22,9 @@
 }
 
 #signinButton{
+    background-color: rgb(107, 156, 219);
     color:white;
-    width: 50%
+    width: 50%;
 }
 
 

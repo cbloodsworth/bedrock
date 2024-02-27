@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
         <nav>
             <div>
                 <Link className="link-item" to='/'><button className="navbarButton">Home</button></Link>
-                <Link className="link-item" to='/Resumes'><button className="navbarButton">Resumes</button></Link>
+                <Link className="link-item" to='/ResumesFolder'><button className="navbarButton">Resumes</button></Link>
                 <button className="navbarButton" onClick={() => handleClick("Button 3")}>Button 3</button> 
             </div>
             <div>
