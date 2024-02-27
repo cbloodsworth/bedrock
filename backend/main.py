@@ -25,7 +25,6 @@ db = SQLAlchemy(app)
 @app.route('/dbConnect')
 def dbConnection():
     try:
-        # Use SQLAlchemy's text function to explicitly declare the SQL expression
         query = text("SELECT 1")
         result = db.session.execute(query)
         return "Database connection successful!"
