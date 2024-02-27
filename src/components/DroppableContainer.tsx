@@ -1,25 +1,23 @@
 import { Card, CardHeader, CardBody } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
-
+import '../styles/DroppableContainer.css'
 
 interface Container {
-  text: string;
-  box: { id: string; header: string; text: string }[];
+  header: string;
+  box: { id: string; header: string; text: string[] }[];
   id: string;
 }
 
-export default function DroppableContainer({ text, box, id }: Container) {
+export default function DroppableContainer({ header, box, id }: Container) {
   return (
     <Card
       className="boxContainer"
       round={false}
-      background="#f0f0f0"
-      pad="medium"
-      align="center"
+      pad="small"
       gap="small"
       id={id}
-      style={{ width: "100%", height: "auto", overflow: "auto" }}
+      elevation="none"
     >
       <CardHeader
         style={{
@@ -27,24 +25,24 @@ export default function DroppableContainer({ text, box, id }: Container) {
           fontWeight: "600",
         }}
       >
-        {text}
+        {header}
       </CardHeader>
       <CardBody
         style={{
           width: "100%",
           height: "auto",
+          alignContent: "center",
         }}
       >
-        <Card /*background="#ADD8E6"*/ pad="small">
-          <StrictModeDroppable droppableId={id}>
+        <span style={{ margin: "0 auto" , backgroundColor:"black", width:"100%", height:"3px"}}></span><br/>
+        <Card pad="small" round={false} elevation="none">
+          <StrictModeDroppable droppableId={id}  type="entryBox">
             {(provided, snapshot) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <CardBody
-                
                   style={{
                     minHeight: "7.5vh",
                     minWidth: "5vw",
-                    
                   }}
                 >
                   {box.map((entry, index) => (
@@ -61,17 +59,26 @@ export default function DroppableContainer({ text, box, id }: Container) {
                           draggable="true"
                           style={{
                             ...provided.draggableProps.style,
-                            marginBottom: "5px",
-                            textAlign: "left",
-                            whiteSpace: "pre",
                             background: snapshot.isDraggingOver ? 'rgba(152, 251, 152, 0.35)' : 'transparent',
                           }}
+                          className="draggableEntryBox"
                         >
-                          {entry.header}
-                          <ul>
-                            <li>{entry.text}</li>
-                          </ul>
-                          <br />
+                          {entry.text.length > 0 ? (
+                            <>
+                            <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
+                            <ul>
+                              {entry.text.map((textItem, index) => (
+                                <li key={id+index}>{textItem}</li>
+                              ))}
+                            </ul>
+                            </>
+                          ) : (
+                            <ul>
+                              <li>
+                              <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
+                              </li>
+                            </ul>
+                          )}
                         </div>
                       )}
                     </Draggable>

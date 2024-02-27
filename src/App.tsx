@@ -10,6 +10,7 @@ import {
 import './App.css'
 import Resumes from './pages/Resumes'
 import Homepage from './pages/Homepage'
+import Login from './pages/Login';
 
 const App: React.FC = () => {
   const [count, setCount] = useState(0)
@@ -19,6 +20,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/Resumes" element={<Resumes />} />
+        <Route path="/Login" element={<Login />} />
       </Routes>
     </Router>
   )

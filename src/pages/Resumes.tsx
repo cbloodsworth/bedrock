@@ -7,9 +7,9 @@ import Resume from "../components/Resume";
 import "../styles/Resumes.css";
 import "../index.css"
 import EntriesContainer from "../components/Entries";
-import Header from "../components/HomepageHeader";
+import Navbar from "../components/Navbar";
 
-const createEntry = (id: string, header: string, content: string) => {
+const createEntry = (id: string, header: string, content: string[]) => {
   return {
     id: id,
     header: header,
@@ -18,26 +18,71 @@ const createEntry = (id: string, header: string, content: string) => {
 };
 
 const Entries = {
-  EntryBox1: ["1", "2", "3"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
-  EntryBox2: ["4", "5", "6"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
-  EntryBox3: ["7", "8", "9"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
-  EntryBox4: ["10", "11", "12"].map((id) =>
-    createEntry(id, `Entry ${id}`, `Text ${id}`)
-  ),
+  EntryBox1: [
+    createEntry("2", "University of Florida | Gainesville, FL", ["B.S in Computer Science and Minor in mathematics | GPA: 4.0/4.0"]),
+  ],
+  EntryBox2: [
+    createEntry("3", "Personal Website | React, Python", ["Created customized personal website as a portfolio"]),
+    createEntry("4", "ML Model for Image Classification | TensorFlow", ["Developed a convolutional neural network (CNN) that achieved an accuracy of 95% on the test dataset"]), 
+    createEntry("5", "Autoencoder | Python, Pytorch", ["Implemented autoencoder to compress and decompress images from the MNIST dataset"]),
+  ],
+  EntryBox4: [
+    createEntry("7", "Software Engineer Intern | Bank of America (2023)", ["Helped create API call for new feature and used tools like Splunk to review code defects"]),
+    createEntry("8", "Computer Science Tutor | University of Florida (Fall 2022 - Fall 2023)", ["Tutored students in introductory Computer Science classes such as Data Structures and intro to programming"]),
+    createEntry("9", "Software Engineer | Bank of America (2024)", ["Worked on API calls using Java"])
+  ],
+  EntryBox3: [
+    createEntry("10", "Interpreter | Junit, Java, Git", ["Created an interpreter consisting of a Lexer, Parser, Interpreter, Analyzer and Generator",
+  "Implemented more than 300 unit tests using Junit to ensure perfect functionality"]),
+    createEntry("11", "SFML Piano | SFML, C++, Git", ["Used SFML to create a piano visualizer that interprets midi files and then shows the notes falling"]),
+    createEntry("12", "Senior Project | React, Typescript, Git", ["Used react to create a resume drag and drop website",
+      "worked on the frontend interface using mostly Typescript"])
+  ],
 };
+
+const resumeData = [
+  <DroppableContainer
+  header="Education"
+  box={Entries.EntryBox1 || []}
+  id="EntryBox1"
+  />,
+  <DroppableContainer
+  header="Projects"
+  box={Entries.EntryBox3 || []}
+  id="EntryBox3"
+  />,
+  <DroppableContainer
+  header="Experience"
+  box={Entries.EntryBox4 || []}
+  id="EntryBox4"
+  />
+]
 
 const Resumes: React.FC = () => {
   const [entries, setEntries] = React.useState(Entries);
+  const [resumeChildren, setResumeChildren] = React.useState<React.ReactNode[]>(resumeData);
+
+  const updateResumeChildren = () => {
+    const updatedResumeChildren = resumeChildren.map(child => {
+      if (React.isValidElement(child) && child.type === DroppableContainer) {
+        const { id } = child.props;
+        const box = (entries as any)[id] || [];
+        return <DroppableContainer header={child.props.header} box={box} id={id} />;
+      }
+      return child;
+    });
+    setResumeChildren(updatedResumeChildren);
+  };
+
+  //when entries changed, call updateResume
+  React.useEffect(() => {
+    updateResumeChildren();
+  }, [entries]);
+
 
   const handleDragEnd = (result: DropResult) => {
-    const src = result.source;
-    const dest = result.destination;
+    var src = result.source;
+    var dest = result.destination;
 
     if (!dest) {
       //not in any droppable area
@@ -47,79 +92,61 @@ const Resumes: React.FC = () => {
     let srcDrop = src.droppableId as keyof typeof entries;
     let destDrop = dest.droppableId as keyof typeof entries;
 
-    if (!destDrop.startsWith("EntryBox")) {
-      // Entry was dropped in a DroppableContainer
-      console.log("Entry was dropped in DroppableContainer:", destDrop);
+    if (result.type === "resumeSectionItem") {
+      const updatedResumeChildren = Array.from(resumeChildren);
+      const [removed] = updatedResumeChildren.splice(src.index, 1);
+      updatedResumeChildren.splice(dest.index, 0, removed);
+      setResumeChildren(updatedResumeChildren);
+    }
+    else if(result.type.includes("entryBox")){
+        if (!destDrop.startsWith("EntryBox")) {
+        const srcArrayCopy = [...entries[srcDrop]];
+        srcArrayCopy.splice(src.index, 1);
+        setEntries({
+          ...entries,
+          [srcDrop]: srcArrayCopy,
+        });
+        return;
+      } 
+
+
+      //stayed in original droppable area
+      if (src.droppableId === dest.droppableId) {
+        const res = [...entries[srcDrop]];
+        const [removed] = res.splice(src.index, 1);
+        res.splice(dest.index, 0, removed);
+        const updatedEntries = { ...entries };
+        updatedEntries[srcDrop] = res;
+        setEntries({ ...updatedEntries });
+        return;
+      }
+
+      //Moved to new droppable area
       const srcArrayCopy = [...entries[srcDrop]];
-      srcArrayCopy.splice(src.index, 1);
-      setEntries({
+      const destArrayCopy = [...entries[destDrop]];
+
+      const [removedItem] = srcArrayCopy.splice(src.index, 1);
+      destArrayCopy.splice(dest.index, 0, removedItem);
+
+      const updatedEntries = {
         ...entries,
         [srcDrop]: srcArrayCopy,
-      });
-      // Your logic for handling DroppableContainer drop
-      return;
-    } 
+        [destDrop]: destArrayCopy,
+      };
 
-
-    //stayed in original droppable area
-    if (src.droppableId === dest.droppableId) {
-      const res = [...entries[srcDrop]];
-      const [removed] = res.splice(src.index, 1);
-      res.splice(dest.index, 0, removed);
-      const updatedEntries = { ...entries };
-      updatedEntries[srcDrop] = res;
       setEntries({ ...updatedEntries });
-      return;
     }
-
-    //Moved to new droppable area
-    // console.log("SRC: ", entries[srcDrop]);
-    // console.log("DEST: ", entries[destDrop]);
-
-    const srcArrayCopy = [...entries[srcDrop]];
-    const destArrayCopy = [...entries[destDrop]];
-
-    const [removedItem] = srcArrayCopy.splice(src.index, 1);
-    destArrayCopy.splice(dest.index, 0, removedItem);
-
-    const updatedEntries = {
-      ...entries,
-      [srcDrop]: srcArrayCopy,
-      [destDrop]: destArrayCopy,
-    };
-
-    setEntries({ ...updatedEntries });
   };
 
   return (
     <>
-      <Header/>
+      <Navbar/>
       <div style={{width:"100%"}}>
       <DragDropContext onDragEnd={handleDragEnd} >
-          <Grid columns={["74%", "20%"]} gap="5%" style={{marginLeft:"5%"}}>
-            {/* <Grid rows={["20%", "20%", "20%"]} gap="3vw">
-              <BlockBox name="Education" id='educationBox'></BlockBox>
-              <BlockBox name="Experience" id='experienceBox' ></BlockBox>
-              <BlockBox name="Projects" id='indexBox'></BlockBox>
-            </Grid> */}
+          <Grid columns={["78%", "20%"]} gap="2%" style={{marginLeft:"2%"}}>
           <Box>
-            <Resume>
-              <DroppableContainer
-                text="Header 1"
-                box={entries.EntryBox1 || []}
-                id="EntryBox1"
-              />
-              <DroppableContainer
-                text="Header 2"
-                box={entries.EntryBox3 || []}
-                id="EntryBox3"
-              />
-              <DroppableContainer
-                text="Header 3"
-                box={entries.EntryBox4 || []}
-                id="EntryBox4"
-              />
-            </Resume>
+            <Resume children={resumeChildren} />
+            
           </Box>
           <Box style={{width: "100%", right: '0'}}>
             <EntriesContainer
