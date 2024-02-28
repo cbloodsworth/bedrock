@@ -6,12 +6,13 @@ import loginImage from "../../src/assets/login.jpg";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {
+    const [username, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
-  const toggleMode = () => {
-    setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
+  const toggleMode = (toLoginMode : boolean) => {
+    setIsLoginMode(toLoginMode); // Toggle the mode between login and sign up
   };
 
   const togglePasswordVisibility = () => {
@@ -58,7 +59,7 @@ const Login: React.FC = () => {
                     alignContent="center"
                     style={{ height: "100%" }}
                   >
-                    <button onClick={toggleMode} className="toggleButton">
+                    <button className="toggleButton">
                       <span
                         className="toggleButtonText"
                         id={isLoginMode ? "active" : ""}
@@ -66,7 +67,7 @@ const Login: React.FC = () => {
                         Login
                       </span>
                     </button>
-                    <button onClick={toggleMode} className="toggleButton">
+                    <button className="toggleButton">
                       <span
                         className="toggleButtonText"
                         id={!isLoginMode ? "active" : ""}

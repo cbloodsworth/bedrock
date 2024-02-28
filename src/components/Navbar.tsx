@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 
 const Navbar: React.FC = () => {
-  const loggedInRef = useRef(false);
+  const loggedInRef = useRef(true);
 
   const handleClick = (action: string) => {
     console.log(action);
   };
+
   useEffect(() => {
     fetch("http://127.0.0.1:5000/user-info", {
       method: "GET",
@@ -25,6 +26,7 @@ const Navbar: React.FC = () => {
         console.error("Error fetching user information:", error)
       );
   }, []);
+
   return (
     <header style={{ width: "100%" }}>
       <nav>
@@ -32,7 +34,7 @@ const Navbar: React.FC = () => {
           <Link className="link-item" to="/">
             <button className="navbarButton">Home</button>
           </Link>
-          <Link className="link-item" to="/Resumes">
+          <Link className="link-item" to="/ResumesFolder">
             <button className="navbarButton">Resumes</button>
           </Link>
           <button

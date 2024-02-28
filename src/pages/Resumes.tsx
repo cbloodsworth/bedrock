@@ -1,13 +1,15 @@
-import React from "react"; //{ useState }
-//import { Link } from 'react-router-dom';
-import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
+import React, {useEffect} from "react"; 
+import { DragDropContext, DropResult } from "react-beautiful-dnd"; 
 import DroppableContainer from "../components/DroppableContainer";
-import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
+import { Box, Grid } from "grommet"; 
 import Resume from "../components/Resume";
-import "../styles/Resumes.css";
-import "../index.css"
 import EntriesContainer from "../components/Entries";
 import Navbar from "../components/Navbar";
+import axios from 'axios';
+import "../styles/Resumes.css";
+import "../index.css"
+
+
 
 const createEntry = (id: string, header: string, content: string[]) => {
   return {
@@ -138,15 +140,46 @@ const Resumes: React.FC = () => {
     }
   };
 
+  const handleSavePreview = () => {
+    
+    const resumeContainer = document.getElementById('resumeContainerWrapper');
+    if (!resumeContainer) {
+      console.error('Resume container not found');
+      return;
+    }
+  
+    // Capture the HTML representation of the entire resume container
+    const htmlContent = resumeContainer.outerHTML;
+  
+    // Send a POST request to the Flask server with the HTML content
+    axios.post('http://localhost:5000/save-preview', { htmlContent })
+      .catch(error => {
+        console.error('Error saving preview:', error);
+      });
+  };
+  
+
+  useEffect(() => {
+    setTimeout(() =>{
+        handleSavePreview();
+    }, 1000)
+  }, []); 
+
+  
+  useEffect(() => {
+    handleSavePreview();
+  }, [resumeChildren]); 
+  
+
   return (
     <>
       <Navbar/>
-      <div style={{width:"100%"}}>
+      <div style={{width:"100%", marginBottom: "2vh"}}>
       <DragDropContext onDragEnd={handleDragEnd} >
+        <div style={{marginTop:"2%"}}>
           <Grid columns={["78%", "20%"]} gap="2%" style={{marginLeft:"2%"}}>
-          <Box>
+          <Box id='resumeContainerWrapper'>
             <Resume children={resumeChildren} />
-            
           </Box>
           <Box style={{width: "100%", right: '0'}}>
             <EntriesContainer
@@ -155,6 +188,7 @@ const Resumes: React.FC = () => {
             />
           </Box>
         </Grid>
+        </div>
       </DragDropContext>
       </div>
     </>

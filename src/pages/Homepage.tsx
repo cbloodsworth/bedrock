@@ -17,6 +17,7 @@ interface userData {
   picture: string;
   locale: string;
 }
+
 const Homepage: React.FC = () => {
   const [userInfo, setUserInfo] = useState<userData>();
 
@@ -45,7 +46,7 @@ const Homepage: React.FC = () => {
         <Grid columns={["50%", "50%"]} gap="none" style={{ height: "100%" }}>
           <Box className="containerBoxResume">
             <h2>Begin Making Your Resume Here</h2>
-            <Link to="/Resumes" className="createResumeButton">
+            <Link to="/ResumesFolder/Resume" className="createResumeButton">
               Create your Resume
             </Link>
           </Box>
