@@ -41,7 +41,7 @@ google = oauth.remote_app(
     consumer_key=os.getenv('GOOGLE_CLIENT_ID'),
     consumer_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
     request_token_params={
-        'scope': 'email',
+        'scope': ['profile', 'email']
     },
     base_url='https://www.googleapis.com/oauth2/v1/',
     request_token_url=None,
@@ -57,7 +57,7 @@ def index():
         return 'Logged in as: ' + me.data['email']
     return 'You are not logged in.'
 
-@app.route('/login')
+@app.route('/loginGoogle')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
@@ -88,10 +88,9 @@ def get_google_oauth_token():
 def get_user_info():
     access_token = session.get('google_token')[0] if 'google_token' in session else None
     if access_token:
-        user_info = get_user_info_using_access_token(access_token)
+        user_info = google.get('userinfo').data
         if user_info:
-            print(user_info)
-            return jsonify(user_info)
+            return user_info
         else:
             return jsonify({'error': 'Failed to fetch user information'}), 500
     else:
