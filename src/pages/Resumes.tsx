@@ -9,7 +9,7 @@ import "../index.css";
 import EntriesContainer from "../components/Entries";
 import Navbar from "../components/Navbar";
 
-import { EntryStruct, EntryData as Entries } from "../utility/EntryData";
+import { SectionsArray, EntryData as Entries } from "../utility/EntryData";
 
 const resumeData = [
   <DroppableContainer
@@ -130,10 +130,7 @@ const Resumes: React.FC = () => {
               <Resume children={resumeChildren} />
             </Box>
             <Box style={{ width: "100%", right: "0" }}>
-              <EntriesContainer
-                box={entries.SideEntryBox || []}
-                id="SideEntryBox"
-              />
+              <EntriesContainer boxes={entries} />
             </Box>
           </Grid>
         </DragDropContext>

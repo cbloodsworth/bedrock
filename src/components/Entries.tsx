@@ -1,24 +1,17 @@
 import DroppableContainer from "./DroppableContainer";
-import { EntryStruct } from "../utility/EntryData";
+import { SectionsArray, EntryStruct } from "../utility/EntryData";
 
 interface EntriesContainerParams {
-  box: EntryStruct[];
-  id: string;
+  boxes: { [key: string]: EntryStruct[] };
 }
 
-export default function EntriesContainer({ box, id }: EntriesContainerParams) {
-  // This just groups box by section
-  const groupedBox = box.reduce(
-    (acc: Record<string, EntryStruct[]>, entry: EntryStruct) => {
-      if (!acc[entry.section]) {
-        acc[entry.section] = [];
-      }
-      acc[entry.section].push(entry);
+export default function EntriesContainer({ boxes }: EntriesContainerParams) {
+  const filteredBoxes = Object.keys(boxes)
+    .filter((key) => key.includes("SideEntry"))
+    .reduce((acc: typeof boxes, key) => {
+      acc[key] = boxes[key];
       return acc;
-    },
-    {}
-  );
-
+    }, {});
   return (
     <div
       id="EntriesWrapper"
@@ -32,12 +25,18 @@ export default function EntriesContainer({ box, id }: EntriesContainerParams) {
         height: "auto",
         position: "sticky",
         top: "10px",
-        zIndex: 1,
+        zIndex: 0,
       }}
     >
-      {Object.entries(groupedBox).map(([section, entries]) => (
-        <DroppableContainer header={section} box={entries || []} id={id} />
-      ))}
+      {Object.entries(filteredBoxes).map(([id, entries], i) => {
+        return (
+          <DroppableContainer
+            header={SectionsArray[i]}
+            box={entries || []}
+            id={id}
+          />
+        );
+      })}
     </div>
   );
 }
