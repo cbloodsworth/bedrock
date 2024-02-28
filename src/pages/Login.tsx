@@ -6,6 +6,7 @@ import loginImage from '../../src/assets/login.jpg'
 import '../styles/Login.css'
 
 const Login: React.FC = () => {
+    const [username, setUsername] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,6 +27,11 @@ const Login: React.FC = () => {
     const handleLinkedinLogin = () => {
         //todo
     };
+
+    const handleSubmit = async() => {
+        //todo
+        console.log(username, password, confirmPassword)
+    }
     
 
     return (
@@ -68,6 +74,8 @@ const Login: React.FC = () => {
                             <TextInput
                                 className='signInArea'
                                 id="usernameLogin"
+                                value={username}
+                                onChange={(event) => setUsername(event.target.value)}
                             />  
                         </div>
                         <div className='signInWrapper'>
@@ -87,9 +95,9 @@ const Login: React.FC = () => {
                                     onClick={togglePasswordVisibility}
                                 />
                             </Box>
-
+                            </div>
                             {!isLoginMode && (
-                                <>
+                                <div className='signInWrapper'>
                                 <p>Confirm your password</p>
                                 <Box direction="row" align="center" gap="none" id="confirmPasswordArea" style={{position:"relative"}}>
                                     <TextInput
@@ -106,12 +114,11 @@ const Login: React.FC = () => {
                                         onClick={togglePasswordVisibility}
                                     />
                                 </Box>
-                                </>
+                                </div>
                             )}
 
-                        </div>
                         <div className='signInWrapper'>
-                            <button id='signinButton'>{isLoginMode ? "Sign in" : "Sign up"}</button>
+                            <button onClick={handleSubmit} id='signinButton'>{isLoginMode ? "Sign in" : "Sign up"}</button>
                         </div>
                         <div className='signInWrapper'>
                             <p>{isLoginMode ? "Or Log In With" : "Or Sign Up With"}</p>

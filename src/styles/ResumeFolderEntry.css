@@ -1,0 +1,19 @@
+.documentEntryWrapper {
+    height: 100%;
+}
+
+.documentPreviewWrapper {
+    background-size: cover;
+    border: 2px solid gray;
+    border-bottom: 0;
+}
+
+.documentName{
+    height: 100%;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    background-color: white;
+    border: 2px solid gray;
+}

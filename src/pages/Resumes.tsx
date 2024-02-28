@@ -1,4 +1,4 @@
-import React from "react"; //{ useState }
+import React, {useRef, useEffect} from "react"; //{ useState }
 //import { Link } from 'react-router-dom';
 import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
 import DroppableContainer from "../components/DroppableContainer";
@@ -8,6 +8,9 @@ import "../styles/Resumes.css";
 import "../index.css"
 import EntriesContainer from "../components/Entries";
 import Navbar from "../components/Navbar";
+import axios from 'axios';
+
+
 
 const createEntry = (id: string, header: string, content: string[]) => {
   return {
@@ -138,15 +141,45 @@ const Resumes: React.FC = () => {
     }
   };
 
+  const handleSavePreview = () => {
+    const resumeContainer = document.getElementById('resumeContainerWrapper');
+    if (!resumeContainer) {
+      console.error('Resume container not found');
+      return;
+    }
+  
+    // Capture the HTML representation of the entire resume container
+    const htmlContent = resumeContainer.outerHTML;
+  
+    // Send a POST request to the Flask server with the HTML content
+    axios.post('http://localhost:5000/save-preview', { htmlContent })
+      .then(response => {
+        console.log('Preview saved successfully:', response.data);
+      })
+      .catch(error => {
+        console.error('Error saving preview:', error);
+      });
+  };
+  
+
+  useEffect(() => {
+    handleSavePreview();
+  }, []); 
+
+  
+  useEffect(() => {
+    handleSavePreview();
+  }, [resumeChildren]); 
+  
+
   return (
     <>
       <Navbar/>
       <div style={{width:"100%"}}>
       <DragDropContext onDragEnd={handleDragEnd} >
           <Grid columns={["78%", "20%"]} gap="2%" style={{marginLeft:"2%"}}>
-          <Box>
+          <Box id='resumeContainerWrapper'>
             <Resume children={resumeChildren} />
-            
           </Box>
           <Box style={{width: "100%", right: '0'}}>
             <EntriesContainer
