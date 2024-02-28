@@ -10,7 +10,6 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
-  const [userInfo, setUserInfo] = useState(null);
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
   };
@@ -20,21 +19,7 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    //     fetch("http://127.0.0.1:5000/user-info", {
-    //       method: "GET",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       credentials: "include", // Send cookies if your back end and front end are on different domains
-    //     })
-    //       .then((response) => response.json())
-    //       .then((data) => {
-    //         setUserInfo(data);
-    //       })
-    //       .catch((error) =>
-    //         console.error("Error fetching user information:", error)
-    //       );
-    window.location.href = "http://127.0.0.1:5000/login";
+    window.location.href = "http://127.0.0.1:5000/loginGoogle";
   };
 
   const handleLinkedinLogin = () => {
