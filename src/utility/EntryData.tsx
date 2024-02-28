@@ -5,8 +5,8 @@ export interface EntryStruct {
   content: string[];
 }
 
-export const EntryData = {
-  EntryBox1: [
+export const EntryData: { [key: string]: EntryStruct[] } = {
+  ResumeEntryBox1: [
     {
       id: "2",
       section: "Education",
@@ -16,31 +16,7 @@ export const EntryData = {
       ],
     },
   ],
-  EntryBox2: [
-    {
-      id: "3",
-      section: "Projects",
-      header: "Personal Website | React, Python",
-      content: ["Created customized personal website as a portfolio"],
-    },
-    {
-      id: "4",
-      section: "Projects",
-      header: "ML Model for Image Classification | TensorFlow",
-      content: [
-        "Developed a convolutional neural network (CNN) that achieved an accuracy of 95% on the test dataset",
-      ],
-    },
-    {
-      id: "5",
-      section: "Projects",
-      header: "Autoencoder | Python, Pytorch",
-      content: [
-        "Implemented autoencoder to compress and decompress images from the MNIST dataset",
-      ],
-    },
-  ],
-  EntryBox3: [
+  ResumeEntryBox2: [
     {
       id: "7",
       section: "Experience",
@@ -65,7 +41,7 @@ export const EntryData = {
       content: ["Worked on API calls using Java"],
     },
   ],
-  EntryBox4: [
+  ResumeEntryBox3: [
     {
       id: "10",
       section: "Projects",
@@ -90,6 +66,30 @@ export const EntryData = {
       content: [
         "Used react to create a resume drag and drop website",
         "worked on the frontend interface using mostly Typescript",
+      ],
+    },
+  ],
+  SideEntryBox: [
+    {
+      id: "3",
+      section: "Projects",
+      header: "Personal Website | React, Python",
+      content: ["Created customized personal website as a portfolio"],
+    },
+    {
+      id: "4",
+      section: "Projects",
+      header: "ML Model for Image Classification | TensorFlow",
+      content: [
+        "Developed a convolutional neural network (CNN) that achieved an accuracy of 95% on the test dataset",
+      ],
+    },
+    {
+      id: "5",
+      section: "Projects",
+      header: "Autoencoder | Python, Pytorch",
+      content: [
+        "Implemented autoencoder to compress and decompress images from the MNIST dataset",
       ],
     },
   ],

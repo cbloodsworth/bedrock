@@ -14,18 +14,18 @@ import { EntryStruct, EntryData as Entries } from "../utility/EntryData";
 const resumeData = [
   <DroppableContainer
     header="Education"
-    box={Entries.EntryBox1 || []}
-    id="EntryBox1"
-  />,
-  <DroppableContainer
-    header="Projects"
-    box={Entries.EntryBox3 || []}
-    id="EntryBox3"
+    box={Entries.ResumeEntryBox1 || []}
+    id="ResumeEntryBox1"
   />,
   <DroppableContainer
     header="Experience"
-    box={Entries.EntryBox4 || []}
-    id="EntryBox4"
+    box={Entries.ResumeEntryBox2 || []}
+    id="ResumeEntryBox2"
+  />,
+  <DroppableContainer
+    header="Projects"
+    box={Entries.ResumeEntryBox3 || []}
+    id="ResumeEntryBox3"
   />,
 ];
 
@@ -34,18 +34,20 @@ const Resumes: React.FC = () => {
   const [resumeChildren, setResumeChildren] =
     React.useState<React.ReactNode[]>(resumeData);
 
+  // Triggers re-render
   const updateResumeChildren = () => {
-    const updatedResumeChildren = resumeChildren.map((child) => {
-      if (React.isValidElement(child) && child.type === DroppableContainer) {
-        const { id } = child.props;
-        const box = (entries as any)[id] || [];
-        return (
-          <DroppableContainer header={child.props.header} box={box} id={id} />
-        );
-      }
-      return child;
-    });
-    setResumeChildren(updatedResumeChildren);
+    setResumeChildren(
+      resumeChildren.map((child) => {
+        if (React.isValidElement(child) && child.type === DroppableContainer) {
+          const { id } = child.props;
+          const box = (entries as any)[id] || [];
+          return (
+            <DroppableContainer header={child.props.header} box={box} id={id} />
+          );
+        }
+        return child;
+      })
+    );
   };
 
   //when entries changed, call updateResume
@@ -62,16 +64,22 @@ const Resumes: React.FC = () => {
       return;
     }
 
-    let srcDrop = src.droppableId as keyof typeof entries;
-    let destDrop = dest.droppableId as keyof typeof entries;
+    // Refers to EntryBox{x}
+    let srcDrop = src.droppableId;
+    let destDrop = dest.droppableId;
 
+    console.log(result);
+
+    // If we dragged a resume section
     if (result.type === "resumeSectionItem") {
       const updatedResumeChildren = Array.from(resumeChildren);
       const [removed] = updatedResumeChildren.splice(src.index, 1);
       updatedResumeChildren.splice(dest.index, 0, removed);
       setResumeChildren(updatedResumeChildren);
-    } else if (result.type.includes("entryBox")) {
-      if (!destDrop.startsWith("EntryBox")) {
+    }
+    // Otherwise, we might have dragged an entrybox
+    else if (result.type === "entryBox") {
+      if (!destDrop.includes("EntryBox")) {
         const srcArrayCopy = [...entries[srcDrop]];
         srcArrayCopy.splice(src.index, 1);
         setEntries({
@@ -82,30 +90,33 @@ const Resumes: React.FC = () => {
       }
 
       //stayed in original droppable area
-      if (src.droppableId === dest.droppableId) {
-        const res = [...entries[srcDrop]];
-        const [removed] = res.splice(src.index, 1);
-        res.splice(dest.index, 0, removed);
-        const updatedEntries = { ...entries };
-        updatedEntries[srcDrop] = res;
+      if (srcDrop === destDrop) {
+        const updatedEntries = { ...entries }; // temp so we don't modify entries directly (is this necessary i wonder?)
+
+        // Moves entry from one position in the entrybox to another
+        const [removed] = updatedEntries[srcDrop].splice(src.index, 1); // removes entry
+        updatedEntries[srcDrop].splice(dest.index, 0, removed); // reinserts it at the new spot
+
         setEntries({ ...updatedEntries });
         return;
       }
 
-      //Moved to new droppable area
-      const srcArrayCopy = [...entries[srcDrop]];
-      const destArrayCopy = [...entries[destDrop]];
+      // Otherwise, it must have moved to new droppable area
+      const srcEntryBox = [...entries[srcDrop]];
+      const destEntryBox = [...entries[destDrop]];
 
-      const [removedItem] = srcArrayCopy.splice(src.index, 1);
-      destArrayCopy.splice(dest.index, 0, removedItem);
+      const [removedItem] = srcEntryBox.splice(src.index, 1); // Remove the entry from the source entry box
+      destEntryBox.splice(dest.index, 0, removedItem); // Inserts the removed item into the destination entry box
 
       const updatedEntries = {
         ...entries,
-        [srcDrop]: srcArrayCopy,
-        [destDrop]: destArrayCopy,
+        [srcDrop]: srcEntryBox,
+        [destDrop]: destEntryBox,
       };
 
-      setEntries({ ...updatedEntries });
+      setEntries(updatedEntries);
+    } else {
+      console.log("Warning: Dragging unknown object");
     }
   };
 
@@ -119,7 +130,10 @@ const Resumes: React.FC = () => {
               <Resume children={resumeChildren} />
             </Box>
             <Box style={{ width: "100%", right: "0" }}>
-              <EntriesContainer box={entries.EntryBox2 || []} id="EntryBox2" />
+              <EntriesContainer
+                box={entries.SideEntryBox || []}
+                id="SideEntryBox"
+              />
             </Box>
           </Grid>
         </DragDropContext>

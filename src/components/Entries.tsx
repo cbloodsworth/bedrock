@@ -7,10 +7,17 @@ interface EntriesContainerParams {
 }
 
 export default function EntriesContainer({ box, id }: EntriesContainerParams) {
-  const emptyTextBox = box.map((item) => ({
-    ...item,
-    text: [],
-  }));
+  // This just groups box by section
+  const groupedBox = box.reduce(
+    (acc: Record<string, EntryStruct[]>, entry: EntryStruct) => {
+      if (!acc[entry.section]) {
+        acc[entry.section] = [];
+      }
+      acc[entry.section].push(entry);
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div
@@ -28,7 +35,9 @@ export default function EntriesContainer({ box, id }: EntriesContainerParams) {
         zIndex: 1,
       }}
     >
-      <DroppableContainer header="Entries" box={emptyTextBox || []} id={id} />
+      {Object.entries(groupedBox).map(([section, entries]) => (
+        <DroppableContainer header={section} box={entries || []} id={id} />
+      ))}
     </div>
   );
 }
