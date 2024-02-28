@@ -1,4 +1,4 @@
-import React, { ReactNode, useLayoutEffect } from "react";
+import React, { ReactNode } from "react";
 import { StrictModeDroppable} from "./StrictModeDroppable";
 import { Draggable } from "react-beautiful-dnd";
 import "../styles/Resume.css"

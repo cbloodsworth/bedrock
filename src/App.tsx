@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react' // { useState }
 import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Link
+    // Link
 } from 'react-router-dom';
 
 
@@ -14,8 +14,6 @@ import Login from './pages/Login';
 import ResumesFolder from './pages/ResumesFolder';
 
 const App: React.FC = () => {
-  const [count, setCount] = useState(0)
-
   return (
     <Router>
       <Routes>

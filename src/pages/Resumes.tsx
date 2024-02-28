@@ -1,14 +1,13 @@
-import React, {useRef, useEffect, useLayoutEffect} from "react"; //{ useState }
-//import { Link } from 'react-router-dom';
-import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
+import React, {useEffect} from "react"; 
+import { DragDropContext, DropResult } from "react-beautiful-dnd"; 
 import DroppableContainer from "../components/DroppableContainer";
-import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
+import { Box, Grid } from "grommet"; 
 import Resume from "../components/Resume";
-import "../styles/Resumes.css";
-import "../index.css"
 import EntriesContainer from "../components/Entries";
 import Navbar from "../components/Navbar";
 import axios from 'axios';
+import "../styles/Resumes.css";
+import "../index.css"
 
 
 

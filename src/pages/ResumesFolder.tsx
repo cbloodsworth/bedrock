@@ -1,8 +1,5 @@
-import React, {useState, useEffect} from "react"; //{ useState }
-//import { Link } from 'react-router-dom';
-import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
-import DroppableContainer from "../components/DroppableContainer";
-import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
+import React from "react";
+import { Box } from "grommet"; 
 import "../index.css"
 import '../styles/ResumesFolder.css'
 import Navbar from "../components/Navbar";
