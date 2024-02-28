@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useLayoutEffect } from "react";
 import { StrictModeDroppable} from "./StrictModeDroppable";
 import { Draggable } from "react-beautiful-dnd";
 import "../styles/Resume.css"
@@ -7,7 +7,8 @@ interface Props {
   children: ReactNode;
 }
 
-const Resume: React.FC<Props> = ({ children }) => {
+const Resume: React.FC<Props> = ({ children}) => {
+
   return (
     <div id="resumeContainer">
       <div id="headerSection">

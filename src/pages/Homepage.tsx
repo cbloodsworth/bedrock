@@ -17,7 +17,7 @@ const Homepage: React.FC = () => {
                 <Grid columns={["50%", "50%"]} gap="none"  style={{ height: "100%" }}>
                     <Box className='containerBoxResume'>
                         <h2>Begin Making Your Resume Here</h2>
-                        <Link to="/Resumes" id="createResumeWrapper"><button className="createResumeButton">Create your Resume</button></Link>
+                        <Link to="/ResumesFolder/Resume" id="createResumeWrapper"><button className="createResumeButton">Create your Resume</button></Link>
                     </Box>
                     <Box className='containerBoxResume'>
                             <img id='resumeImage' src={resumeBuilderImage} alt="resume builder" />

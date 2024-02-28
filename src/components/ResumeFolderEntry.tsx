@@ -11,7 +11,7 @@ interface ResumeFolderEntryProps {
 const ResumeFolderEntry: React.FC<ResumeFolderEntryProps> = ({ previewImagePath, documentName }) => {
   return (
     <Box className='documentEntryWrapper' height='100%'>
-        <Grid fill rows={['70%', '30%']} gap='0%'> 
+        <Grid fill rows={['80%', '20%']} gap='0%'> 
         <div className='documentPreviewWrapper' style={{ backgroundImage: `url(${previewImagePath})` }}/>
         <div className='documentName'>
             <b>{documentName}</b>

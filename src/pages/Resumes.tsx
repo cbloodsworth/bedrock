@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from "react"; //{ useState }
+import React, {useRef, useEffect, useLayoutEffect} from "react"; //{ useState }
 //import { Link } from 'react-router-dom';
 import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
 import DroppableContainer from "../components/DroppableContainer";
@@ -142,6 +142,7 @@ const Resumes: React.FC = () => {
   };
 
   const handleSavePreview = () => {
+    
     const resumeContainer = document.getElementById('resumeContainerWrapper');
     if (!resumeContainer) {
       console.error('Resume container not found');
@@ -153,9 +154,6 @@ const Resumes: React.FC = () => {
   
     // Send a POST request to the Flask server with the HTML content
     axios.post('http://localhost:5000/save-preview', { htmlContent })
-      .then(response => {
-        console.log('Preview saved successfully:', response.data);
-      })
       .catch(error => {
         console.error('Error saving preview:', error);
       });
@@ -163,7 +161,9 @@ const Resumes: React.FC = () => {
   
 
   useEffect(() => {
-    handleSavePreview();
+    setTimeout(() =>{
+        handleSavePreview();
+    }, 1000)
   }, []); 
 
   
@@ -175,8 +175,9 @@ const Resumes: React.FC = () => {
   return (
     <>
       <Navbar/>
-      <div style={{width:"100%"}}>
+      <div style={{width:"100%", marginBottom: "2vh"}}>
       <DragDropContext onDragEnd={handleDragEnd} >
+        <div style={{marginTop:"2%"}}>
           <Grid columns={["78%", "20%"]} gap="2%" style={{marginLeft:"2%"}}>
           <Box id='resumeContainerWrapper'>
             <Resume children={resumeChildren} />
@@ -188,6 +189,7 @@ const Resumes: React.FC = () => {
             />
           </Box>
         </Grid>
+        </div>
       </DragDropContext>
       </div>
     </>

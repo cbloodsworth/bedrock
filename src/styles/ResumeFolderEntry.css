@@ -4,8 +4,10 @@
 
 .documentPreviewWrapper {
     background-size: cover;
-    border: 2px solid gray;
-    border-bottom: 0;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0; 
+    border-bottom: 2px solid gray; 
 }
 
 .documentName{
@@ -15,5 +17,4 @@
     align-items: center;
     display: flex;
     background-color: white;
-    border: 2px solid gray;
 }

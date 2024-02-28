@@ -1,13 +1,29 @@
 #ResumeEntriesWrapper{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10vh 10vw;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(calc((8.5 / 11) * 40vh), 1fr));
+    padding: 5vh 10vw;
+    justify-content: start;
+    gap: 2vw
 }
 
 .ResumeEntryBox {
-    flex-basis: calc((8.5 / 11) * 50vh);
-    height: 50vh;
+    flex-basis: calc((8.5 / 11) * 40vh);
+    height: 40vh;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2%;
+}
+
+#ResumeTemplates{
+    background-color: rgba(50,50,50,0.25);/*rgba(255,209,220, 0.3);*/
+    height: 30vh;
+    width: 100%;
+}
+
+.ResumeEntryBoxWrapper{
+    color: black;
+    border: 1px solid gray;
+}
+
+.ResumeEntryBoxWrapper:hover{
+    border-color: blue;
+    color: black;
 }
