@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Box } from "grommet";
 import Navbar from "../components/Navbar";
@@ -7,19 +7,18 @@ import "../styles/Homepage.css";
 import "../index.css";
 import resumeBuilderImage from "../../src/assets/homepageResumeBuilder.png";
 
-interface userData {
-  id: string;
-  email: string;
-  verified_email: boolean;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  locale: string;
-}
 const Homepage: React.FC = () => {
-  const [userInfo, setUserInfo] = useState<userData>();
-
+  interface UserInfo {
+    id: string;
+    email: string;
+    verified_email: boolean;
+    name: string;
+    given_name: string;
+    family_name: string;
+    picture: string;
+    locale: string;
+  }
+  const [userInfo, setUserInfo] = useState<UserInfo>();
   useEffect(() => {
     fetch("http://127.0.0.1:5000/user-info", {
       method: "GET",
@@ -35,7 +34,7 @@ const Homepage: React.FC = () => {
       .catch((error) =>
         console.error("Error fetching user information:", error)
       );
-  }, []);
+  });
   return (
     <>
       <Navbar />

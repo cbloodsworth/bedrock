@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const toggleMode = () => {
     setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
   };

@@ -1,19 +1,13 @@
-import React, { useState } from 'react'
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link
-} from 'react-router-dom';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-
-import './App.css'
-import Resumes from './pages/Resumes'
-import Homepage from './pages/Homepage'
-import Login from './pages/Login';
+import "./App.css";
+import Resumes from "./pages/Resumes";
+import Homepage from "./pages/Homepage";
+import Login from "./pages/Login";
 
 const App: React.FC = () => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <Router>
@@ -23,7 +17,7 @@ const App: React.FC = () => {
         <Route path="/Login" element={<Login />} />
       </Routes>
     </Router>
-  )
-}
+  );
+};
 
-export default App
+export default App;
