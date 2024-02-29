@@ -156,7 +156,7 @@ const Resumes: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div style={{ width: "100%" }}>
+      <div style={{ width: "100%", marginTop: "5vh" }}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid columns={["78%", "20%"]} gap="2%" style={{ marginLeft: "2%" }}>
             <Box>
