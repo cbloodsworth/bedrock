@@ -7,16 +7,16 @@ interface EntriesContainerParams {
 
 export default function EntriesContainer({ boxes }: EntriesContainerParams) {
   const filteredBoxes: { [key: string]: EntryStruct[] } = {};
-
+  
   for (const key in boxes) {
-      if (boxes.hasOwnProperty(key) && key.includes("SideEntry")) {
-          const entries = boxes[key].map(entry => {
-              const { ...data } = entry;
-              data.content = [];
-              return data;
-          });
-          filteredBoxes[key] = entries;
-      }
+    if (boxes.hasOwnProperty(key) && key.includes("SideEntry")) {
+      const entries = boxes[key].map(entry => {
+        const { ...data } = entry;
+        data.content = [];
+        return data;
+      });
+      filteredBoxes[key] = entries;
+    }
   }
 
 
@@ -42,6 +42,7 @@ export default function EntriesContainer({ boxes }: EntriesContainerParams) {
             header={SectionsArray[i]}
             box={entries || []}
             id={id}
+            resumeEntry={false}
           />
         );
       })}

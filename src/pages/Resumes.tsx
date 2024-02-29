@@ -18,16 +18,19 @@ const resumeData = [
     header="Education"
     box={Entries.ResumeEntryBox1 || []}
     id="ResumeEntryBox1"
+    resumeEntry={true}
   />,
   <DroppableContainer
     header="Experience"
     box={Entries.ResumeEntryBox2 || []}
     id="ResumeEntryBox2"
+    resumeEntry={true}
   />,
   <DroppableContainer
     header="Projects"
     box={Entries.ResumeEntryBox3 || []}
     id="ResumeEntryBox3"
+    resumeEntry={true}
   />,
 ];
 
@@ -44,7 +47,7 @@ const Resumes: React.FC = () => {
           const { id } = child.props;
           const box = (entries as any)[id] || [];
           return (
-            <DroppableContainer header={child.props.header} box={box} id={id} />
+            <DroppableContainer header={child.props.header} box={box} id={id} resumeEntry={true}/>
           );
         }
         return child;
@@ -122,35 +125,35 @@ const Resumes: React.FC = () => {
     }
   };
 
-  const handleSavePreview = () => {
+  // const handleSavePreview = () => {
     
-    const resumeContainer = document.getElementById('resumeContainerWrapper');
-    if (!resumeContainer) {
-      console.error('Resume container not found');
-      return;
-    }
+  //   const resumeContainer = document.getElementById('resumeContainerWrapper');
+  //   if (!resumeContainer) {
+  //     console.error('Resume container not found');
+  //     return;
+  //   }
   
-    // Capture the HTML representation of the entire resume container
-    const htmlContent = resumeContainer.outerHTML;
+  //   // Capture the HTML representation of the entire resume container
+  //   const htmlContent = resumeContainer.outerHTML;
   
-    // Send a POST request to the Flask server with the HTML content
-    axios.post('http://localhost:5000/save-preview', { htmlContent })
-      .catch(error => {
-        console.error('Error saving preview:', error);
-      });
-  };
+  //   // Send a POST request to the Flask server with the HTML content
+  //   axios.post('http://localhost:5000/save-preview', { htmlContent })
+  //     .catch(error => {
+  //       console.error('Error saving preview:', error);
+  //     });
+  // };
   
 
-  useEffect(() => {
-    setTimeout(() =>{
-        handleSavePreview();
-    }, 1000)
-  }, []); 
+  // useEffect(() => {
+  //   setTimeout(() =>{
+  //       handleSavePreview();
+  //   }, 1000)
+  // }, []); 
 
   
-  useEffect(() => {
-    handleSavePreview();
-  }, [resumeChildren]); 
+  // useEffect(() => {
+  //   handleSavePreview();
+  // }, [resumeChildren]); 
   
 
   return (
@@ -159,7 +162,7 @@ const Resumes: React.FC = () => {
       <div style={{ width: "100%", margin: "5vh 0" }}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid columns={["78%", "20%"]} gap="2%" style={{ marginLeft: "2%" }}>
-            <Box>
+            <Box id='resumeContainerWrapper'>
               <Resume children={resumeChildren} />
             </Box>
             <Box style={{ width: "100%", right: "0" }}>

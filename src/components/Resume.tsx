@@ -8,7 +8,6 @@ interface Props {
 }
 
 const Resume: React.FC<Props> = ({ children}) => {
-
   return (
     <div id="resumeContainer">
       <div id="headerSection">
