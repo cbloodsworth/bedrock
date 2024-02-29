@@ -6,12 +6,20 @@ interface EntriesContainerParams {
 }
 
 export default function EntriesContainer({ boxes }: EntriesContainerParams) {
-  const filteredBoxes = Object.keys(boxes)
-    .filter((key) => key.includes("SideEntry"))
-    .reduce((acc: typeof boxes, key) => {
-      acc[key] = boxes[key];
-      return acc;
-    }, {});
+  const filteredBoxes: { [key: string]: EntryStruct[] } = {};
+
+  for (const key in boxes) {
+      if (boxes.hasOwnProperty(key) && key.includes("SideEntry")) {
+          const entries = boxes[key].map(entry => {
+              const { ...data } = entry;
+              data.content = [];
+              return data;
+          });
+          filteredBoxes[key] = entries;
+      }
+  }
+
+
   return (
     <div
       id="EntriesWrapper"

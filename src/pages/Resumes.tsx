@@ -1,13 +1,15 @@
-import React from "react"; //{ useState }
-//import { Link } from 'react-router-dom';
-import { DragDropContext, DropResult } from "react-beautiful-dnd"; //Droppable
+import React, {useEffect} from "react"; 
+import { DragDropContext, DropResult } from "react-beautiful-dnd"; 
 import DroppableContainer from "../components/DroppableContainer";
-import { Box, Grid } from "grommet"; //Card, Heading, Main, CardHeader
+import { Box, Grid } from "grommet"; 
 import Resume from "../components/Resume";
-import "../styles/Resumes.css";
-import "../index.css";
 import EntriesContainer from "../components/Entries";
 import Navbar from "../components/Navbar";
+import axios from 'axios';
+import "../styles/Resumes.css";
+import "../index.css"
+
+
 
 import { SectionsArray, EntryData as Entries } from "../utility/EntryData";
 
@@ -119,6 +121,37 @@ const Resumes: React.FC = () => {
       console.log("Warning: Dragging unknown object");
     }
   };
+
+  const handleSavePreview = () => {
+    
+    const resumeContainer = document.getElementById('resumeContainerWrapper');
+    if (!resumeContainer) {
+      console.error('Resume container not found');
+      return;
+    }
+  
+    // Capture the HTML representation of the entire resume container
+    const htmlContent = resumeContainer.outerHTML;
+  
+    // Send a POST request to the Flask server with the HTML content
+    axios.post('http://localhost:5000/save-preview', { htmlContent })
+      .catch(error => {
+        console.error('Error saving preview:', error);
+      });
+  };
+  
+
+  useEffect(() => {
+    setTimeout(() =>{
+        handleSavePreview();
+    }, 1000)
+  }, []); 
+
+  
+  useEffect(() => {
+    handleSavePreview();
+  }, [resumeChildren]); 
+  
 
   return (
     <>

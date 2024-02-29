@@ -7,7 +7,8 @@ interface Props {
   children: ReactNode;
 }
 
-const Resume: React.FC<Props> = ({ children }) => {
+const Resume: React.FC<Props> = ({ children}) => {
+
   return (
     <div id="resumeContainer">
       <div id="headerSection">

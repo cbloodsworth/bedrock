@@ -3,7 +3,7 @@ nav{
     justify-content: space-between;
     align-items: center; 
     width: 100%;
-    margin-bottom: 2%;
+    /* margin-bottom: 2%; */
     padding: 1% 0px;
     background-color: #fae9c8;
     border-bottom: 2px solid gray;
@@ -12,8 +12,8 @@ nav{
 .navbarButton{
     margin-left: 10px;
     margin-right: 10px; 
-    background-color:rgb(107, 156, 219);
     color:white;
+    background-color: rgb(107, 156, 219);
 }
 
 .navbarButton:hover{
