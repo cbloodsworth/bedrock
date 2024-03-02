@@ -61,10 +61,11 @@ def index():
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
-@app.route('/logout')
+@app.route('/logoutGoogle')
 def logout():
     session.pop('google_token', None)
-    return 'Logged out successfully!'
+    redirect_url = "http://127.0.0.1:5173/"
+    return redirect(redirect_url)
 
 @app.route('/login/google/callback')
 def authorized():
@@ -84,7 +85,7 @@ def authorized():
 def get_google_oauth_token():
     return session.get('google_token')
 
-@app.route('/user-info', methods=['GET'])
+@app.route('/userInfo', methods=['GET'])
 def get_user_info():
     access_token = session.get('google_token')[0] if 'google_token' in session else None
     if access_token:

@@ -1,32 +1,51 @@
 import React, { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
-const Navbar: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const handleClick = (action: string) => {
-    console.log(action);
+import { UserInfoProvider, useUserContext } from "../contexts/userContext";
+interface UserInfo {
+  id: string;
+  email: string;
+  verified_email: boolean;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  locale: string;
+}
+interface UserContextType {
+  userInfo: UserInfo | null;
+  logout: () => void;
+}
+const LogButton: React.FC = () => {
+  const userContext: UserContextType | null = useUserContext();
+  const userInfo = userContext?.userInfo;
+  const handleGoogleLogout = () => {
+    console.log(userInfo);
+    userContext?.logout();
+    window.location.href = "http://127.0.0.1:5000/logoutGoogle";
   };
-  useEffect(() => {
-    if (!isLoggedIn) {
-      console.log("Checking if user info is cached in browser...");
-      fetch("http://127.0.0.1:5000/user-info", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            setIsLoggedIn(true);
-          }
-        })
-        .catch((error) =>
-          console.error("Error fetching user information:", error)
-        );
-    }
-  });
+  return (
+    <>
+      <div>
+        {!userInfo?.given_name ? (
+          <Link className="link-item" to="/Login">
+            <button className="navbarButton">Login</button>
+          </Link>
+        ) : (
+          <Link className="link-item" to="/">
+            <button
+              className="navbarButton"
+              onClick={() => handleGoogleLogout()}
+            >
+              Logout
+            </button>
+          </Link>
+        )}
+      </div>
+    </>
+  );
+};
+const Navbar: React.FC = () => {
   return (
     <header style={{ width: "100%" }}>
       <nav>
@@ -39,25 +58,12 @@ const Navbar: React.FC = () => {
           </Link>
           <button className="navbarButton">Button 3</button>
         </div>
-        <div>
-          {!isLoggedIn ? (
-            <Link className="link-item" to="/Login">
-              <button className="navbarButton">Login</button>
-            </Link>
-          ) : (
-            <Link className="link-item" to="/">
-              <button
-                className="navbarButton"
-                onClick={() => setIsLoggedIn(false)}
-              >
-                Logout
-              </button>
-            </Link>
-          )}
-        </div>
+        <UserInfoProvider>
+          <LogButton />
+        </UserInfoProvider>
       </nav>
     </header>
   );
 };
 
-export default memo(Navbar);
+export default Navbar;
