@@ -1,61 +1,55 @@
-import React, {useEffect} from "react"; 
-import { DragDropContext, DropResult } from "react-beautiful-dnd"; 
+import React, { useEffect } from "react";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import DroppableContainer from "../components/DroppableContainer";
-import { Box, Grid } from "grommet"; 
+import { Box, Grid } from "grommet";
 import Resume from "../components/Resume";
-import EntriesContainer from "../components/Entries";
+import ResumeSection from "../components/ResumeSection";
+import SideEntriesContainer from "../components/SideEntriesContainer";
 import Navbar from "../components/Navbar";
-import axios from 'axios';
+import axios from "axios";
 import "../styles/Resumes.css";
-import "../index.css"
+import "../index.css";
 
+import { SectionData as Sections, SectionMap } from "../utility/EntryData";
 
+const resumeData = Object.entries(Sections)
+  .filter(([sectionID, _]) => {
+    return sectionID.includes("REB");
+  })
+  .map(([sectionID, section]) => {
+    return (
+      <ResumeSection
+        header={section.sectionHeader}
+        box={section.entryList}
+        id={sectionID}
+      />
+    );
+  });
 
-import { SectionsArray, EntryData as Entries } from "../utility/EntryData";
-
-const resumeData = [
-  <DroppableContainer
-    header="Education"
-    box={Entries.ResumeEntryBox1 || []}
-    id="ResumeEntryBox1"
-  />,
-  <DroppableContainer
-    header="Experience"
-    box={Entries.ResumeEntryBox2 || []}
-    id="ResumeEntryBox2"
-  />,
-  <DroppableContainer
-    header="Projects"
-    box={Entries.ResumeEntryBox3 || []}
-    id="ResumeEntryBox3"
-  />,
-];
+console.log(resumeData);
 
 const Resumes: React.FC = () => {
-  const [entries, setEntries] = React.useState(Entries);
+  const [sections, setSections] = React.useState(Sections); // NOTE: it is not recommended to call setEntries, use updateEntries instead
   const [resumeChildren, setResumeChildren] =
     React.useState<React.ReactNode[]>(resumeData);
 
-  // Triggers re-render
-  const updateResumeChildren = () => {
+  /* Helper function to update entries and the actual react components they are associated with */
+  const updateSections = (new_sections: SectionMap) => {
+    setSections(new_sections);
     setResumeChildren(
-      resumeChildren.map((child) => {
-        if (React.isValidElement(child) && child.type === DroppableContainer) {
-          const { id } = child.props;
-          const box = (entries as any)[id] || [];
-          return (
-            <DroppableContainer header={child.props.header} box={box} id={id} />
-          );
-        }
-        return child;
+      Object.entries(new_sections).map(([sectionID, section]) => {
+        return sectionID.includes("R") ? (
+          <ResumeSection
+            header={section.sectionHeader}
+            id={sectionID}
+            box={section.entryList}
+          />
+        ) : (
+          <></>
+        );
       })
     );
   };
-
-  //when entries changed, call updateResume
-  React.useEffect(() => {
-    updateResumeChildren();
-  }, [entries]);
 
   const handleDragEnd = (result: DropResult) => {
     var src = result.source;
@@ -70,8 +64,6 @@ const Resumes: React.FC = () => {
     let srcDrop = src.droppableId;
     let destDrop = dest.droppableId;
 
-    console.log(result);
-
     // If we dragged a resume section
     if (result.type === "resumeSectionItem") {
       const updatedResumeChildren = Array.from(resumeChildren);
@@ -81,77 +73,77 @@ const Resumes: React.FC = () => {
     }
     // Otherwise, we might have dragged an entrybox
     else if (result.type === "entryBox") {
-      if (!destDrop.includes("EntryBox")) {
-        const srcArrayCopy = [...entries[srcDrop]];
+      if (!destDrop.includes("EB")) {
+        const srcArrayCopy = [...sections[srcDrop].entryList];
         srcArrayCopy.splice(src.index, 1);
-        setEntries({
-          ...entries,
-          [srcDrop]: srcArrayCopy,
-        });
+        updateSections(sections);
         return;
       }
 
       //stayed in original droppable area
       if (srcDrop === destDrop) {
-        const updatedEntries = { ...entries }; // temp so we don't modify entries directly (is this necessary i wonder?)
+        const updatedSections = { ...sections }; // temp so we don't modify sections directly (is this necessary i wonder?)
 
         // Moves entry from one position in the entrybox to another
-        const [removed] = updatedEntries[srcDrop].splice(src.index, 1); // removes entry
-        updatedEntries[srcDrop].splice(dest.index, 0, removed); // reinserts it at the new spot
+        const [removed] = updatedSections[srcDrop].entryList.splice(
+          src.index,
+          1
+        ); // removes entry
+        updatedSections[srcDrop].entryList.splice(dest.index, 0, removed); // reinserts it at the new spot
 
-        setEntries({ ...updatedEntries });
+        updateSections(updatedSections);
         return;
       }
 
       // Otherwise, it must have moved to new droppable area
-      const srcEntryBox = [...entries[srcDrop]];
-      const destEntryBox = [...entries[destDrop]];
+      const srcEntryBox = [...sections[srcDrop].entryList];
+      const destEntryBox = [...sections[destDrop].entryList];
 
       const [removedItem] = srcEntryBox.splice(src.index, 1); // Remove the entry from the source entry box
       destEntryBox.splice(dest.index, 0, removedItem); // Inserts the removed item into the destination entry box
 
-      const updatedEntries = {
-        ...entries,
-        [srcDrop]: srcEntryBox,
-        [destDrop]: destEntryBox,
-      };
+      // const updatedEntries = {
+      //   ...sections,
+      //   [srcDrop]: srcEntryBox,
+      //   [destDrop]: destEntryBox,
+      // };
 
-      setEntries(updatedEntries);
+      sections[srcDrop].entryList = srcEntryBox;
+      sections[destDrop].entryList = destEntryBox;
+
+      updateSections(sections);
     } else {
       console.log("Warning: Dragging unknown object");
     }
   };
 
   const handleSavePreview = () => {
-    
-    const resumeContainer = document.getElementById('resumeContainerWrapper');
+    const resumeContainer = document.getElementById("resumeContainerWrapper");
     if (!resumeContainer) {
-      console.error('Resume container not found');
+      console.error("Resume container not found");
       return;
     }
-  
+
     // Capture the HTML representation of the entire resume container
     const htmlContent = resumeContainer.outerHTML;
-  
+
     // Send a POST request to the Flask server with the HTML content
-    axios.post('http://localhost:5000/save-preview', { htmlContent })
-      .catch(error => {
-        console.error('Error saving preview:', error);
+    axios
+      .post("http://localhost:5000/save-preview", { htmlContent })
+      .catch((error) => {
+        console.error("Error saving preview:", error);
       });
   };
-  
 
   useEffect(() => {
-    setTimeout(() =>{
-        handleSavePreview();
-    }, 1000)
-  }, []); 
+    setTimeout(() => {
+      handleSavePreview();
+    }, 1000);
+  }, []);
 
-  
   useEffect(() => {
     handleSavePreview();
-  }, [resumeChildren]); 
-  
+  }, [resumeChildren]);
 
   return (
     <>
@@ -163,7 +155,7 @@ const Resumes: React.FC = () => {
               <Resume children={resumeChildren} />
             </Box>
             <Box style={{ width: "100%", right: "0" }}>
-              <EntriesContainer boxes={entries} />
+              <SideEntriesContainer sections={sections} />
             </Box>
           </Grid>
         </DragDropContext>
