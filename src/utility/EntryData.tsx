@@ -18,12 +18,132 @@ export const SectionHeaders = [
 ];
 
 export type SectionMap = {
-  [key: string]: { sectionHeader: string; entryList: EntryStruct[] };
+  [key: string]: Section;
 };
 
-export const SectionData: SectionMap = {
-  REB1: {
+export type Section = {
+  sectionHeader: string;
+  sectionID: string;
+  entryList: EntryStruct[];
+};
+
+// TODO: change name
+export class SectionDataClass {
+  private sectionArray: Section[];
+  public constructor() {
+    this.sectionArray = SECTION_DATA;
+  }
+
+  /**
+   * Retrieves resume-specific sections
+   * @returns Sections that are on the resume
+   */
+  public getResumeSections(): Section[] {
+    return this.sectionArray.filter((elem) => elem.sectionID.includes("R"));
+  }
+
+  /**
+   * Retrieves sidebar-specific sections
+   * @returns Sections that are on the sidebar
+   */
+  public getSidebarSections(): Section[] {
+    return this.sectionArray.filter((elem) => elem.sectionID.includes("S"));
+  }
+
+  /**
+   * Retrieves a section matching an ID.
+   * @param sectionID ID matching the requested section.
+   * @returns An object containing both the index of the section and section itself as {i, elem}.
+   *          Returns undefined if either i or elem cannot be found.
+   */
+  public getSection(
+    sectionID: string
+  ): { i: number; elem: Section } | { i: undefined; elem: undefined } {
+    const sectionTuple = {
+      i: this.sectionArray.findIndex(
+        (section) => section.sectionID === sectionID
+      ),
+      elem: this.sectionArray.find(
+        (section) => section.sectionID === sectionID
+      ),
+    };
+
+    // If could not find section
+    if (typeof sectionTuple.elem === "undefined") {
+      return { i: undefined, elem: undefined };
+    }
+
+    // Linter might not like this...ignore it. it's fine
+    return sectionTuple;
+  }
+
+  /**
+   * Incomplete
+   * @param section Section to insert into the class.
+   * @returns Error code:
+   *                   0: No error, inserted as expected
+   *                   1: Error, duplicate ID
+   */
+  public putSection(section: Section, index?: number): number {
+    if (typeof this.getSection(section.sectionID) === "undefined") {
+      return 1;
+    }
+
+    if (typeof index === "undefined") {
+      // Do insert stuff, but at specific index
+    }
+
+    // Do insert stuff, but at the end of array
+
+    return 0;
+  }
+
+  /**
+   * Swaps two sections given relevant info.
+   * @param srcSectionIndex  From section
+   * @param destSectionIndex To section
+   * @returns Error code:
+   *                   0: No error, swapped as expected
+   *                   1: Error, either srcSectionID or destSectionID is invalid
+   */
+  public moveSections(srcSectionIndex: number, destSectionIndex: number) {
+    const [removed] = this.sectionArray.splice(srcSectionIndex, 1);
+    this.sectionArray.splice(destSectionIndex, 0, removed);
+
+    return 0;
+  }
+
+  /**
+   * Swaps two entries given relevant info.
+   * @param srcSectionID  From section
+   * @param destSectionID To section
+   * @param srcEntryIndex      From what entry
+   * @param destEntryIndex     To what other entry
+   * @returns Error code:
+   *                   0: No error, swapped as expected
+   *                   1: Error, either srcSectionID or destSectionID is invalid
+   */
+  public moveEntries(
+    srcSectionID: string,
+    destSectionID: string,
+    srcEntryIndex: number,
+    destEntryIndex: number
+  ) {
+    const src = this.getSection(srcSectionID).elem;
+    const dest = this.getSection(destSectionID).elem;
+    if (!src || !dest) return 1;
+
+    const [removed] = src.entryList.splice(srcEntryIndex, 1); // removes entry
+    dest.entryList.splice(destEntryIndex, 0, removed); // reinserts it at the new spot
+
+    return 0;
+  }
+}
+
+export const SECTION_DATA: Section[] = [
+  {
     sectionHeader: Sections.Education,
+    sectionID: "REB1",
     entryList: [
       {
         id: "2",
@@ -35,8 +155,9 @@ export const SectionData: SectionMap = {
       },
     ],
   },
-  REB2: {
+  {
     sectionHeader: Sections.Experience,
+    sectionID: "REB2",
     entryList: [
       {
         id: "7",
@@ -63,8 +184,9 @@ export const SectionData: SectionMap = {
       },
     ],
   },
-  REB3: {
+  {
     sectionHeader: Sections.Projects,
+    sectionID: "REB3",
     entryList: [
       {
         id: "10",
@@ -94,12 +216,14 @@ export const SectionData: SectionMap = {
       },
     ],
   },
-  SEB1: {
+  {
     sectionHeader: Sections.Education,
+    sectionID: "SEB1",
     entryList: [],
   },
-  SEB2: {
+  {
     sectionHeader: Sections.Experience,
+    sectionID: "SEB2",
     entryList: [
       {
         id: "13",
@@ -113,8 +237,9 @@ export const SectionData: SectionMap = {
       },
     ],
   },
-  SEB3: {
+  {
     sectionHeader: Sections.Projects,
+    sectionID: "SEB3",
     entryList: [
       {
         id: "3",
@@ -140,4 +265,4 @@ export const SectionData: SectionMap = {
       },
     ],
   },
-};
+];

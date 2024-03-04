@@ -1,11 +1,10 @@
-import { SectionMap } from "../utility/EntryData";
+import { Section } from "../utility/EntryData";
 import DroppableContainer from "./DroppableContainer";
 
-interface SideContainer {
-  sections: SectionMap;
+interface SECProps {
+  sections: Section[];
 }
-
-export default function SideEntriesContainer({ sections }: SideContainer) {
+export default function SideEntriesContainer({ sections }: SECProps) {
   return (
     <div
       id="EntriesWrapper"
@@ -22,21 +21,15 @@ export default function SideEntriesContainer({ sections }: SideContainer) {
         zIndex: 0,
       }}
     >
-      {Object.entries(sections)
-        .filter(([sectionID, _]) => {
-          return sectionID.includes("SEB");
-        })
-        .map(([sectionID, section]) => {
-          return (
-            <DroppableContainer
-              header={section.sectionHeader}
-              box={section.entryList.map((entry) => {
-                return { ...entry, content: [] };
-              })}
-              id={sectionID}
-            />
-          );
-        })}
+      {sections.map((section) => (
+        <DroppableContainer
+          header={section.sectionHeader}
+          box={section.entryList.map((entry) => {
+            return { ...entry, content: [] }; // limit the info that shows up on sidesection box
+          })}
+          id={section.sectionID}
+        />
+      ))}
     </div>
   );
 }

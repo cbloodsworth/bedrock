@@ -10,44 +10,37 @@ import axios from "axios";
 import "../styles/Resumes.css";
 import "../index.css";
 
-import { SectionData as Sections, SectionMap } from "../utility/EntryData";
+import { SectionDataClass } from "../utility/EntryData";
 
-const resumeData = Object.entries(Sections)
-  .filter(([sectionID, _]) => {
-    return sectionID.includes("REB");
-  })
-  .map(([sectionID, section]) => {
-    return (
-      <ResumeSection
-        header={section.sectionHeader}
-        box={section.entryList}
-        id={sectionID}
-      />
-    );
-  });
-
-console.log(resumeData);
+const initialSections = new SectionDataClass();
+const initialResumeNodes = initialSections
+  .getResumeSections()
+  .map((section) => (
+    <ResumeSection
+      header={section.sectionHeader}
+      box={section.entryList}
+      id={section.sectionID}
+    />
+  ));
 
 const Resumes: React.FC = () => {
-  const [sections, setSections] = React.useState(Sections); // NOTE: it is not recommended to call setEntries, use updateEntries instead
-  const [resumeChildren, setResumeChildren] =
-    React.useState<React.ReactNode[]>(resumeData);
+  const [sections, setSections] = React.useState(initialSections);
+  const [resumeNodes, setResumeNodes] =
+    React.useState<React.ReactNode[]>(initialResumeNodes);
 
   /* Helper function to update entries and the actual react components they are associated with */
-  const updateSections = (new_sections: SectionMap) => {
-    setSections(new_sections);
-    setResumeChildren(
-      Object.entries(new_sections).map(([sectionID, section]) => {
-        return sectionID.includes("R") ? (
+  const updateSections = (newSections: SectionDataClass) => {
+    setSections(newSections);
+    setResumeNodes(
+      newSections
+        .getResumeSections()
+        .map((section) => (
           <ResumeSection
             header={section.sectionHeader}
-            id={sectionID}
+            id={section.sectionID}
             box={section.entryList}
           />
-        ) : (
-          <></>
-        );
-      })
+        ))
     );
   };
 
@@ -60,58 +53,21 @@ const Resumes: React.FC = () => {
       return;
     }
 
-    // Refers to EntryBox{x}
-    let srcDrop = src.droppableId;
-    let destDrop = dest.droppableId;
+    // Source and destination ID
+    let srcID = src.droppableId;
+    let destID = dest.droppableId;
 
     // If we dragged a resume section
     if (result.type === "resumeSectionItem") {
-      const updatedResumeChildren = Array.from(resumeChildren);
-      const [removed] = updatedResumeChildren.splice(src.index, 1);
-      updatedResumeChildren.splice(dest.index, 0, removed);
-      setResumeChildren(updatedResumeChildren);
+      sections.moveSections(src.index, dest.index);
+      updateSections(sections);
+      return;
     }
     // Otherwise, we might have dragged an entrybox
     else if (result.type === "entryBox") {
-      if (!destDrop.includes("EB")) {
-        const srcArrayCopy = [...sections[srcDrop].entryList];
-        srcArrayCopy.splice(src.index, 1);
-        updateSections(sections);
-        return;
-      }
-
-      //stayed in original droppable area
-      if (srcDrop === destDrop) {
-        const updatedSections = { ...sections }; // temp so we don't modify sections directly (is this necessary i wonder?)
-
-        // Moves entry from one position in the entrybox to another
-        const [removed] = updatedSections[srcDrop].entryList.splice(
-          src.index,
-          1
-        ); // removes entry
-        updatedSections[srcDrop].entryList.splice(dest.index, 0, removed); // reinserts it at the new spot
-
-        updateSections(updatedSections);
-        return;
-      }
-
-      // Otherwise, it must have moved to new droppable area
-      const srcEntryBox = [...sections[srcDrop].entryList];
-      const destEntryBox = [...sections[destDrop].entryList];
-
-      const [removedItem] = srcEntryBox.splice(src.index, 1); // Remove the entry from the source entry box
-      destEntryBox.splice(dest.index, 0, removedItem); // Inserts the removed item into the destination entry box
-
-      // const updatedEntries = {
-      //   ...sections,
-      //   [srcDrop]: srcEntryBox,
-      //   [destDrop]: destEntryBox,
-      // };
-
-      sections[srcDrop].entryList = srcEntryBox;
-      sections[destDrop].entryList = destEntryBox;
-
+      sections.moveEntries(srcID, destID, src.index, dest.index);
       updateSections(sections);
+      return;
     } else {
       console.log("Warning: Dragging unknown object");
     }
@@ -143,7 +99,7 @@ const Resumes: React.FC = () => {
 
   useEffect(() => {
     handleSavePreview();
-  }, [resumeChildren]);
+  }, [resumeNodes]);
 
   return (
     <>
@@ -152,10 +108,10 @@ const Resumes: React.FC = () => {
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid columns={["78%", "20%"]} gap="2%" style={{ marginLeft: "2%" }}>
             <Box>
-              <Resume children={resumeChildren} />
+              <Resume children={resumeNodes} />
             </Box>
             <Box style={{ width: "100%", right: "0" }}>
-              <SideEntriesContainer sections={sections} />
+              <SideEntriesContainer sections={sections.getSidebarSections()} />
             </Box>
           </Grid>
         </DragDropContext>
