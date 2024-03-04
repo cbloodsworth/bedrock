@@ -1,12 +1,13 @@
 import { Card, CardHeader, CardBody } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
-import '../styles/DroppableContainer.css'
+import "../styles/DroppableContainer.css";
+import { EntryStruct } from "../utility/EntryData";
 
 interface Container {
-  header: string;
-  box: { id: string; header: string; text: string[] }[];
   id: string;
+  header: string;
+  box: EntryStruct[];
 }
 
 export default function DroppableContainer({ header, box, id }: Container) {
@@ -34,9 +35,17 @@ export default function DroppableContainer({ header, box, id }: Container) {
           alignContent: "center",
         }}
       >
-        <span style={{ margin: "0 auto" , backgroundColor:"black", width:"100%", height:"3px"}}></span><br/>
+        <span
+          style={{
+            margin: "0 auto",
+            backgroundColor: "black",
+            width: "100%",
+            height: "3px",
+          }}
+        ></span>
+        <br />
         <Card pad="small" round={false} elevation="none">
-          <StrictModeDroppable droppableId={id}  type="entryBox">
+          <StrictModeDroppable droppableId={id} type="entryBox">
             {(provided, snapshot) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <CardBody
@@ -59,23 +68,29 @@ export default function DroppableContainer({ header, box, id }: Container) {
                           draggable="true"
                           style={{
                             ...provided.draggableProps.style,
-                            background: snapshot.isDraggingOver ? 'rgba(152, 251, 152, 0.35)' : 'transparent',
+                            background: snapshot.isDraggingOver
+                              ? "rgba(152, 251, 152, 0.35)"
+                              : "transparent",
                           }}
                           className="draggableEntryBox"
                         >
-                          {entry.text.length > 0 ? (
+                          {entry.content.length > 0 ? (
                             <>
-                            <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
-                            <ul>
-                              {entry.text.map((textItem, index) => (
-                                <li key={id+index}>{textItem}</li>
-                              ))}
-                            </ul>
+                              <b style={{ color: "rgb(15, 117, 150)" }}>
+                                {entry.header}
+                              </b>
+                              <ul>
+                                {entry.content.map((textItem, index) => (
+                                  <li key={id + index}>{textItem}</li>
+                                ))}
+                              </ul>
                             </>
                           ) : (
                             <ul>
                               <li>
-                              <b style={{color:"rgb(15, 117, 150)"}}>{entry.header}</b>
+                                <b style={{ color: "rgb(15, 117, 150)" }}>
+                                  {entry.header}
+                                </b>
                               </li>
                             </ul>
                           )}
