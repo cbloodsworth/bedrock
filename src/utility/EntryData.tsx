@@ -30,8 +30,10 @@ export type Section = {
 // TODO: change name
 export class SectionDataClass {
   private sectionArray: Section[];
+  private lastError: string;
   public constructor() {
     this.sectionArray = SECTION_DATA;
+    this.lastError = "";
   }
 
   /**
@@ -70,6 +72,7 @@ export class SectionDataClass {
 
     // If could not find section
     if (typeof sectionTuple.elem === "undefined") {
+      this.lastError = `getSection: Could not find section with sectionID: ${sectionID}`;
       return { i: undefined, elem: undefined };
     }
 
@@ -86,6 +89,7 @@ export class SectionDataClass {
    */
   public putSection(section: Section, index?: number): number {
     if (typeof this.getSection(section.sectionID) === "undefined") {
+      this.lastError = "putSection: Duplicate ID";
       return 1;
     }
 
@@ -104,9 +108,33 @@ export class SectionDataClass {
    * @param destSectionIndex To section
    * @returns Error code:
    *                   0: No error, swapped as expected
-   *                   1: Error, either srcSectionID or destSectionID is invalid
+   *                   1: Error, either srcSectionIndex or destSectionIndex is invalid
+   *                   2: Error, no support for moving non-resume sections
    */
   public moveSections(srcSectionIndex: number, destSectionIndex: number) {
+    // Input validation
+    if (
+      // Index should be valid
+      srcSectionIndex < 0 ||
+      destSectionIndex < 0 ||
+      srcSectionIndex >= this.sectionArray.length ||
+      destSectionIndex >= this.sectionArray.length
+    ) {
+      this.lastError =
+        "moveSections: Either srcSectionIndex or destSectionIndex is invalid";
+      return 1;
+    }
+
+    if (
+      // We don't support moving non-resume sections (yet!)
+      !this.sectionArray[srcSectionIndex].sectionID.includes("R") ||
+      !this.sectionArray[destSectionIndex].sectionID.includes("R")
+    ) {
+      this.lastError =
+        "moveSections: No support for moving non-resume sections (yet!)";
+      return 2;
+    }
+
     const [removed] = this.sectionArray.splice(srcSectionIndex, 1);
     this.sectionArray.splice(destSectionIndex, 0, removed);
 
@@ -131,12 +159,19 @@ export class SectionDataClass {
   ) {
     const src = this.getSection(srcSectionID).elem;
     const dest = this.getSection(destSectionID).elem;
-    if (!src || !dest) return 1;
+    if (!src || !dest) {
+      this.lastError = "Either srcSectionID or destSectionID is invalid.";
+      return 1;
+    }
 
     const [removed] = src.entryList.splice(srcEntryIndex, 1); // removes entry
     dest.entryList.splice(destEntryIndex, 0, removed); // reinserts it at the new spot
 
     return 0;
+  }
+
+  public getError() {
+    return "Error: " + this.lastError;
   }
 }
 

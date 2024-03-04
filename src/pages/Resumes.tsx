@@ -59,13 +59,17 @@ const Resumes: React.FC = () => {
 
     // If we dragged a resume section
     if (result.type === "resumeSectionItem") {
-      sections.moveSections(src.index, dest.index);
+      const err = sections.moveSections(src.index, dest.index); // Swap src and dest
+      if (err != 0) console.log(sections.getError()); // If there was an error in moving the sections, log it here
+
       updateSections(sections);
       return;
     }
     // Otherwise, we might have dragged an entrybox
     else if (result.type === "entryBox") {
-      sections.moveEntries(srcID, destID, src.index, dest.index);
+      const err = sections.moveEntries(srcID, destID, src.index, dest.index);
+      if (err != 0) console.log(sections.getError()); // If there was an error in moveEntries, log it here
+
       updateSections(sections);
       return;
     } else {
