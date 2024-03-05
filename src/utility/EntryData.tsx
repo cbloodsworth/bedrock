@@ -56,9 +56,14 @@ export class SectionDataClass {
   public addSection(sectionName: String): number {
     // Check if the section already exists
     Sections[sectionName] = sectionName;
+    const sebSections = SECTION_DATA.filter(section => section.sectionID.startsWith("SEB"));
+    const highestNumber = Math.max(
+      ...sebSections.map(section => parseInt(section.sectionID.replace("SEB", "")))
+    );
+
     SECTION_DATA.push({
-        sectionHeader: sectionName,
-        sectionID: "SEB3",
+        sectionHeader: `${sectionName} SEB_ID: ${highestNumber + 1}`,
+        sectionID: `SEB${highestNumber+1}`,
         entryList: [],
     }
     )
