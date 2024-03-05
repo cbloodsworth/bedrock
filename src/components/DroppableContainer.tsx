@@ -212,7 +212,7 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
                             </b>
                             ) : (
                               <ul>
-                              <li>
+                              <li style={{marginTop: 0, marginBottom: 0 }}>
                               <b style={{ color: "rgb(15, 117, 150)" }}>
                                 {doubleClickStates && doubleClickStates[index] && doubleClickStates[index][0] ? (
                                   <>
@@ -227,7 +227,9 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
                                     }}
                                     onKeyDown={(event) => handleKeyPress(event,index)}
                                     resize={true}
-                                    style={{textWrap: "wrap", whiteSpace: "text-wrap", height:"100%",  border: "none", resize: "none"}}
+                                    style={{textWrap: "wrap", whiteSpace: "text-wrap", height: "auto", border: "none",
+                                      resize: "none", paddingTop: 0, marginTop: 0, lineHeight: "normal", verticalAlign: "middle"
+                                  }}
                                   />
                                   </>
                                 ) : (

@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ResumeSection: React.FC<Props> = ({ id, header, box }) => {
-  return <DroppableContainer id={id} header={header} box={box} />;
+  return <DroppableContainer id={id} header={header} box={box} resumeEntry={true}/>;
 };
 
 export default ResumeSection;
