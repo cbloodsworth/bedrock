@@ -37,12 +37,9 @@ const Navbar: React.FC = () => {
           <Link className="link-item" to="/ResumesFolder">
             <button className="navbarButton">Resumes</button>
           </Link>
-          <button
-            className="navbarButton"
-            onClick={() => (loggedInRef.current = false)}
-          >
-            Button 3
-          </button>
+          <Link className="link-item" to="/UserPage">
+            <button className="navbarButton">User</button>
+          </Link>
         </div>
         <div>
           {loggedInRef.current ? (

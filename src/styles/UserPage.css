@@ -1,0 +1,17 @@
+.boxesWrapper{
+    height: 100%; 
+    margin: 5vh 2vw;
+    display: flex;
+    justify-content: space-between;
+}
+
+.editEntriesWrapper{
+    margin: 5vh 2vw;
+    display: flex;
+    justify-content: space-between;
+}
+.entryBoxWrapper{
+    background-color: red;
+    width: 20%;
+    height: 100%;
+}

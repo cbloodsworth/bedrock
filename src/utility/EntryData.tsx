@@ -5,11 +5,12 @@ export interface EntryStruct {
   content: string[];
 }
 
-enum Sections {
-  Education = "Education",
-  Experience = "Experience",
-  Projects = "Projects",
-}
+
+const Sections = {
+  Education: "Education",
+  Experience: "Experience",
+  Projects: "Projects",
+};
 
 export const SectionHeaders = [
   Sections.Education,
@@ -50,6 +51,18 @@ export class SectionDataClass {
    */
   public getSidebarSections(): Section[] {
     return this.sectionArray.filter((elem) => elem.sectionID.includes("S"));
+  }
+
+  public addSection(sectionName: String): number {
+    // Check if the section already exists
+    Sections[sectionName] = sectionName;
+    SECTION_DATA.push({
+        sectionHeader: sectionName,
+        sectionID: "SEB3",
+        entryList: [],
+    }
+    )
+    return 0; // No error
   }
 
   /**
