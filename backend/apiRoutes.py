@@ -64,7 +64,7 @@ def login():
 @app.route('/logoutGoogle')
 def logout():
     session.pop('google_token', None)
-    redirect_url = "http://127.0.0.1:5173/"
+    redirect_url = "http://0.0.0.0:5173/"
     return redirect(redirect_url)
 
 @app.route('/login/google/callback')
@@ -78,7 +78,7 @@ def authorized():
 
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    redirect_url = "http://127.0.0.1:5173/"
+    redirect_url = "http://0.0.0.0:5173/"
     return redirect(redirect_url)
 
 @google.tokengetter
@@ -116,4 +116,4 @@ def get_user_info_using_access_token(access_token):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
