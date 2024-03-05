@@ -44,8 +44,8 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const newContent = event.target.value;
-    console.log("EDITED HEADERS:", editedHeaders)
-    console.log("NEW CONTENT:", newContent)
+    // console.log("EDITED HEADERS:", editedHeaders)
+    // console.log("NEW CONTENT:", newContent)
     setEditedHeaders((prevContents) => {
       const updatedContents = [...prevContents];
       updatedContents[index] = newContent;
@@ -187,21 +187,28 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
                           className="draggableEntryBox"
                         >
                           {resumeEntry ? (
-                            <b style={{ color: "rgb(15, 117, 150)" }}>
+                            <b>
                             {doubleClickStates && doubleClickStates[index] && doubleClickStates[index][0] ? (
                               <>
                               <TextArea
+                                className="entryTextAreaBox"
                                 value={editedHeaders[index]}
-                                onChange={(event) => handleContentChange(event, index)}
+                                onChange={(e) => {
+                                  handleContentChange(e, index);
+                                  const currHeight = parseInt(e.target.style.height);
+                                  e.target.style.height = `${Math.max(e.target.scrollHeight, currHeight)}px`;
+                                  if(currHeight < parseInt(e.target.style.height)){
+                                    e.target.style.height = `${currHeight + 15}px`;
+                                  }
+                                }}
                                 onBlur={() => handleContentSave(index)}
                                 autoFocus
                                 onFocus={(e) => {
                                   e.target.setSelectionRange(e.target.value.length, e.target.value.length);
-                                  e.target.style.height = `${e.target.scrollHeight}px`;
+                                  e.target.style.height = `${e.target.scrollHeight+10}px`;
                                 }}
                                 onKeyDown={(event) => handleKeyPress(event,index)}
                                 resize={true}
-                                style={{textWrap: "wrap", whiteSpace: "text-wrap", height:"100%",  border: "none", resize: "none"}}
                               />
                               </>
                             ) : (
@@ -212,24 +219,29 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
                             </b>
                             ) : (
                               <ul>
-                              <li style={{marginTop: 0, marginBottom: 0 }}>
+                              <li>
                               <b style={{ color: "rgb(15, 117, 150)" }}>
                                 {doubleClickStates && doubleClickStates[index] && doubleClickStates[index][0] ? (
                                   <>
                                   <TextArea
+                                    className="entryTextAreaBox"
                                     value={editedHeaders[index]}
-                                    onChange={(event) => handleContentChange(event, index)}
+                                    onChange={(e) => {
+                                      handleContentChange(e, index);
+                                      const currHeight = parseInt(e.target.style.height);
+                                      e.target.style.height = `${Math.max(e.target.scrollHeight, currHeight)}px`;
+                                      if(currHeight < parseInt(e.target.style.height)){
+                                        e.target.style.height = `${currHeight + 15}px`;
+                                      }
+                                    }}
                                     onBlur={() => handleContentSave(index)}
                                     autoFocus
                                     onFocus={(e) => {
                                       e.target.setSelectionRange(e.target.value.length, e.target.value.length);
-                                      e.target.style.height = `${e.target.scrollHeight}px`;
+                                      e.target.style.height = `${e.target.scrollHeight + 10}px`;
                                     }}
                                     onKeyDown={(event) => handleKeyPress(event,index)}
                                     resize={true}
-                                    style={{textWrap: "wrap", whiteSpace: "text-wrap", height: "auto", border: "none",
-                                      resize: "none", paddingTop: 0, marginTop: 0, lineHeight: "normal", verticalAlign: "middle"
-                                  }}
                                   />
                                   </>
                                 ) : (
@@ -247,23 +259,24 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
                               <li key={id + itemIndex}>
                                 {doubleClickStates && doubleClickStates[index] && doubleClickStates[index][itemIndex + 1] ? (
                                   <TextArea
+                                    className="entryTextAreaBox"
                                     value={editedContents[index][itemIndex]}
-                                    onChange={(event) => handleContentItemChange(event, index, itemIndex)}
+                                    onChange={(e) => {
+                                      handleContentItemChange(e, index, itemIndex);
+                                      const currHeight = parseInt(e.target.style.height);
+                                      e.target.style.height = `${Math.max(e.target.scrollHeight, currHeight)}px`;
+                                      if(currHeight < parseInt(e.target.style.height)){
+                                        e.target.style.height = `${currHeight + 15}px`;
+                                      }
+                                    }}
                                     onBlur={() => handleContentItemSave(index, itemIndex)}
                                     autoFocus
                                     onFocus={(e) => {
                                       e.target.setSelectionRange(e.target.value.length, e.target.value.length);
-                                      e.target.style.height = `${e.target.scrollHeight}px`;
+                                      e.target.style.height = `${e.target.scrollHeight + 10}px`;
                                     }}
                                     onKeyDown={(event) => handleItemKeyPress(event, index, itemIndex)}
                                     resize={true}
-                                    style={{
-                                      textWrap: "wrap",
-                                      whiteSpace: "text-wrap",
-                                      height: "100%",
-                                      border: "none",
-                                      resize: "none",
-                                    }}
                                   />
                                 ) : (
                                   <div
