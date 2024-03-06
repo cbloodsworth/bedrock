@@ -19,9 +19,8 @@ const Login: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `http://${window.location.hostname}:5173/loginGoogle`;
+    window.location.href = `http://${window.location.hostname}:5000/loginGoogle`;
   };
-
   const handleLinkedinLogin = () => {
     //todo
   };

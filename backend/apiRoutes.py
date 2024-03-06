@@ -57,16 +57,16 @@ def index():
         return 'Logged in as: ' + me.data['email']
     return 'You are not logged in.'
 
-@app.route('/loginGoogle')
-def login():
-    return google.authorize(callback=url_for('authorized', _external=True))
-
 @app.route('/logoutGoogle')
 def logout():
     session.pop('google_token', None)
     host = request.host
-    redirect_url = f'http://{host}:5173/'
+    redirect_url = f'http://localhost:5173/'
     return redirect(redirect_url)
+
+@app.route('/loginGoogle')
+def login():
+    return google.authorize(callback=url_for('authorized', _external=True))
 
 @app.route('/login/google/callback')
 def authorized():
@@ -79,8 +79,7 @@ def authorized():
 
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    host = request.host
-    redirect_url = f'http://{host}:5173/'
+    redirect_url = f'http://localhost:5173/'
     return redirect(redirect_url)
 
 @google.tokengetter
@@ -118,4 +117,4 @@ def get_user_info_using_access_token(access_token):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
