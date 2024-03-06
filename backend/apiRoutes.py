@@ -116,5 +116,4 @@ def get_user_info_using_access_token(access_token):
 #         return response
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+app.run(host='0.0.0.0')
