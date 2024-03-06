@@ -107,14 +107,5 @@ def get_user_info_using_access_token(access_token):
     user_info = user_info_response.data
     return user_info
 
-# @app.route("/backend", methods = ['GET'])
-# def backend_api():
-#     employees = [ { 'basic backend' : 'is working'} ]
-#     if request.method == 'GET':
-#         response = jsonify(employees)
-#         response.headers.add('Access-Control-Allow-Origin', '*')
-#         return response
-
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000)
