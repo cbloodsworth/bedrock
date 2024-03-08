@@ -4,8 +4,10 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: #FED27E;
   background-color: #242424;
+
+  user-select: none;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,16 +26,18 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /*display: flex;*/
   min-width: 320px;
   min-height: 100vh;
+  background-color: rgb(246, 245, 240);
+  color: black;
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
 
 button {
   border-radius: 8px;
@@ -42,7 +46,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: rgb(107, 156, 219);
   cursor: pointer;
   transition: border-color 0.25s;
 }

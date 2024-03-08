@@ -1,0 +1,35 @@
+.draggableEntryBox:hover{
+    background-color: rgba(152, 251, 152, 0.45) !important;
+    cursor: pointer;
+}
+
+.boxContainer:hover{
+    background-color: rgba(38, 194, 233, 0.10);
+}
+
+.boxContainer{
+    width: 100%;
+    height: auto;
+    overflow: auto;
+    background-color: #f0f0f0;
+    align-items: center;
+}
+
+.draggableEntryBox{
+    margin-bottom: 5px;
+    text-align: left;
+    white-space: pre;
+    text-wrap: wrap;
+}
+
+.entryTextAreaBox{
+    text-wrap: wrap;
+    border: none;
+    resize: none;
+    padding-top: 0;
+    margin-top: 0;
+    word-wrap: break-word;
+    vertical-align: middle;
+    overflow-y: none;
+    box-shadow: 5px 5px 5px blue !important;
+}

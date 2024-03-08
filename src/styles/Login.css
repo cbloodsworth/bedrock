@@ -1,0 +1,98 @@
+#loginImage{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+#loginPageContainer{
+    justify-content: center;
+    margin-top: 3%;
+    margin-left: 6%;
+    width: 88%;
+}
+
+#LoginContainer{
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.loginTextArea{
+    height: auto;
+}
+
+#signinButton{
+    background-color: rgb(107, 156, 219);
+    color:white;
+    width: 50%;
+}
+
+
+.signInArea{
+    height: 100%;
+    width:100%;
+}
+
+.signInWrapper{
+    width: 100%;
+    margin-bottom: 2%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.loginAreaText{
+    text-align: left;
+}
+
+.viewPasswordButton{
+    position: absolute;
+    right: 2%;
+}
+
+#buttonWrapper{
+    display: flex;
+    justify-content: center;
+    gap: 4%;
+}
+
+.toggleButtonWrapper{
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border: 2px solid gray;
+    border-radius: 5px;
+}
+
+.toggleButton {
+    background-color: transparent;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+    border-radius: 0px;
+    border: 0 !important;
+}
+
+.toggleButtonText {
+    display: block;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    padding: 3%;
+}
+
+.toggleButton #active {
+    background-color: rgb(107, 156, 219);
+    color: white;
+}
+
+.externalOauthButton{
+    border-color: gray !important;
+}

@@ -1,0 +1,48 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.homepageContainer{
+    height: auto;
+}
+
+#createResumeWrapper{
+    width: 50%;
+}
+
+.createResumeButton {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    width: 60%;
+    background-color: rgb(107, 156, 219);
+}
+
+.createResumeButton:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+#resumeImage{
+    height: auto;
+    width: 100%;
+}
+
+.containerBoxResume{
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
+
+#resumeHomePageContainer{
+    background-color: rgba(223, 182, 189, 0.62);
+}
