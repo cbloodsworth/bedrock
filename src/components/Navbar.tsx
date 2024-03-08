@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 import { UserInfoProvider, useUserContext } from "../contexts/userContext";
@@ -48,31 +48,26 @@ const LogButton: React.FC = () => {
     </>
   );
 };
-  
+
 const Navbar: React.FC = () => {
-// const Navbar: React.FC = () => {
-//   const loggedInRef = useRef(true);
+  const loggedInRef = useRef(true);
 
-//   const handleClick = (action: string) => {
-//     console.log(action);
-//   };
-
-//   useEffect(() => {
-//     fetch("http://127.0.0.1:5000/user-info", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       credentials: "include",
-//     })
-//       .then((response) => response.json())
-//       .then(() => {
-//         loggedInRef.current = true;
-//       })
-//       .catch((error) =>
-//         console.error("Error fetching user information:", error)
-//       );
-//   }, []);
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/user-info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        loggedInRef.current = true;
+      })
+      .catch((error) =>
+        console.error("Error fetching user information:", error)
+      );
+  }, []);
   return (
     <header style={{ width: "100%" }}>
       <nav>
@@ -86,17 +81,6 @@ const Navbar: React.FC = () => {
           <Link className="link-item" to="/UserPage">
             <button className="navbarButton">User</button>
           </Link>
-        </div>
-        <div>
-          {loggedInRef.current ? (
-            <Link className="link-item" to="/Login">
-              <button className="navbarButton">Login</button>
-            </Link>
-          ) : (
-            <Link className="link-item" to="/">
-              <button className="navbarButton">Logout</button>
-            </Link>
-          )}
         </div>
         <UserInfoProvider>
           <LogButton />
