@@ -23,7 +23,6 @@ const LogButton: React.FC = () => {
   const userContext: UserContextType | null = useUserContext();
   const userInfo = userContext?.userInfo;
   const handleGoogleLogout = () => {
-    console.log(userInfo);
     userContext?.logout();
     window.location.href = `http://${window.location.hostname}/api/logoutGoogle`;
   };
@@ -48,31 +47,8 @@ const LogButton: React.FC = () => {
     </>
   );
 };
-  
+
 const Navbar: React.FC = () => {
-// const Navbar: React.FC = () => {
-//   const loggedInRef = useRef(true);
-
-//   const handleClick = (action: string) => {
-//     console.log(action);
-//   };
-
-//   useEffect(() => {
-//     fetch("http://127.0.0.1:5000/user-info", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       credentials: "include",
-//     })
-//       .then((response) => response.json())
-//       .then(() => {
-//         loggedInRef.current = true;
-//       })
-//       .catch((error) =>
-//         console.error("Error fetching user information:", error)
-//       );
-//   }, []);
   return (
     <header style={{ width: "100%" }}>
       <nav>
