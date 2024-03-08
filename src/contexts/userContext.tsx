@@ -40,7 +40,6 @@ export const UserInfoProvider: React.FC<UserInfoProviderProps> = ({
         credentials: "include",
       });
       data = await response.json();
-      console.log(data);
       setUserInfo(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
