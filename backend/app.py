@@ -79,7 +79,7 @@ def authorized():
 
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    redirect_url = f'http://localhost:5173/'
+    redirect_url = f'https://dyna-cv.com'
     return redirect(redirect_url)
 
 @google.tokengetter
