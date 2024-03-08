@@ -61,7 +61,7 @@ def index():
 def logout():
     session.pop('google_token', None)
     host = request.host
-    redirect_url = f'http://localhost:5173/'
+    redirect_url = f'https://dyna-cv.com'
     return redirect(redirect_url)
 
 @app.route('/api/loginGoogle')
