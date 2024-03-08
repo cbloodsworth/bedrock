@@ -57,7 +57,7 @@ def index():
         return 'Logged in as: ' + me.data['email']
     return 'You are not logged in.'
 
-@app.route('/logoutGoogle')
+@app.route('api/logoutGoogle')
 def logout():
     session.pop('google_token', None)
     host = request.host
@@ -68,7 +68,7 @@ def logout():
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
-@app.route('/login/google/callback')
+@app.route('api/login/google/callback')
 def authorized():
     resp = google.authorized_response()
     if resp is None or resp.get('access_token') is None:
@@ -86,7 +86,7 @@ def authorized():
 def get_google_oauth_token():
     return session.get('google_token')
 
-@app.route('/userInfo', methods=['GET'])
+@app.route('api/userInfo', methods=['GET'])
 def get_user_info():
     access_token = session.get('google_token')[0] if 'google_token' in session else None
     if access_token:
