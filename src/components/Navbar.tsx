@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 import { UserInfoProvider, useUserContext } from "../contexts/userContext";
+
 interface UserInfo {
   id: string;
   email: string;
@@ -12,10 +13,12 @@ interface UserInfo {
   picture: string;
   locale: string;
 }
+
 interface UserContextType {
   userInfo: UserInfo | null;
   logout: () => void;
 }
+
 const LogButton: React.FC = () => {
   const userContext: UserContextType | null = useUserContext();
   const userInfo = userContext?.userInfo;
@@ -45,7 +48,31 @@ const LogButton: React.FC = () => {
     </>
   );
 };
+  
 const Navbar: React.FC = () => {
+// const Navbar: React.FC = () => {
+//   const loggedInRef = useRef(true);
+
+//   const handleClick = (action: string) => {
+//     console.log(action);
+//   };
+
+//   useEffect(() => {
+//     fetch("http://127.0.0.1:5000/user-info", {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       credentials: "include",
+//     })
+//       .then((response) => response.json())
+//       .then(() => {
+//         loggedInRef.current = true;
+//       })
+//       .catch((error) =>
+//         console.error("Error fetching user information:", error)
+//       );
+//   }, []);
   return (
     <header style={{ width: "100%" }}>
       <nav>
@@ -53,7 +80,7 @@ const Navbar: React.FC = () => {
           <Link className="link-item" to="/">
             <button className="navbarButton">Home</button>
           </Link>
-          <Link className="link-item" to="/Resumes">
+          <Link className="link-item" to="/ResumesFolder">
             <button className="navbarButton">Resumes</button>
           </Link>
           <button className="navbarButton">Button 3</button>

@@ -23,6 +23,7 @@ interface UserInfo {
   picture: string;
   locale: string;
 }
+
 interface UserContextType {
   userInfo: UserInfo | null;
   logout: () => void;
@@ -36,6 +37,7 @@ const UserGreeting: React.FC = () => {
     <h2>&nbsp;</h2>
   );
 };
+
 const Homepage: React.FC = () => {
   return (
     <>
@@ -48,7 +50,7 @@ const Homepage: React.FC = () => {
         <Grid columns={["50%", "50%"]} gap="none" style={{ height: "100%" }}>
           <Box className="containerBoxResume">
             <h2>Begin Making Your Resume Here</h2>
-            <Link to="/Resumes" className="createResumeButton">
+            <Link to="/ResumesFolder/Resume" className="createResumeButton">
               Create your Resume
             </Link>
           </Box>
