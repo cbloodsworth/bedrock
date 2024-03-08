@@ -22,7 +22,7 @@ const LogButton: React.FC = () => {
   const handleGoogleLogout = () => {
     console.log(userInfo);
     userContext?.logout();
-    window.location.href = `http://${window.location.hostname}/logoutGoogle`;
+    window.location.href = `http://${window.location.hostname}/api/logoutGoogle`;
   };
   return (
     <>
