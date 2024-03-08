@@ -10,20 +10,23 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
+  const [isLoginMode, setIsLoginMode] = useState(true);
+  const toggleMode = () => {
+    setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
+  }
+//   const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
   
-  const toggleMode = (toLoginMode : boolean) => {
-    setIsLoginMode(toLoginMode); 
-  };
+//   const toggleMode = (toLoginMode : boolean) => {
+//     setIsLoginMode(toLoginMode); 
+//   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://127.0.0.1:5000/loginGoogle";
+    window.location.href = `https://${window.location.hostname}/api/loginGoogle`;
   };
-
   const handleLinkedinLogin = () => {
     //todo
   };
