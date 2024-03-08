@@ -32,7 +32,7 @@ export const UserInfoProvider: React.FC<UserInfoProviderProps> = ({
   const fetchUserInfo = async () => {
     let data = JSON.parse(localStorage.getItem("userInfo") || "null");
     try {
-      const response = await fetch("http://localhost/api/userInfo", {
+      const response = await fetch("/api/userInfo", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

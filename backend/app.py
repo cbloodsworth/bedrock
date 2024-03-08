@@ -68,7 +68,7 @@ def logout():
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
-@app.route('/login/google/callback')
+@app.route('/api/login/google/callback')
 def authorized():
     resp = google.authorized_response()
     if resp is None or resp.get('access_token') is None:
