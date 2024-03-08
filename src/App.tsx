@@ -1,9 +1,9 @@
-import React from 'react' // { useState }
+import React, { useState } from "react";
 import {
     BrowserRouter as Router,
     Routes,
     Route,
-    // Link
+    Link
 } from 'react-router-dom';
 
 
@@ -23,7 +23,7 @@ const App: React.FC = () => {
         <Route path="/ResumesFolder" element={<ResumesFolder />} />
       </Routes>
     </Router>
-  )
-}
+  );
+};
 
-export default App
+export default App;

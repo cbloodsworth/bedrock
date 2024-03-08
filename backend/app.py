@@ -50,23 +50,25 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-@app.route('/')
+@app.route('/api')
 def index():
     if 'google_token' in session:
         me = google.get('userinfo')
         return 'Logged in as: ' + me.data['email']
     return 'You are not logged in.'
 
-@app.route('/loginGoogle')
+@app.route('/api/logoutGoogle')
+def logout():
+    session.pop('google_token', None)
+    host = request.host
+    redirect_url = f'https://dyna-cv.com'
+    return redirect(redirect_url)
+
+@app.route('/api/loginGoogle')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
-@app.route('/logout')
-def logout():
-    session.pop('google_token', None)
-    return 'Logged out successfully!'
-
-@app.route('/login/google/callback')
+@app.route('/api/login/google/callback')
 def authorized():
     resp = google.authorized_response()
     if resp is None or resp.get('access_token') is None:
@@ -77,14 +79,14 @@ def authorized():
 
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    redirect_url = "http://127.0.0.1:5173/"
+    redirect_url = f'https://dyna-cv.com'
     return redirect(redirect_url)
 
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
 
-@app.route('/user-info', methods=['GET'])
+@app.route('/api/userInfo', methods=['GET'])
 def get_user_info():
     access_token = session.get('google_token')[0] if 'google_token' in session else None
     if access_token:
@@ -105,14 +107,5 @@ def get_user_info_using_access_token(access_token):
     user_info = user_info_response.data
     return user_info
 
-# @app.route("/backend", methods = ['GET'])
-# def backend_api():
-#     employees = [ { 'basic backend' : 'is working'} ]
-#     if request.method == 'GET':
-#         response = jsonify(employees)
-#         response.headers.add('Access-Control-Allow-Origin', '*')
-#         return response
-
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
