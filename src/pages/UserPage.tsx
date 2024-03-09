@@ -1,47 +1,119 @@
 import Navbar from "../components/Navbar";
-import { Grid, Box } from "grommet";
-import SideEntriesContainer from "../components/SideEntriesContainer";
-import { SectionDataClass } from "../utility/EntryData";
+import {AllDataClass } from "../utility/AllEntryData";
 import React, { useEffect } from "react";
+import ResumeSection from "../components/ResumeSection";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import Resume from "../components/Resume";
 
 import "../styles/UserPage.css"
-const initialSections = new SectionDataClass();
+const initialSections = new AllDataClass();
+
+const allSections = initialSections.getSections();
+
+interface SectionMap {
+    [header: string]: {
+      sectionHeader: string;
+      entryList: any[]; 
+    };
+  }
+
+
+  const sectionMap = allSections.reduce((acc: SectionMap, section) => {
+    const header = section.sectionHeader;
+    if (!acc[header]) {
+      acc[header] = {
+        sectionHeader: header,
+        entryList: [],
+      };
+    }
+    acc[header].entryList.push(...section.entryList);
+    return acc;
+  }, {} as SectionMap);
+
+const entries = Object.values(sectionMap).map((section) => (
+  <ResumeSection
+    header={section.sectionHeader}
+    box={section.entryList}
+    id={section.sectionHeader}
+    editEntry={true}
+  />
+));
+
 
 const UserPage = () => {
     const [sections, setSections] = React.useState(initialSections);
+    const [allEntries, setAllEntries] = React.useState<React.ReactNode[]>(entries)
+
+    const updateSections = (newSections: AllDataClass) => {
+        setSections(newSections);
+        setAllEntries(
+          newSections
+            .getSections()
+            .map((section) => (
+              <ResumeSection
+                header={section.sectionHeader}
+                id={section.sectionHeader}
+                box={section.entryList}
+              />
+            ))
+        );
+      };
 
     const handleDragEnd = (result: DropResult) => {
-        var src = result.source;
-        var dest = result.destination;
-
+        const src = result.source;
+        const dest = result.destination;
+    
         if (!dest) {
-        //not in any droppable area
-        return;
+            // Not in any droppable area
+            return;
         }
+    
+        // Source and destination IDs
+        const srcID = src.droppableId;
+        const destID = dest.droppableId;
+    
+        // If we dragged a resume section
+    if (result.type === "resumeSectionItem") {
+        // const err = sections.moveSections(src.index, dest.index)
+        // if (err != 0) console.log(sections.getError())
+        updateSections(sections)
 
-        // Source and destination ID
-        let srcID = src.droppableId;
-        let destID = dest.droppableId;
-        setSections(() => {  //not properly updating otherwise idk why
-            const newSections = new SectionDataClass();
-    
-            const err = newSections.moveEntries(srcID, destID, src.index, dest.index);
-            if (err !== 0) console.log(newSections.getError());
-    
-            return newSections;
-        });
         return;
-    }
-
+      }
+      // Otherwise, we might have dragged an entrybox
+      else if (result.type === "entryBox") {
+        const err = sections.moveEntries(srcID, destID, src.index, dest.index);
+        if (err != 0) console.log(sections.getError()); // If there was an error in moveEntries, log it here
+  
+        updateSections(sections);
+        return;
+      } else {
+        console.log("Warning: Dragging unknown object");
+      }
+    };
+    
     const addNewSection = () => {
-        setSections(() => {
-            const newSections = new SectionDataClass();
-            const err = newSections.addSection("New");
-            if (err !== 0) console.log(newSections.getError());
-            return newSections;
-        })
-    }
+        setAllEntries(prevEntries => {
+            const newSections = new AllDataClass();
+            newSections.addSection("New");
+    
+            const updatedSections = newSections.getSections(); // Assuming getSections returns the updated sections
+    
+            if (updatedSections) {
+                return updatedSections.map((section, index) => (
+                    <ResumeSection
+                        key={section.sectionHeader + index}
+                        header={section.sectionHeader}
+                        box={section.entryList}
+                        id={section.sectionHeader}
+                    />
+                ));
+            } else {
+                return prevEntries;
+            }
+        });
+    };
+
 
     return(
         <>
@@ -50,12 +122,10 @@ const UserPage = () => {
                 <button className='newSection' onClick={addNewSection}>Add New Section</button>
                 <button className='newSection'>Add New Entry</button>
             </div>
-            <div className="boxesWrapper">
+            <div className="resumeGrid">
                 <DragDropContext onDragEnd={handleDragEnd}>
-                    {sections.getSidebarSections().map((section, index) => (
-                        <Box key={index} className="entryBoxWrapper">
-                            <SideEntriesContainer sections={[section]} />
-                        </Box>
+                {allEntries.map((section, index) => (
+                        <Resume key={index} children={section} editEntry={true}/>
                     ))}
                 </DragDropContext>
             </div>

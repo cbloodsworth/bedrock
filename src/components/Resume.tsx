@@ -5,14 +5,19 @@ import "../styles/Resume.css";
 
 interface Props {
   children: ReactNode;
+  title?: string;
+  editEntry? : boolean;
 }
 
-const Resume: React.FC<Props> = ({ children }) => {
+
+const Resume: React.FC<Props> = ({ children, title, editEntry }) => {
   return (
-    <div id="resumeContainer">
-      <div id="headerSection">
-        <h3>Esteban's Resume</h3>
-      </div>
+    <div id="resumeContainer" style={{height: "100%"}}>
+      {title && (
+        <div id="headerSection">
+          <h3>{title}</h3>
+        </div>
+      )}
 
       <StrictModeDroppable
         droppableId="resumeSectionContainer"
@@ -22,29 +27,35 @@ const Resume: React.FC<Props> = ({ children }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: "100%" }}
           >
-            {" "}
             {React.Children.map(children, (child, index) =>
               React.isValidElement(child) ? (
-                <Draggable
-                  draggableId={`draggable-${index}`}
-                  key={`draggable-${index}`}
-                  index={index}
-                >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className="resumeSectionContainer"
-                    >
-                      {React.cloneElement(child, {
-                        key: `child-${index}`,
-                      })}
-                    </div>
-                  )}
-                </Draggable>
+                editEntry ? (
+                  <div
+                    key={`child-${index}`}
+                    className="resumeSectionContainer"
+                  >
+                    {React.cloneElement(child, {editEntry : true})}
+                  </div>
+                ) : (
+                  <Draggable
+                    draggableId={`draggable-${index}`}
+                    key={`draggable-${index}`}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className="resumeSectionContainer"
+                      >
+                        {child}
+                      </div>
+                    )}
+                  </Draggable>
+                )
               ) : null
             )}
             {provided.placeholder}
@@ -54,5 +65,6 @@ const Resume: React.FC<Props> = ({ children }) => {
     </div>
   );
 };
+
 
 export default Resume;

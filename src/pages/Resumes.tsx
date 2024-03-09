@@ -111,7 +111,7 @@ const Resumes: React.FC = () => {
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid columns={["78%", "20%"]} gap="2%" style={{ marginLeft: "2%" }}>
             <Box>
-              <Resume children={resumeNodes} />
+              <Resume children={resumeNodes} title="Estebans Resume" />
             </Box>
             <Box style={{ width: "100%", right: "0" }}>
               <SideEntriesContainer sections={sections.getSidebarSections()} />

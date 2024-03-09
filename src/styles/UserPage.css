@@ -1,9 +1,9 @@
-.boxesWrapper{
-    height: 100%; 
-    margin: 5vh 2vw;
-    display: flex;
-    justify-content: space-between;
-}
+.resumeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr)); 
+    grid-gap: 5%; 
+    margin: 5vw 2vh;
+  }
 
 .editEntriesWrapper{
     margin: 5vh 2vw;

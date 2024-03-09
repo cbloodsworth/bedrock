@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Grid, Box, Card, CardHeader, TextInput, Button } from "grommet";
-import { Hide, View, Google, Linkedin } from "grommet-icons";
+import { Hide, View, Google, Github } from "grommet-icons";
 import loginImage from "../../src/assets/login.jpg";
 import "../styles/Login.css";
 
@@ -27,7 +27,8 @@ const Login: React.FC = () => {
   const handleGoogleLogin = () => {
     window.location.href = `https://${window.location.hostname}/api/loginGoogle`;
   };
-  const handleLinkedinLogin = () => {
+
+  const handleGithubLogin = () => {
     //todo
   };
 
@@ -161,10 +162,10 @@ const Login: React.FC = () => {
                     onClick={handleGoogleLogin}
                   />
                   <Button
-                    icon={<Linkedin color="plain" />}
-                    label="LinkedIn"
+                    icon={<Github color="plain" />}
+                    label="Github"
                     className="externalOauthButton"
-                    onClick={handleLinkedinLogin}
+                    onClick={handleGithubLogin}
                   />
                 </div>
               </div>

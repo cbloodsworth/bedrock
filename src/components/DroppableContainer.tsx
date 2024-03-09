@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, TextArea } from "grommet";
 import { Draggable } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "./StrictModeDroppable";
@@ -10,9 +10,10 @@ interface Container {
   header: string;
   box: EntryStruct[];
   resumeEntry: boolean;
+  editEntry?: boolean;
 }
 
-export default function DroppableContainer({header, box , id, resumeEntry }: Container) {
+export default function DroppableContainer({header, box , id, resumeEntry, editEntry }: Container) {
     const getInitialClick = () => {
       const initialDoubleClickStates: boolean[][] = [];
       for (let i = 0; i < box.length; i++) {
@@ -24,6 +25,11 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
     const [doubleClickStates, setDoubleClickStates] = useState<boolean[][]>(
       getInitialClick()
     );
+
+    useEffect(() => {
+      setDoubleClickStates(getInitialClick());
+    }, []);
+
 
   const getInitialHeaders = () => {
     return box.map((entry) => entry.header);
@@ -44,8 +50,6 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     const newContent = event.target.value;
-    // console.log("EDITED HEADERS:", editedHeaders)
-    // console.log("NEW CONTENT:", newContent)
     setEditedHeaders((prevContents) => {
       const updatedContents = [...prevContents];
       updatedContents[index] = newContent;
@@ -117,11 +121,36 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
   const handleItemDoubleClick = (index : number, itemIndex : number) => {
     setEditedContents(getInitialEditedContents());
     setDoubleClickStates((prevStates) => {
-      const updatedStates = [...prevStates];
-      updatedStates[index][itemIndex+1] = true;
-      return updatedStates;
+      try {
+        const updatedStates = [...prevStates];
+        updatedStates[index][itemIndex + 1] = true;
+        return updatedStates;
+      } catch (error) {
+        console.error('Error occurred while updating double click states:', doubleClickStates);
+        return prevStates; 
+      }
     });
   }
+
+  const [newHeader, setNewHeader] = React.useState(header);
+  const [headerClickState, setHeaderClickState] = React.useState(false);
+
+  const handleHeaderDoubleClick = () => {
+    setHeaderClickState(!headerClickState);
+  }
+  const handleHeaderChange = (event: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    const newHeader = event.target.value;
+    setNewHeader(()=> {
+      return newHeader;
+    });
+  };
+
+  const handleHeaderKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>, index: number) => {
+    if (event.key === "Enter" || event.key === "Escape") {
+      event.preventDefault();
+      setHeaderClickState(false);
+    }
+  };
 
   return (
     <Card
@@ -138,7 +167,19 @@ export default function DroppableContainer({header, box , id, resumeEntry }: Con
           fontWeight: "600",
         }}
       >
-        {header}
+        {editEntry && headerClickState ? (
+          <TextArea
+            className="entryTextAreaBox"
+            value={newHeader}
+            onChange={(e) => handleHeaderChange(e, 0)}
+            onBlur={() => setDoubleClickStates(getInitialClick())}
+            autoFocus
+            onKeyDown={(event) => handleHeaderKeyPress(event, 0)}
+            resize={true}
+          />
+        ) : (
+          <div onDoubleClick={() => handleHeaderDoubleClick()}>{newHeader}</div>
+        )}
       </CardHeader>
       <CardBody
         style={{
