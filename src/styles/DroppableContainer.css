@@ -13,6 +13,7 @@
     overflow: auto;
     background-color: #f0f0f0;
     align-items: center;
+    position: relative;
 }
 
 .draggableEntryBox{
@@ -32,4 +33,21 @@
     vertical-align: middle;
     overflow-y: none;
     box-shadow: 5px 5px 5px blue !important;
+}
+
+
+.addEntryButton{
+    width: 100%;
+}
+
+.removeListItemButton{
+    position: absolute;
+    left: 0;
+    margin-left: 5px;
+    width: 15px;
+    height: 20px; 
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

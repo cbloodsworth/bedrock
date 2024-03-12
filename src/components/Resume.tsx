@@ -7,12 +7,13 @@ interface Props {
   children: ReactNode;
   title?: string;
   editEntry? : boolean;
+  id? : string,
 }
 
 
-const Resume: React.FC<Props> = ({ children, title, editEntry }) => {
+const Resume: React.FC<Props> = ({ children, title, editEntry, id }) => {
   return (
-    <div id="resumeContainer" style={{height: "100%"}}>
+    <div className="resumeContainer" id={id} style={{height: "100%"}}>
       {title && (
         <div id="headerSection">
           <h3>{title}</h3>

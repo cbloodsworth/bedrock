@@ -125,6 +125,31 @@ export interface EntryStruct {
         return "Error: " + this.lastError;
       }
 
+    public addDefaultEntry() {
+      const section = this.getSection("Uncategorized");
+      const defaultEntry = {
+        id: `${this.findNextAvailableId()}`, 
+        section: "Uncategorized",
+        header: "Header here",
+        content: ["Text Here"],
+      };
+      section.elem?.entryList.push(defaultEntry);
+    }
+
+    private findNextAvailableId(): string {
+      let maxId = 0;
+      ALL_DATA.forEach(section => {
+        section.entryList.forEach(entry => {
+          const idNumber = parseInt(entry.id);
+          if (!isNaN(idNumber) && idNumber > maxId) {
+            maxId = idNumber;
+          }
+        });
+      });
+      return (maxId + 1).toString();
+    }
+
+
 }
   
   export const ALL_DATA: Section[] = [
@@ -232,5 +257,9 @@ export interface EntryStruct {
         },
       ],
     },
+    {
+      sectionHeader: "Uncategorized",
+      entryList: [],
+    }
   ];
   

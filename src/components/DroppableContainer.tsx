@@ -152,6 +152,22 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
     }
   };
 
+  const removeListItem = (entry: EntryStruct, itemIndex: number) => {
+    entry.content.splice(itemIndex, 1);
+    setEditedContents((prevStates) => {
+      const updatedStates = [...prevStates];
+      return updatedStates;
+    });
+  };
+
+  const addNewListItem = (entry : EntryStruct) => {
+    entry.content.push("Text Here");
+    setEditedContents((prevContents) => {
+      const updatedContents = [...prevContents];
+      return updatedContents;
+    });
+  }
+
   return (
     <Card
       className="boxContainer"
@@ -167,7 +183,7 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
           fontWeight: "600",
         }}
       >
-        {editEntry && headerClickState ? (
+        {editEntry && newHeader !== "Uncategorized" && headerClickState ? (
           <TextArea
             className="entryTextAreaBox"
             value={newHeader}
@@ -289,7 +305,8 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
                                   <div onClick={() => handleDoubleClick(index)}>
                                     {entry.header}
                                   </div>
-                                )}
+                                )
+                                }
                               </b>
                               </li>
                             </ul>
@@ -298,6 +315,7 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
                             <ul>
                             {entry.content.map((textItem, itemIndex) => (
                               <li key={id + itemIndex}>
+                                {editEntry && (<button onClick={() => removeListItem(entry, itemIndex)} className="removeListItemButton">-</button>)}
                                 {doubleClickStates && doubleClickStates[index] && doubleClickStates[index][itemIndex + 1] ? (
                                   <TextArea
                                     className="entryTextAreaBox"
@@ -330,6 +348,7 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
                             ))}
                           </ul>
                           )}
+                          {editEntry && (<button onClick={() => addNewListItem(entry)} className = "addEntryButton">New Bullet Point</button>)}
                         </div>
                       )}
                     </Draggable>

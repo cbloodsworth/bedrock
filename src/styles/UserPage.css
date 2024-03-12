@@ -3,6 +3,8 @@
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr)); 
     grid-gap: 5%; 
     margin: 5vw 2vh;
+    height: 100%;
+    padding-bottom: 5%;
   }
 
 .editEntriesWrapper{

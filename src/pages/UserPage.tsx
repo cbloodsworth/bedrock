@@ -30,7 +30,9 @@ interface SectionMap {
     return acc;
   }, {} as SectionMap);
 
-const entries = Object.values(sectionMap).map((section) => (
+const entries = Object.values(sectionMap)
+.filter(section => !(section.sectionHeader === "Uncategorized" && section.entryList.length === 0))
+.map((section) => (
   <ResumeSection
     header={section.sectionHeader}
     box={section.entryList}
@@ -49,6 +51,7 @@ const UserPage = () => {
         setAllEntries(
           newSections
             .getSections()
+            .filter(section => !(section.sectionHeader === "Uncategorized" && section.entryList.length === 0))
             .map((section) => (
               <ResumeSection
                 header={section.sectionHeader}
@@ -92,6 +95,27 @@ const UserPage = () => {
       }
     };
     
+    const addNewEntry = () => {
+      setAllEntries(() => {
+        const currSections = new AllDataClass();
+        currSections.addDefaultEntry();
+        const updatedSections = currSections.getSections();
+        const uncategorizedSection = document.getElementById("Uncategorized");
+        if (uncategorizedSection) {
+          window.scrollTo(0, uncategorizedSection.getBoundingClientRect().top + window.scrollY +  uncategorizedSection.scrollHeight);
+          // uncategorizedSection.scrollIntoView({block : "end"})
+        }
+        
+        return updatedSections.map((section, index) => (
+          <ResumeSection
+              key={section.sectionHeader + index}
+              header={section.sectionHeader}
+              box={section.entryList}
+              id={section.sectionHeader}
+          />
+      ));
+      })
+    }
     const addNewSection = () => {
         setAllEntries(prevEntries => {
             const newSections = new AllDataClass();
@@ -100,7 +124,9 @@ const UserPage = () => {
             const updatedSections = newSections.getSections(); // Assuming getSections returns the updated sections
     
             if (updatedSections) {
-                return updatedSections.map((section, index) => (
+                return updatedSections
+                .filter(section => !(section.sectionHeader === "Uncategorized" && section.entryList.length === 0))
+                .map((section, index) => (
                     <ResumeSection
                         key={section.sectionHeader + index}
                         header={section.sectionHeader}
@@ -120,13 +146,23 @@ const UserPage = () => {
             <Navbar />
             <div className="editEntriesWrapper">
                 <button className='newSection' onClick={addNewSection}>Add New Section</button>
-                <button className='newSection'>Add New Entry</button>
+                <button className='newSection'onClick={addNewEntry}>Add New Entry</button>
             </div>
             <div className="resumeGrid">
                 <DragDropContext onDragEnd={handleDragEnd}>
-                {allEntries.map((section, index) => (
-                        <Resume key={index} children={section} editEntry={true}/>
-                    ))}
+                {allEntries.map((section, index) => {
+    if (React.isValidElement(section)) {
+        return (
+              <Resume
+                  key={index}
+                  children={section}
+                  editEntry={true}
+                  id={String(section.props.header)}
+              />
+          );
+        }
+        return null;
+    })}
                 </DragDropContext>
             </div>
         </>
