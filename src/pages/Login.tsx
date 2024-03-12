@@ -40,7 +40,7 @@ const Login: React.FC = () => {
           columns={["40%", "60%"]}
           gap="none"
           alignContent="center"
-          style={{ height: "100%" }}
+          style={{ height: "100%", marginBottom: "5%" }}
         >
           <Box className="containerBoxResume">
             <Card
@@ -64,7 +64,7 @@ const Login: React.FC = () => {
                     alignContent="center"
                     style={{ height: "100%" }}
                   >
-                    <button onClick={() => toggleMode(true)} className="toggleButton">
+                    <button onClick={() => toggleMode()} className="toggleButton">
                       <span
                         className="toggleButtonText"
                         id={isLoginMode ? "active" : ""}
@@ -72,7 +72,7 @@ const Login: React.FC = () => {
                         Login
                       </span>
                     </button>
-                    <button onClick={() => toggleMode(false)} className="toggleButton">
+                    <button onClick={() => toggleMode()} className="toggleButton">
                       <span
                         className="toggleButtonText"
                         id={!isLoginMode ? "active" : ""}
