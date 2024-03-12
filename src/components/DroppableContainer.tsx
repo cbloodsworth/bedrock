@@ -312,7 +312,7 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
                             </ul>
                             )}
                           {entry.content.length > 0 && (
-                            <ul>
+                            <ul style={{position: "relative"}}>
                             {entry.content.map((textItem, itemIndex) => (
                               <li key={id + itemIndex}>
                                 {editEntry && (<button onClick={() => removeListItem(entry, itemIndex)} className="removeListItemButton">-</button>)}
@@ -348,7 +348,7 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
                             ))}
                           </ul>
                           )}
-                          {editEntry && (<button onClick={() => addNewListItem(entry)} className = "addEntryButton">New Bullet Point</button>)}
+                          {editEntry && (<button onClick={() => addNewListItem(entry)} className = "addEntryButton">+</button>)}
                         </div>
                       )}
                     </Draggable>
