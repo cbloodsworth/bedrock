@@ -6,26 +6,52 @@ import loginImage from "../../src/assets/login.jpg";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {
-    const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const toggleMode = () => {
-    setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
-  }
-//   const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
-  
-//   const toggleMode = (toLoginMode : boolean) => {
-//     setIsLoginMode(toLoginMode); 
-//   };
+
+  const handleSignIn = () => {
+    fetch("/api/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.href = `https://${window.location.hostname}/`;
+        } else {
+          console.log("User Pass Login Failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  // const toggleMode = () => {
+  //   setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
+  // }
+  //   const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
+
+  const toggleMode = (toLoginMode: boolean) => {
+    setIsLoginMode(toLoginMode);
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `https://${window.location.hostname}/api/loginGoogle`;
+    const API_BASE_URL =
+      process.env.NODE_ENV === "production"
+        ? `https://${window.location.hostname}`
+        : "http://localhost:5000";
+    // window.location.href = ;
+    window.location.href = `${API_BASE_URL}/api/loginGoogle`;
   };
   const handleLinkedinLogin = () => {
     //todo
@@ -63,7 +89,10 @@ const Login: React.FC = () => {
                     alignContent="center"
                     style={{ height: "100%" }}
                   >
-                    <button onClick={() => toggleMode(true)} className="toggleButton">
+                    <button
+                      onClick={() => toggleMode(true)}
+                      className="toggleButton"
+                    >
                       <span
                         className="toggleButtonText"
                         id={isLoginMode ? "active" : ""}
@@ -71,7 +100,10 @@ const Login: React.FC = () => {
                         Login
                       </span>
                     </button>
-                    <button onClick={() => toggleMode(false)} className="toggleButton">
+                    <button
+                      onClick={() => toggleMode(false)}
+                      className="toggleButton"
+                    >
                       <span
                         className="toggleButtonText"
                         id={!isLoginMode ? "active" : ""}
@@ -88,6 +120,8 @@ const Login: React.FC = () => {
                   className="signInArea"
                   placeholder="Email or Username"
                   id="usernameLogin"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
                 />
               </div>
               <div className="signInWrapper">
@@ -146,7 +180,7 @@ const Login: React.FC = () => {
                 )}
               </div>
               <div className="signInWrapper">
-                <button id="signinButton">
+                <button id="signinButton" onClick={handleSignIn}>
                   {isLoginMode ? "Sign in" : "Sign up"}
                 </button>
               </div>
