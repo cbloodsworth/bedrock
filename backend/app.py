@@ -3,26 +3,58 @@ import os
 from flask import Flask, jsonify, request, redirect, url_for, session
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_oauthlib.client import OAuth
 from sqlalchemy import text 
 from dotenv import load_dotenv  
 
 load_dotenv()
 
-app = Flask(__name__)
+db = SQLAlchemy()
+login_manager = LoginManager()
+
+# User entry
+class Users(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(250), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+    google_id = db.Column(db.String(250), unique=True)
+
+def create_app(test_config=None):
+    # Create and configure the app
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        SECRET_KEY=os.getenv('SECRET_KEY'),
+        SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL'),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False
+    )
+
+    if test_config is None:
+        # Load the instance config, if it exists, when not testing
+        app.config.from_pyfile('config.py', silent=True)
+    else:
+        # Load the test config if passed in
+        app.config.from_mapping(test_config)
+
+    # Ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
+
+    # Initialize extensions with app
+    db.init_app(app)
+    login_manager.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+app = create_app()
 CORS(app, supports_credentials=True)
 
-app.secret_key = os.getenv('SECRET_KEY')
-
-# Database 
-database_uri = os.getenv('DATABASE_URL')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
-@app.route('/dbConnect')
+@app.route('/api/dbConnect')
 def dbConnection():
     try:
         query = text("SELECT 1")
@@ -32,10 +64,36 @@ def dbConnection():
         return f"Database connection error: {str(e)}"
 
 
-# Authentication
-
+# Google Authentication
 oauth = OAuth(app)
 
+@login_manager.user_loader
+def loader_user(user_id):
+    return Users.query.get(user_id)
+ 
+ 
+@app.route('/api/register', methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        user = Users(username=request.form.get("username"),
+                     password=request.form.get("password"))
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for("login"))
+ 
+# @app.route("/api/login", methods=["GET", "POST"])
+# def login():
+#     if request.method == "POST":
+#         user = Users.query.filter_by(
+#             username=request.form.get("username")).first()
+#         if user.password == request.form.get("password"):
+#             login_user(user)
+#             return redirect(url_for("home"))
+ 
+# @app.route("/api/logout")
+# def logout():
+#     logout_user()
+ 
 google = oauth.remote_app(
     'google',
     consumer_key=os.getenv('GOOGLE_CLIENT_ID'),
@@ -61,7 +119,7 @@ def index():
 def logout():
     session.pop('google_token', None)
     host = request.host
-    redirect_url = f'https://dyna-cv.com'
+    redirect_url = host
     return redirect(redirect_url)
 
 @app.route('/api/loginGoogle')
@@ -79,7 +137,7 @@ def authorized():
 
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    redirect_url = f'https://dyna-cv.com'
+    redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
     return redirect(redirect_url)
 
 @google.tokengetter
