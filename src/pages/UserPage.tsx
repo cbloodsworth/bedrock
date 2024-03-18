@@ -122,7 +122,10 @@ const UserPage = () => {
             newSections.addSection("New");
     
             const updatedSections = newSections.getSections(); // Assuming getSections returns the updated sections
-    
+            window.scrollTo({
+              top: document.documentElement.scrollHeight,
+              behavior: 'smooth',
+            });
             if (updatedSections) {
                 return updatedSections
                 .filter(section => !(section.sectionHeader === "Uncategorized" && section.entryList.length === 0))
@@ -158,6 +161,7 @@ const UserPage = () => {
                   children={section}
                   editEntry={true}
                   id={String(section.props.header)}
+                  addNewEntry={addNewEntry}
               />
           );
         }

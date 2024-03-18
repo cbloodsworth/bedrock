@@ -1,6 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { StrictModeDroppable } from "./StrictModeDroppable";
 import { Draggable } from "react-beautiful-dnd";
+import { TextArea } from "grommet";
 import "../styles/Resume.css";
 
 interface Props {
@@ -12,11 +13,61 @@ interface Props {
 
 
 const Resume: React.FC<Props> = ({ children, title, editEntry, id }) => {
+  const [editTitle, setEditTitle] = useState(false);
+  const [newTitle, setNewTitle] = useState(title);
+
+  const handleTitleDoubleClick =  () =>{
+    setEditTitle(true);
+  }
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewTitle(event.target.value);
+  }
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' || event.key === 'Escape') {
+      event.preventDefault();
+      setEditTitle(false); 
+    }
+  }
+
+  // const handleAddNewEntry = () => {
+  //   if(addNewEntry){
+  //     addNewEntry();
+  //   }
+  // }
+
+
   return (
     <div className="resumeContainer" id={id} style={{height: "100%"}}>
       {title && (
         <div id="headerSection">
-          <h3>{title}</h3>
+          {editTitle ? (
+            <TextArea
+            className="TitleTextArea"
+            value={newTitle}
+            onChange={(e) => {
+              handleTitleChange(e);
+              const currHeight = parseInt(e.target.style.height);
+              e.target.style.height = `${Math.max(e.target.scrollHeight, currHeight)}px`;
+              if(currHeight < parseInt(e.target.style.height)){
+                e.target.style.height = `${currHeight + 15}px`;
+              }
+            }}
+            onBlur={() => setEditTitle(false)}
+            autoFocus
+            onFocus={(e) => {
+              e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+              e.target.style.height = `${e.target.scrollHeight + 10}px`;
+            }}
+            onKeyDown={(event) => handleKeyPress(event)}
+            resize={true}
+            />
+          ) : 
+            (
+            <h3 style={{cursor: 'pointer'}} onDoubleClick={handleTitleDoubleClick}>{newTitle}</h3>
+            )
+          }
         </div>
       )}
 
@@ -63,6 +114,7 @@ const Resume: React.FC<Props> = ({ children, title, editEntry, id }) => {
           </div>
         )}
       </StrictModeDroppable>
+      {/* {editEntry && (<button className='newSection'onClick={handleAddNewEntry}>Add New Entry</button>)} */}
     </div>
   );
 };
