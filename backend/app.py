@@ -85,6 +85,9 @@ def register():
         data = request.json
         userN = data.get('username')
         passW = data.get('password')
+        print(userN)
+        if (userN == ""):
+            return jsonify({"error": "email not valid"}), 400
         try:
         # Validate the username as an email address
             valid = validate_email(userN)

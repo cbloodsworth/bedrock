@@ -13,11 +13,18 @@ const Login: React.FC = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [passMatch, setPassMatch] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
+  const [validPassword, setValidPassword] = useState(true);
   // const toggleMode = () => {
   //   setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
   // }
   //   const [isLoginMode, setIsLoginMode] = useState(true); // State to track the mode (login or sign up)
+  const validatePassword = (password: string) => {
+    // Regex pattern for password validation
+    const regex = /^(?=.*[A-Z])(?=.*[\W_])(.{10,})$/;
 
+    // Check if the password matches the pattern
+    return regex.test(password);
+  };
   const toggleMode = (toLoginMode: boolean) => {
     setIsLoginMode(toLoginMode);
   };
@@ -49,9 +56,13 @@ const Login: React.FC = () => {
           console.error("Error:", error);
         });
     } else {
+      setPassMatch(true);
+      setValidPassword(true);
       if (password !== confirmPassword) {
         setPassMatch(false);
-        return;
+      }
+      if (!validatePassword(password)) {
+        setValidPassword(false);
       }
       fetch(`${API_BASE_URL}/api/register`, {
         method: "POST",
@@ -147,7 +158,7 @@ const Login: React.FC = () => {
                 </div>
               </CardHeader>
               <div className="signInWrapper">
-                <p>Username or Email</p>
+                <p>Email</p>
                 {!validEmail ? (
                   <>
                     <TextInput
@@ -162,7 +173,7 @@ const Login: React.FC = () => {
                       value={username}
                       onChange={(event) => setUsername(event.target.value)}
                     />
-                    <p style={{ color: "red" }}>
+                    <p style={{ color: "red", margin: 0 }}>
                       Please enter a valid email address
                     </p>
                   </>
@@ -177,9 +188,9 @@ const Login: React.FC = () => {
                 )}
               </div>
               <div className="signInWrapper">
-                {!isLoginMode && (
+                {!isLoginMode ? (
                   <>
-                    {!passMatch ? (
+                    {!passMatch || !validPassword ? (
                       <>
                         <p>Password</p>
                         <Box
@@ -241,7 +252,23 @@ const Login: React.FC = () => {
                             onClick={togglePasswordVisibility}
                           />
                         </Box>
-                        <p style={{ color: "red" }}> Passwords do not match </p>
+                        {!passMatch ? (
+                          <p style={{ color: "red" }}>
+                            {" "}
+                            Passwords do not match{" "}
+                          </p>
+                        ) : (
+                          <></>
+                        )}
+                        {!validPassword ? (
+                          <p style={{ color: "red" }}>
+                            {" "}
+                            Password must be atleast 10 characters long, include
+                            one capital letter, and one special character.{" "}
+                          </p>
+                        ) : (
+                          <></>
+                        )}
                       </>
                     ) : (
                       <>
@@ -299,6 +326,36 @@ const Login: React.FC = () => {
                         </Box>
                       </>
                     )}
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <p>Password</p>
+                    <Box
+                      direction="row"
+                      align="center"
+                      gap="none"
+                      id="passwordArea"
+                      style={{
+                        position: "relative",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      <TextInput
+                        className="signInArea"
+                        id="passwordLogin"
+                        placeholder="Enter password here"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                      />
+                      <Button
+                        className="viewPasswordButton"
+                        plain
+                        icon={showPassword ? <Hide /> : <View />}
+                        onClick={togglePasswordVisibility}
+                      />
+                    </Box>
                   </>
                 )}
               </div>
