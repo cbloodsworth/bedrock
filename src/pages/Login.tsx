@@ -11,27 +11,8 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoginMode, setIsLoginMode] = useState(true);
-
-  const handleSignIn = () => {
-    fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          window.location.href = `https://${window.location.hostname}/`;
-        } else {
-          console.log("User Pass Login Failed");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
+  const [passMatch, setPassMatch] = useState(true);
+  const [validEmail, setValidEmail] = useState(true);
   // const toggleMode = () => {
   //   setIsLoginMode(!isLoginMode); // Toggle the mode between login and sign up
   // }
@@ -43,6 +24,57 @@ const Login: React.FC = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleSignIn = () => {
+    const API_BASE_URL =
+      process.env.NODE_ENV === "production" ? `` : "http://localhost:5000";
+    if (isLoginMode) {
+      fetch(`${API_BASE_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href = `https://${window.location.hostname}/`;
+          } else {
+            console.log("User Pass Login Failed");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      if (password !== confirmPassword) {
+        setPassMatch(false);
+        return;
+      }
+      fetch(`${API_BASE_URL}/api/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            window.location.href = `https://${window.location.hostname}/`;
+          } else {
+            if (data.error == "email not valid") {
+              setValidEmail(false);
+            }
+            console.log("User Pass Register Failed");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -116,66 +148,157 @@ const Login: React.FC = () => {
               </CardHeader>
               <div className="signInWrapper">
                 <p>Username or Email</p>
-                <TextInput
-                  className="signInArea"
-                  placeholder="Email or Username"
-                  id="usernameLogin"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                />
-              </div>
-              <div className="signInWrapper">
-                <p>Password</p>
-                <Box
-                  direction="row"
-                  align="center"
-                  gap="none"
-                  id="passwordArea"
-                  style={{ position: "relative" }}
-                >
+                {!validEmail ? (
+                  <>
+                    <TextInput
+                      className="signInArea"
+                      placeholder="Email"
+                      id="usernameLogin"
+                      style={{
+                        background: "#FADBD8",
+                        border: "1px solid red",
+                        borderRadius: "5px",
+                      }}
+                      value={username}
+                      onChange={(event) => setUsername(event.target.value)}
+                    />
+                    <p style={{ color: "red" }}>
+                      Please enter a valid email address
+                    </p>
+                  </>
+                ) : (
                   <TextInput
                     className="signInArea"
-                    id="passwordLogin"
-                    placeholder="Enter password here"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Email or Username"
+                    id="usernameLogin"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
                   />
-                  <Button
-                    className="viewPasswordButton"
-                    plain
-                    icon={showPassword ? <Hide /> : <View />}
-                    onClick={togglePasswordVisibility}
-                  />
-                </Box>
-
+                )}
+              </div>
+              <div className="signInWrapper">
                 {!isLoginMode && (
                   <>
-                    <p>Confirm your password</p>
-                    <Box
-                      direction="row"
-                      align="center"
-                      gap="none"
-                      id="confirmPasswordArea"
-                      style={{ position: "relative" }}
-                    >
-                      <TextInput
-                        className="signInArea"
-                        id="confirmPasswordLogin"
-                        placeholder="Confirm password here"
-                        type={showPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(event) =>
-                          setConfirmPassword(event.target.value)
-                        }
-                      />
-                      <Button
-                        className="viewPasswordButton"
-                        plain
-                        icon={showPassword ? <Hide /> : <View />}
-                        onClick={togglePasswordVisibility}
-                      />
-                    </Box>
+                    {!passMatch ? (
+                      <>
+                        <p>Password</p>
+                        <Box
+                          direction="row"
+                          align="center"
+                          gap="none"
+                          id="passwordArea"
+                          style={{
+                            position: "relative",
+                            background: "#FADBD8",
+                            border: "1px solid red",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <TextInput
+                            className="signInArea"
+                            id="passwordLogin"
+                            placeholder="Enter password here"
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(event) =>
+                              setPassword(event.target.value)
+                            }
+                          />
+                          <Button
+                            className="viewPasswordButton"
+                            plain
+                            icon={showPassword ? <Hide /> : <View />}
+                            onClick={togglePasswordVisibility}
+                          />
+                        </Box>
+                        <p>Confirm your password</p>
+                        <Box
+                          direction="row"
+                          align="center"
+                          gap="none"
+                          id="confirmPasswordArea"
+                          style={{
+                            position: "relative",
+                            background: "#FADBD8",
+                            border: "1px solid red",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <TextInput
+                            className="signInArea"
+                            id="confirmPasswordLogin"
+                            placeholder="Confirm password here"
+                            type={showPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(event) =>
+                              setConfirmPassword(event.target.value)
+                            }
+                          />
+                          <Button
+                            className="viewPasswordButton"
+                            plain
+                            icon={showPassword ? <Hide /> : <View />}
+                            onClick={togglePasswordVisibility}
+                          />
+                        </Box>
+                        <p style={{ color: "red" }}> Passwords do not match </p>
+                      </>
+                    ) : (
+                      <>
+                        <p>Password</p>
+                        <Box
+                          direction="row"
+                          align="center"
+                          gap="none"
+                          id="passwordArea"
+                          style={{ position: "relative" }}
+                        >
+                          <TextInput
+                            className="signInArea"
+                            id="passwordLogin"
+                            placeholder="Enter password here"
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(event) =>
+                              setPassword(event.target.value)
+                            }
+                          />
+                          <Button
+                            className="viewPasswordButton"
+                            plain
+                            icon={showPassword ? <Hide /> : <View />}
+                            onClick={togglePasswordVisibility}
+                          />
+                        </Box>
+                        <p>Confirm your password</p>
+                        <Box
+                          direction="row"
+                          align="center"
+                          gap="none"
+                          id="confirmPasswordArea"
+                          style={{
+                            position: "relative",
+                          }}
+                        >
+                          <TextInput
+                            className="signInArea"
+                            id="confirmPasswordLogin"
+                            placeholder="Confirm password here"
+                            type={showPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(event) =>
+                              setConfirmPassword(event.target.value)
+                            }
+                          />
+                          <Button
+                            className="viewPasswordButton"
+                            plain
+                            icon={showPassword ? <Hide /> : <View />}
+                            onClick={togglePasswordVisibility}
+                          />
+                        </Box>
+                      </>
+                    )}
                   </>
                 )}
               </div>

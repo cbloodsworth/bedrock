@@ -7,18 +7,26 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_oauthlib.client import OAuth
 from sqlalchemy import text 
 from dotenv import load_dotenv  
+from flask_bcrypt import Bcrypt
+from email_validator import validate_email, EmailNotValidError
 
 load_dotenv()
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 
+bcrypt = Bcrypt()
+
 # User entry
 class Users(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, primary_key=True, unique=True)
     username = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     google_id = db.Column(db.String(250), unique=True)
+    github_id = db.Column(db.String(250), unique=True)
+
+def hash_password(password):
+    return bcrypt.generate_password_hash(password).decode('utf-8')
 
 def create_app(test_config=None):
     # Create and configure the app
@@ -71,24 +79,44 @@ oauth = OAuth(app)
 def loader_user(user_id):
     return Users.query.get(user_id)
  
- 
 @app.route('/api/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        user = Users(username=request.form.get("username"),
-                     password=request.form.get("password"))
+        data = request.json
+        userN = data.get('username')
+        passW = data.get('password')
+        try:
+        # Validate the username as an email address
+            valid = validate_email(userN)
+        except EmailNotValidError as e:
+        # If the username is not a valid email address, return an error response
+            return jsonify({"error": "email not valid"}), 400
+        hashed_password = hash_password(passW)
+
+        user = Users(username = userN,
+                     password= hashed_password )
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for("login"))
+        redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
+        return redirect(redirect_url)
  
-# @app.route("/api/login", methods=["GET", "POST"])
-# def login():
-#     if request.method == "POST":
-#         user = Users.query.filter_by(
-#             username=request.form.get("username")).first()
-#         if user.password == request.form.get("password"):
-#             login_user(user)
-#             return redirect(url_for("home"))
+@app.route("/api/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        data = request.json
+        userN = data.get('username')
+        passW = data.get('password')
+        user = Users.query.filter_by(username=userN).first()
+        if user:
+        # Check if the provided password matches the hashed password in the database
+            hashed_password = hash_password(passW)
+            if bcrypt.check_password_hash(user.password, hashed_password):
+                login_user(user)
+                redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
+                return redirect(redirect_url)
+    
+    # If the user doesn't exist or the password is incorrect, return an appropriate response
+    return jsonify({"message": "Invalid username or password"}), 401
  
 # @app.route("/api/logout")
 # def logout():
@@ -123,7 +151,7 @@ def logout():
     return redirect(redirect_url)
 
 @app.route('/api/loginGoogle')
-def login():
+def loginGoogle():
     return google.authorize(callback=url_for('authorized', _external=True))
 
 @app.route('/api/login/google/callback')
