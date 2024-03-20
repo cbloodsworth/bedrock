@@ -30,18 +30,22 @@ export const UserInfoProvider: React.FC<UserInfoProviderProps> = ({
     localStorage.removeItem("userInfo");
   };
   const fetchUserInfo = async () => {
+    const API_BASE_URL =
+      process.env.NODE_ENV === "production" ? `` : "http://localhost:5000";
     let data = JSON.parse(localStorage.getItem("userInfo") || "null");
     try {
-      const response = await fetch("/api/userInfo", {
+      const response = await fetch(`${API_BASE_URL}/api/userInfo`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
       });
-      data = await response.json();
-      setUserInfo(data);
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      if (response.ok) {
+        data = await response.json();
+        setUserInfo(data);
+        localStorage.setItem("userInfo", JSON.stringify(data));
+      }
     } catch (error) {
       console.error("Error fetching user information:", error);
     }
