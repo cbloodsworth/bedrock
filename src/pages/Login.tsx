@@ -188,166 +188,70 @@ const Login: React.FC = () => {
                 )}
               </div>
               <div className="signInWrapper">
-                {!isLoginMode ? (
+                <p>Password</p>
+                <Box
+                  direction="row"
+                  align="center"
+                  gap="none"
+                  id="passwordArea"
+                  style={
+                    (!passMatch || !validPassword) && !isLoginMode
+                      ? {
+                          position: "relative",
+                          background: "#FADBD8",
+                          border: "1px solid red",
+                          borderRadius: "5px",
+                        }
+                      : {
+                          position: "relative",
+                        }
+                  }
+                >
+                  <TextInput
+                    className="signInArea"
+                    id="passwordLogin"
+                    placeholder="Enter password here"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                  />
+                  <Button
+                    className="viewPasswordButton"
+                    plain
+                    icon={showPassword ? <Hide /> : <View />}
+                    onClick={togglePasswordVisibility}
+                  />
+                </Box>
+                {!isLoginMode && (
                   <>
-                    {!passMatch || !validPassword ? (
-                      <>
-                        <p>Password</p>
-                        <Box
-                          direction="row"
-                          align="center"
-                          gap="none"
-                          id="passwordArea"
-                          style={{
-                            position: "relative",
-                            background: "#FADBD8",
-                            border: "1px solid red",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <TextInput
-                            className="signInArea"
-                            id="passwordLogin"
-                            placeholder="Enter password here"
-                            type={showPassword ? "text" : "password"}
-                            value={password}
-                            onChange={(event) =>
-                              setPassword(event.target.value)
-                            }
-                          />
-                          <Button
-                            className="viewPasswordButton"
-                            plain
-                            icon={showPassword ? <Hide /> : <View />}
-                            onClick={togglePasswordVisibility}
-                          />
-                        </Box>
-                        <p>Confirm your password</p>
-                        <Box
-                          direction="row"
-                          align="center"
-                          gap="none"
-                          id="confirmPasswordArea"
-                          style={{
-                            position: "relative",
-                            background: "#FADBD8",
-                            border: "1px solid red",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <TextInput
-                            className="signInArea"
-                            id="confirmPasswordLogin"
-                            placeholder="Confirm password here"
-                            type={showPassword ? "text" : "password"}
-                            value={confirmPassword}
-                            onChange={(event) =>
-                              setConfirmPassword(event.target.value)
-                            }
-                          />
-                          <Button
-                            className="viewPasswordButton"
-                            plain
-                            icon={showPassword ? <Hide /> : <View />}
-                            onClick={togglePasswordVisibility}
-                          />
-                        </Box>
-                        {!passMatch ? (
-                          <p style={{ color: "red" }}>
-                            {" "}
-                            Passwords do not match{" "}
-                          </p>
-                        ) : (
-                          <></>
-                        )}
-                        {!validPassword ? (
-                          <p style={{ color: "red" }}>
-                            {" "}
-                            Password must be atleast 10 characters long, include
-                            one capital letter, and one special character.{" "}
-                          </p>
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <p>Password</p>
-                        <Box
-                          direction="row"
-                          align="center"
-                          gap="none"
-                          id="passwordArea"
-                          style={{ position: "relative" }}
-                        >
-                          <TextInput
-                            className="signInArea"
-                            id="passwordLogin"
-                            placeholder="Enter password here"
-                            type={showPassword ? "text" : "password"}
-                            value={password}
-                            onChange={(event) =>
-                              setPassword(event.target.value)
-                            }
-                          />
-                          <Button
-                            className="viewPasswordButton"
-                            plain
-                            icon={showPassword ? <Hide /> : <View />}
-                            onClick={togglePasswordVisibility}
-                          />
-                        </Box>
-                        <p>Confirm your password</p>
-                        <Box
-                          direction="row"
-                          align="center"
-                          gap="none"
-                          id="confirmPasswordArea"
-                          style={{
-                            position: "relative",
-                          }}
-                        >
-                          <TextInput
-                            className="signInArea"
-                            id="confirmPasswordLogin"
-                            placeholder="Confirm password here"
-                            type={showPassword ? "text" : "password"}
-                            value={confirmPassword}
-                            onChange={(event) =>
-                              setConfirmPassword(event.target.value)
-                            }
-                          />
-                          <Button
-                            className="viewPasswordButton"
-                            plain
-                            icon={showPassword ? <Hide /> : <View />}
-                            onClick={togglePasswordVisibility}
-                          />
-                        </Box>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <p>Password</p>
+                    <p>Confirm your password</p>
                     <Box
                       direction="row"
                       align="center"
                       gap="none"
-                      id="passwordArea"
-                      style={{
-                        position: "relative",
-                        borderRadius: "5px",
-                      }}
+                      id="confirmPasswordArea"
+                      style={
+                        !passMatch || !validPassword
+                          ? {
+                              position: "relative",
+                              background: "#FADBD8",
+                              border: "1px solid red",
+                              borderRadius: "5px",
+                            }
+                          : {
+                              position: "relative",
+                            }
+                      }
                     >
                       <TextInput
                         className="signInArea"
-                        id="passwordLogin"
-                        placeholder="Enter password here"
+                        id="confirmPasswordLogin"
+                        placeholder="Confirm password here"
                         type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        value={confirmPassword}
+                        onChange={(event) =>
+                          setConfirmPassword(event.target.value)
+                        }
                       />
                       <Button
                         className="viewPasswordButton"
@@ -356,6 +260,20 @@ const Login: React.FC = () => {
                         onClick={togglePasswordVisibility}
                       />
                     </Box>
+                    {!passMatch ? (
+                      <p style={{ color: "red" }}> Passwords do not match </p>
+                    ) : (
+                      <></>
+                    )}
+                    {!validPassword ? (
+                      <p style={{ color: "red" }}>
+                        {" "}
+                        Password must be atleast 10 characters long, include one
+                        capital letter, and one special character.{" "}
+                      </p>
+                    ) : (
+                      <></>
+                    )}
                   </>
                 )}
               </div>
