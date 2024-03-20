@@ -10,20 +10,12 @@ from dotenv import load_dotenv
 from flask_bcrypt import Bcrypt
 from email_validator import validate_email, EmailNotValidError
 
+from database import db
+from models import *
+
 load_dotenv()
-
-db = SQLAlchemy()
 login_manager = LoginManager()
-
 bcrypt = Bcrypt()
-
-# User entry
-class Users(UserMixin, db.Model):
-    user_id = db.Column(db.Integer, primary_key=True, unique=True)
-    username = db.Column(db.String(250), unique=True, nullable=False)
-    password = db.Column(db.String(250), nullable=False)
-    google_id = db.Column(db.String(250), unique=True)
-    github_id = db.Column(db.String(250), unique=True)
 
 def hash_password(password):
     return bcrypt.generate_password_hash(password).decode('utf-8')

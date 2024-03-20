@@ -1,4 +1,7 @@
-class Users(UserMixin, db.Model):
+from database import db
+from flask_login import UserMixin
+
+class User(UserMixin, db.Model):
     # Keys
     user_id = db.Column(db.Integer, primary_key=True, unique=True)
 
@@ -7,6 +10,10 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.String(250), nullable=False)
     google_id = db.Column(db.String(250), unique=True)
     github_id = db.Column(db.String(250), unique=True)
+
+    # Relationships (one-to-many)
+    resumes = db.relationship('Resume', backref='user', lazy=True)
+
 
 class Resume(db.Model):
     # Keys
@@ -37,7 +44,7 @@ class Entry(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('section.section_id'))
     
     # Other attributes
-    title = db.Column(db.String)
+    title = db.Column(db.String(250))
     order_number = db.Column(db.Integer)
 
     # Relationships (one-to-many)
