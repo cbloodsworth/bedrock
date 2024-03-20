@@ -1,0 +1,44 @@
+from app import db
+
+class Resume(db.Model):
+    # Keys
+    resume_id = db.Column(db.Integer, unique=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    # Relationships (one-to-many)
+    sections = db.relationship('Section', backref='resume', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f'<Resume {self.id} (user_id: {self.user_id})>'
+
+class Section(db.Model):
+    # Keys
+    section_id = db.Column(db.Integer, unique=True, primary_key=True)
+    resume_id = db.Column(db.Integer, db.ForeignKey('resume.resume_id'))
+
+    # Other attributes
+    title = db.Column(db.String)
+    order_number = db.Column(db.Integer)
+
+    # Relationships (one-to-many)
+    entries = db.relationship('Entry', backref='section', cascade='all, delete-orphan')
+
+class Entry(db.Model):
+    # Keys
+    entry_id = db.Column(db.Integer, unique=True, primary_key=True)
+    section_id = db.Column(db.Integer, db.ForeignKey('section.section_id'))
+    
+    # Other attributes
+    title = db.Column(db.String)
+    order_number = db.Column(db.Integer)
+
+    # Relationships (one-to-many)
+    bullets = db.relationship('BulletPoint', backref='entry', cascade='all, delete-orphan')
+
+class BulletPoint(db.Model):
+    # Keys
+    bulletpoint_id = db.Column(db.Integer, unique=True, primary_key=True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entry.entry_id'))
+
+    # Other attributes
+    content = db.Column(db.Text)
