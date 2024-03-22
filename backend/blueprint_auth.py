@@ -87,8 +87,7 @@ google = OAuth(auth_api).remote_app(
 @auth_api.route('/logoutGoogle')
 def logout():
     session.pop('google_token', None)
-    host = request.host
-    redirect_url = host
+    redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
     return redirect(redirect_url)
 
 @auth_api.route('/loginGoogle')
