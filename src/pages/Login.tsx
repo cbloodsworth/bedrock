@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navbar from "../components/Navbar";
 import { Grid, Box, Card, CardHeader, TextInput, Button } from "grommet";
-import { Hide, View, Google, Linkedin } from "grommet-icons";
+import { Hide, View, Google, Github } from "grommet-icons";
 import loginImage from "../../src/assets/login.jpg";
 import "../styles/Login.css";
 
@@ -96,7 +96,8 @@ const Login: React.FC = () => {
     // window.location.href = ;
     window.location.href = `${API_BASE_URL}/api/loginGoogle`;
   };
-  const handleLinkedinLogin = () => {
+
+  const handleGithubLogin = () => {
     //todo
   };
 
@@ -108,7 +109,7 @@ const Login: React.FC = () => {
           columns={["40%", "60%"]}
           gap="none"
           alignContent="center"
-          style={{ height: "100%" }}
+          style={{ height: "100%", marginBottom: "5%" }}
         >
           <Box className="containerBoxResume">
             <Card
@@ -132,10 +133,7 @@ const Login: React.FC = () => {
                     alignContent="center"
                     style={{ height: "100%" }}
                   >
-                    <button
-                      onClick={() => toggleMode(true)}
-                      className="toggleButton"
-                    >
+                    <button onClick={() => toggleMode(true)} className="toggleButton">
                       <span
                         className="toggleButtonText"
                         id={isLoginMode ? "active" : ""}
@@ -143,10 +141,7 @@ const Login: React.FC = () => {
                         Login
                       </span>
                     </button>
-                    <button
-                      onClick={() => toggleMode(false)}
-                      className="toggleButton"
-                    >
+                    <button onClick={() => toggleMode(false)} className="toggleButton">
                       <span
                         className="toggleButtonText"
                         id={!isLoginMode ? "active" : ""}
@@ -293,10 +288,10 @@ const Login: React.FC = () => {
                     onClick={handleGoogleLogin}
                   />
                   <Button
-                    icon={<Linkedin color="plain" />}
-                    label="LinkedIn"
+                    icon={<Github color="plain" />}
+                    label="Github"
                     className="externalOauthButton"
-                    onClick={handleLinkedinLogin}
+                    onClick={handleGithubLogin}
                   />
                 </div>
               </div>

@@ -28,6 +28,7 @@ export default function SideEntriesContainer({ sections }: SECProps) {
             return { ...entry, content: [] }; // limit the info that shows up on sidesection box
           })}
           id={section.sectionID}
+          resumeEntry={false}
         />
       ))}
     </div>
