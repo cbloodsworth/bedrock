@@ -34,7 +34,7 @@ export const UserInfoProvider: React.FC<UserInfoProviderProps> = ({
       process.env.NODE_ENV === "production" ? `` : "http://localhost:5000";
     let data = JSON.parse(localStorage.getItem("userInfo") || "null");
     try {
-      const response = await fetch(`${API_BASE_URL}/api/userInfo`, {
+      const response = await fetch(`${API_BASE_URL}/auth/userInfo`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

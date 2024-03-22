@@ -28,7 +28,7 @@ const LogButton: React.FC = () => {
       process.env.NODE_ENV === "production"
         ? `https://${window.location.hostname}`
         : "http://localhost:5000";
-    window.location.href = `${API_BASE_URL}/api/logoutGoogle`;
+    window.location.href = `${API_BASE_URL}/auth/logoutGoogle`;
   };
   return (
     <>
