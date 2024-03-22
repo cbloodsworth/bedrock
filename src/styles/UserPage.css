@@ -1,0 +1,25 @@
+.resumeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr)); 
+    grid-gap: 5%; 
+    margin: 5vw 2vh;
+    height: 100%;
+    padding-bottom: 5%;
+  }
+
+
+.editEntriesWrapper{
+    margin: 5vh 2vw;
+    display: flex;
+    justify-content: space-between;
+}
+.entryBoxWrapper{
+    background-color: red;
+    width: 20%;
+    height: 100%;
+}
+
+button{
+    background-color: rgb(107, 156, 219);
+    color: white;
+}

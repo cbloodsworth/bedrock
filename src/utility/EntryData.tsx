@@ -5,11 +5,12 @@ export interface EntryStruct {
   content: string[];
 }
 
-enum Sections {
-  Education = "Education",
-  Experience = "Experience",
-  Projects = "Projects",
-}
+
+const Sections = {
+  Education: "Education",
+  Experience: "Experience",
+  Projects: "Projects",
+};
 
 export const SectionHeaders = [
   Sections.Education,
@@ -49,6 +50,23 @@ export class ResumeClass {
    */
   public getSidebarSections(): Section[] {
     return this.sectionArray.filter((elem) => elem.sectionID.includes("S"));
+  }
+
+  public addSection(sectionName: String): number {
+    // Check if the section already exists
+    Sections[sectionName] = sectionName;
+    const sebSections = SECTION_DATA.filter(section => section.sectionID.startsWith("SEB"));
+    const highestNumber = Math.max(
+      ...sebSections.map(section => parseInt(section.sectionID.replace("SEB", "")))
+    );
+
+    SECTION_DATA.push({
+        sectionHeader: `${sectionName} SEB_ID: ${highestNumber + 1}`,
+        sectionID: `SEB${highestNumber+1}`,
+        entryList: [],
+    }
+    )
+    return 0; // No error
   }
 
   /**

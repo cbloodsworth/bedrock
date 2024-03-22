@@ -1,4 +1,5 @@
-import React, { useState, useEffect, memo } from "react";
+import React from "react";
+// { useState, useEffect, memo, useRef }
 import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 import { UserInfoProvider, useUserContext } from "../contexts/userContext";
@@ -63,7 +64,9 @@ const Navbar: React.FC = () => {
           <Link className="link-item" to="/ResumesFolder">
             <button className="navbarButton">Resumes</button>
           </Link>
-          <button className="navbarButton">Button 3</button>
+          <Link className="link-item" to="/UserPage">
+            <button className="navbarButton">User</button>
+          </Link>
         </div>
         <UserInfoProvider>
           <LogButton />
