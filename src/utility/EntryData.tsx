@@ -27,8 +27,7 @@ export type Section = {
   entryList: EntryStruct[];
 };
 
-// TODO: change name
-export class SectionDataClass {
+export class ResumeClass {
   private sectionArray: Section[];
   private lastError: string;
   public constructor() {

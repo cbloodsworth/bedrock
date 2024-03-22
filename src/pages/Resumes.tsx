@@ -9,9 +9,9 @@ import axios from "axios";
 import "../styles/Resumes.css";
 import "../index.css";
 
-import { SectionDataClass } from "../utility/EntryData";
+import { ResumeClass } from "../utility/EntryData";
 
-const initialSections = new SectionDataClass();
+const initialSections = new ResumeClass();
 const initialResumeNodes = initialSections
   .getResumeSections()
   .map((section) => (
@@ -28,7 +28,7 @@ const Resumes: React.FC = () => {
     React.useState<React.ReactNode[]>(initialResumeNodes);
 
   /* Helper function to update entries and the actual react components they are associated with */
-  const updateSections = (newSections: SectionDataClass) => {
+  const updateSections = (newSections: ResumeClass) => {
     setSections(newSections);
     setResumeNodes(
       newSections
