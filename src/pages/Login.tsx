@@ -37,7 +37,7 @@ const Login: React.FC = () => {
     const API_BASE_URL =
       process.env.NODE_ENV === "production" ? `` : "http://localhost:5000";
     if (isLoginMode) {
-      fetch(`${API_BASE_URL}/api/login`, {
+      fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const Login: React.FC = () => {
       if (!validatePassword(password)) {
         setValidPassword(false);
       }
-      fetch(`${API_BASE_URL}/api/register`, {
+      fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Login: React.FC = () => {
         ? `https://${window.location.hostname}`
         : "http://localhost:5000";
     // window.location.href = ;
-    window.location.href = `${API_BASE_URL}/api/loginGoogle`;
+    window.location.href = `${API_BASE_URL}/auth/loginGoogle`;
   };
 
   const handleGithubLogin = () => {
