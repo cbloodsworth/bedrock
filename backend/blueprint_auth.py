@@ -9,10 +9,10 @@ from dotenv import load_dotenv
 from sqlalchemy import text
 
 import models
-from database import db, login_manager
+from utilities import db, login_manager
 
 # our blueprint
-api = Blueprint('api', __name__)
+auth_api = Blueprint('auth_api', __name__)
 
 load_dotenv()
 bcrypt = Bcrypt()
@@ -20,7 +20,7 @@ bcrypt = Bcrypt()
 def hash_password(password):
     return bcrypt.generate_password_hash(password).decode('utf-8')
 
-@api.route('/api/register', methods=["GET", "POST"])
+@auth_api.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         data = request.json
@@ -43,7 +43,7 @@ def register():
         redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
         return redirect(redirect_url)
 
-@api.route("/api/login", methods=["GET", "POST"])
+@auth_api.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         data = request.json
@@ -62,7 +62,7 @@ def login():
     return jsonify({"message": "Invalid username or password"}), 401
 
 # Google Authentication
-google = OAuth(api).remote_app(
+google = OAuth(auth_api).remote_app(
     'google',
     consumer_key=os.getenv('GOOGLE_CLIENT_ID'),
     consumer_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
@@ -76,25 +76,26 @@ google = OAuth(api).remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-@api.route('/api')
-def index():
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        return 'Logged in as: ' + me.data['email']
-    return 'You are not logged in.'
+# do we need this ?
+# @api.route('/auth')
+# def index():
+#     if 'google_token' in session:
+#         me = google.get('userinfo')
+#         return 'Logged in as: ' + me.data['email']
+#     return 'You are not logged in.'
 
-@api.route('/api/logoutGoogle')
+@auth_api.route('/logoutGoogle')
 def logout():
     session.pop('google_token', None)
     host = request.host
     redirect_url = host
     return redirect(redirect_url)
 
-@api.route('/api/loginGoogle')
+@auth_api.route('/loginGoogle')
 def loginGoogle():
-    return google.authorize(callback=url_for('api.authorized', _external=True))
+    return google.authorize(callback=url_for('auth_api.authorized', _external=True))
 
-@api.route('/api/login/google/callback')
+@auth_api.route('/login/google/callback')
 def authorized():
     resp = google.authorized_response()
     if resp is None or resp.get('access_token') is None:
@@ -112,7 +113,7 @@ def authorized():
 def get_google_oauth_token():
     return session.get('google_token')
 
-@api.route('/api/userInfo', methods=['GET'])
+@auth_api.route('/userInfo', methods=['GET'])
 def get_user_info():
     access_token = session.get('google_token')[0] if 'google_token' in session else None
     if access_token:
@@ -132,15 +133,6 @@ def get_user_info_using_access_token(access_token):
 
     user_info = user_info_response.data
     return user_info
-
-@api.route('/api/dbConnect')
-def dbConnection():
-    try:
-        query = text("SELECT 1")
-        result = db.session.execute(query)
-        return "Database connection successful!"
-    except Exception as e:
-        return f"Database connection error: {str(e)}"
 
 @login_manager.user_loader
 def loader_user(user_id):

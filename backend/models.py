@@ -1,4 +1,4 @@
-from database import db
+from utilities import db
 from flask_login import UserMixin
 
 class User(UserMixin, db.Model):
@@ -19,6 +19,9 @@ class Resume(db.Model):
     # Keys
     resume_id = db.Column(db.Integer, unique=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+
+    # Other attributes
+    title = db.Column(db.String(250));
 
     # Relationships (one-to-many)
     sections = db.relationship('Section', backref='resume', cascade='all, delete-orphan')
