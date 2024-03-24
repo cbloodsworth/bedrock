@@ -151,7 +151,6 @@ export class ResumeClass {
         "moveSections: No support for moving non-resume sections (yet!)";
       return 2;
     }
-
     const [removed] = this.sectionArray.splice(srcSectionIndex, 1);
     this.sectionArray.splice(destSectionIndex, 0, removed);
 

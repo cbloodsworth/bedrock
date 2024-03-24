@@ -35,10 +35,6 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
     return box.map((entry) => entry.header);
   }
   const [editedHeaders, setEditedHeaders] = useState<string[]>(getInitialHeaders());
-
-  if(!resumeEntry){
-    console.log("INITIAL HEADERS:", header, editedHeaders, box, id, resumeEntry);
-  }
   const handleDoubleClick = (index: number) => {
     setEditedHeaders(getInitialHeaders());
     setDoubleClickStates(() => {
@@ -133,6 +129,11 @@ export default function DroppableContainer({header, box , id, resumeEntry, editE
   }
 
   const [newHeader, setNewHeader] = React.useState(header);
+
+  useEffect(() => {
+    setNewHeader(header);
+  }, [header]);
+
   const [headerClickState, setHeaderClickState] = React.useState(false);
 
   const handleHeaderDoubleClick = () => {
