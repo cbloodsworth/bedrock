@@ -31,17 +31,16 @@ const Resumes: React.FC = () => {
   const updateSections = (newSections: SectionDataClass) => {
     setSections(newSections);
     setResumeNodes(
-      newSections
-        .getResumeSections()
-        .map((section) => (
-          <ResumeSection
-            header={section.sectionHeader}
-            id={section.sectionID}
-            box={section.entryList}
-          />
-        ))
+      newSections.getResumeSections().map((section) => (
+        <ResumeSection
+          header={section.sectionHeader}
+          id={section.sectionID}
+          box={section.entryList}
+        />
+      ))
     );
   };
+  
 
   const handleDragEnd = (result: DropResult) => {
     var src = result.source;
@@ -69,7 +68,7 @@ const Resumes: React.FC = () => {
       const err = sections.moveEntries(srcID, destID, src.index, dest.index);
       if (err != 0) console.log(sections.getError()); // If there was an error in moveEntries, log it here
 
-      updateSections(sections);
+      updateSections(sections)
       return;
     } else {
       console.log("Warning: Dragging unknown object");
@@ -79,7 +78,7 @@ const Resumes: React.FC = () => {
   const handleSavePreview = () => {
     const resumeContainer = document.getElementById("resumeContainerWrapper");
     if (!resumeContainer) {
-      console.error("Resume container not found");
+      // console.error("Resume container not found");
       return;
     }
 
