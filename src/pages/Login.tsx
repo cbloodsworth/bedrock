@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { Grid, Box, Card, CardHeader, TextInput, Button } from "grommet";
 import { Hide, View, Google, Github } from "grommet-icons";
 import loginImage from "../../src/assets/login.jpg";
+import * as EmailValidator from "email-validator";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {
@@ -47,7 +48,11 @@ const Login: React.FC = () => {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            window.location.href = `https://${window.location.hostname}/`;
+            window.location.href =
+              process.env.NODE_ENV === "production"
+                ? `https://${window.location.hostname}`
+                : "http://localhost:5173";
+            console.log(window.location.hostname);
           } else {
             console.log("User Pass Login Failed");
           }
@@ -58,11 +63,17 @@ const Login: React.FC = () => {
     } else {
       setPassMatch(true);
       setValidPassword(true);
+      setValidEmail(true);
       if (password !== confirmPassword) {
         setPassMatch(false);
-      }
-      if (!validatePassword(password)) {
+      } else if (!validatePassword(password)) {
         setValidPassword(false);
+      }
+      if (!EmailValidator.validate(username)) {
+        setValidEmail(false);
+      }
+      if (!passMatch || !validPassword || !validEmail) {
+        return;
       }
       fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
@@ -74,7 +85,11 @@ const Login: React.FC = () => {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            window.location.href = `https://${window.location.hostname}/`;
+            window.location.href =
+              process.env.NODE_ENV === "production"
+                ? `https://${window.location.hostname}`
+                : "http://localhost:5173";
+            console.log(window.location.hostname);
           } else {
             if (data.error == "email not valid") {
               setValidEmail(false);
@@ -133,7 +148,10 @@ const Login: React.FC = () => {
                     alignContent="center"
                     style={{ height: "100%" }}
                   >
-                    <button onClick={() => toggleMode(true)} className="toggleButton">
+                    <button
+                      onClick={() => toggleMode(true)}
+                      className="toggleButton"
+                    >
                       <span
                         className="toggleButtonText"
                         id={isLoginMode ? "active" : ""}
@@ -141,7 +159,10 @@ const Login: React.FC = () => {
                         Login
                       </span>
                     </button>
-                    <button onClick={() => toggleMode(false)} className="toggleButton">
+                    <button
+                      onClick={() => toggleMode(false)}
+                      className="toggleButton"
+                    >
                       <span
                         className="toggleButtonText"
                         id={!isLoginMode ? "active" : ""}
@@ -154,7 +175,7 @@ const Login: React.FC = () => {
               </CardHeader>
               <div className="signInWrapper">
                 <p>Email</p>
-                {!validEmail ? (
+                {!validEmail && !isLoginMode ? (
                   <>
                     <TextInput
                       className="signInArea"
