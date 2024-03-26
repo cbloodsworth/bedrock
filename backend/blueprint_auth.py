@@ -1,6 +1,5 @@
 import os
 from flask import jsonify, request, redirect, url_for, session, Blueprint
-from email_validator import validate_email, EmailNotValidError
 from flask_bcrypt import Bcrypt
 from flask_oauthlib.client import OAuth
 from flask_login import login_user 
@@ -26,22 +25,12 @@ def register():
         data = request.json
         userN = data.get('username')
         passW = data.get('password')
-        if (userN == ""):
-            return jsonify({"error": "email not valid"}), 400
-        try:
-        # Validate the username as an email address
-            valid = validate_email(userN)
-        except EmailNotValidError as e:
-        # If the username is not a valid email address, return an error response
-            return jsonify({"error": "email not valid"}), 400
         hashed_password = hash_password(passW)
-
         user = models.User(username = userN,
                      password= hashed_password )
         db.session.add(user)
         db.session.commit()
-        redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
-        return redirect(redirect_url)
+        return jsonify(success=True), 200
 
 @auth_api.route("/login", methods=["GET", "POST"])
 def login():
@@ -55,8 +44,7 @@ def login():
             hashed_password = hash_password(passW)
             if bcrypt.check_password_hash(user.password, hashed_password):
                 login_user(user)
-                redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
-                return redirect(redirect_url)
+                return jsonify({"message": "User logged in"}), 200
     
     # If the user doesn't exist or the password is incorrect, return an appropriate response
     return jsonify({"message": "Invalid username or password"}), 401
@@ -87,8 +75,7 @@ google = OAuth(auth_api).remote_app(
 @auth_api.route('/logoutGoogle')
 def logout():
     session.pop('google_token', None)
-    redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
-    return redirect(redirect_url)
+    return 200
 
 @auth_api.route('/loginGoogle')
 def loginGoogle():
