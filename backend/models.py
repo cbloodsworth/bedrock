@@ -75,7 +75,6 @@ bullet_schema = {
 entry_schema = {
     "type" : "object",
     "properties" : {
-        "entry_id" : {"type" : "integer"},
         "title" : {"type" : "string"},
         "bullets" : {
             "type" : "array",

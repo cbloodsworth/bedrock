@@ -49,6 +49,51 @@ def getResume(db, resume: models.Resume):
     # Validates this against our schema before returning
     validate(json_resume, models.resume_schema)
     return json_resume
+
+# Adds a bullet to the database session, does not commit
+def putBullet(db, json_bullet):
+    bullet = models.BulletPoint(
+        bulletpoint_id=json_bullet.get('bulletpoint_id'),
+        content=json_bullet.get('content')
+    )
+    db.session.add(bullet)
+
+# Adds an entry to the database session, does not commit
+def putEntry(db, json_entry):
+    entry = models.Entry(
+        entry_id=json_entry.get('entry_id'),
+        title=json_entry.get('title')
+    )
+
+    for json_bullet in json_entry.get('bullets'):
+        putBullet(db, json_bullet)
+
+    db.session.add(entry)
+        
+# Adds a section to the database session, does not commit
+def putSection(db, json_section):
+    section = models.Section(
+        section_id=json_section.get('section_id'),
+        title=json_section.get('title'),
+    )
+    
+    for json_entry in json_section.get('entries'):
+        putEntry(db, json_entry)
+
+    db.session.add(section)
+
+# Adds a resume to the database session, does not commit
+def putResume(db, json_resume):
+    resume = models.Resume(
+        user_id=json_resume.get('user_id'),
+        resume_id=json_resume.get('resume_id'),
+        title=json_resume.get('title')
+    )
+
+    for json_section in json_resume.get('sections'):
+        putSection(db, json_section)
+
+    db.session.add(resume)
     
 @db_api.route('/read/resume')
 def readResume():
@@ -73,14 +118,18 @@ def readResume():
 
 @db_api.route('/create/resume', methods=['POST'])
 def create():
-    resume: models.resume_schema = request.get_json()
-    try: validate(resume, models.resume_schema)
+    json_resume = request.get_json()
+    try: validate(json_resume, models.resume_schema)
     except Exception as e: 
         return jsonify({'error': f'Failed to create resume, could not validate resume object. {e.message}'}), 500
 
-    resume
+    try:
+        putResume(db, json_resume)
+        db.session.commit()
+    except Exception as e:
+        return jsonify({'error': f'Failed to push resume, database error: {e}'}), 500
 
-    return jsonify({"error": "not implemented"}), 500
+    return jsonify({"Resume inserted into database!"}), 200
 
 
 
