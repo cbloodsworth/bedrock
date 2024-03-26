@@ -120,6 +120,49 @@ def get_user_info_using_access_token(access_token):
     user_info = user_info_response.data
     return user_info
 
+# Github Auth
+github = OAuth(auth_api).remote_app(
+    'github',
+    consumer_key=os.getenv('GITHUB_CLIENT_ID'),
+    consumer_secret=os.getenv('GITHUB_CLIENT_SECRET'),
+    request_token_params={'scope': 'user:email'},
+    base_url='https://api.github.com/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://github.com/login/oauth/access_token',
+    authorize_url='https://github.com/login/oauth/authorize',
+)
+
+@auth_api.route('/loginGithub')
+def login_github():
+    # Generate the callback URL for the OAuth flow
+    callback_url = url_for('auth_api.github_callback', _external=True)
+
+    # Redirect the user to GitHub's authorization page
+    return github.authorize(callback=callback_url)
+
+@auth_api.route('/login/github/callback')
+def github_callback():
+    # Check if the request contains 'code' parameter
+    if 'code' not in request.args:
+        return 'Access denied: Missing authorization code', 401
+
+    # Get the authorization code from the request
+    code = request.args.get('code')
+
+    # Exchange the authorization code for an access token
+    resp = github.authorized_response()
+    if resp is None or 'access_token' not in resp:
+        return 'Access denied: Error during token exchange', 401
+
+    # Store the access token in the user's session
+    session['github_token'] = (resp['access_token'], '')
+
+    # Redirect the user to your application
+    redirect_url = os.getenv('REDIRECT_URL', 'http://localhost:5173')
+    return redirect(redirect_url)
+
+    
 @login_manager.user_loader
 def loader_user(user_id):
     return models.User.query.get(user_id)

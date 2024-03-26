@@ -113,7 +113,11 @@ const Login: React.FC = () => {
   };
 
   const handleGithubLogin = () => {
-    //todo
+    const API_BASE_URL =
+      process.env.NODE_ENV === "production"
+        ? `https://${window.location.hostname}`
+        : "http://localhost:5000";
+    window.location.href = `${API_BASE_URL}/auth/loginGithub`;
   };
 
   return (
