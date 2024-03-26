@@ -69,12 +69,12 @@ bullet_schema = {
         "content" : {"type" : "string"}
     },
     "additionalProperties": False,
-    "required" : ["bulletpoint_id"]
 }
 
 entry_schema = {
     "type" : "object",
     "properties" : {
+        "entry_id" : {"type" : "integer"},
         "title" : {"type" : "string"},
         "bullets" : {
             "type" : "array",
@@ -82,7 +82,6 @@ entry_schema = {
         }
     },
     "additionalProperties": False,
-    "required" : ["entry_id"]
 }
 
 section_schema = {
@@ -97,7 +96,6 @@ section_schema = {
         }
     },
     "additionalProperties": False,
-    "required" : ["section_id"]
 }
 resume_schema = {
     "type" : "object",
@@ -111,5 +109,5 @@ resume_schema = {
         }
     },
     "additionalProperties": False,
-    "required": ["resume_id", "user_id"],
+    "required": ["user_id"],
 }
