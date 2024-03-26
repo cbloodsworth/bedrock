@@ -60,3 +60,57 @@ class BulletPoint(db.Model):
 
     # Other attributes
     content = db.Column(db.Text)
+
+#################### JSON SCHEMA ####################
+bullet_schema = {
+    "type": "object",
+    "properties": {
+        "bulletpoint_id" : {"type" : "integer"},
+        "content" : {"type" : "string"}
+    },
+    "additionalProperties": False,
+    "required" : ["bulletpoint_id"]
+}
+
+entry_schema = {
+    "type" : "object",
+    "properties" : {
+        "entry_id" : {"type" : "integer"},
+        "title" : {"type" : "string"},
+        "bullets" : {
+            "type" : "array",
+            "items" : bullet_schema
+        }
+    },
+    "additionalProperties": False,
+    "required" : ["entry_id"]
+}
+
+section_schema = {
+    "type": "object",
+    "properties": {
+        "section_id" : {"type" : "integer"},
+        "title" : {"type" : "string"},
+        "order_number" : {"type" : "integer"},
+        "entries" : {
+            "type" : "array",
+            "items" : entry_schema
+        }
+    },
+    "additionalProperties": False,
+    "required" : ["section_id"]
+}
+resume_schema = {
+    "type" : "object",
+    "properties" : {
+        "user_id" : {"type" : "integer"},
+        "resume_id" : {"type" : "integer"},
+        "title" : {"type" : "string"},
+        "sections" : {
+            "type" : "array",
+            "items" : section_schema
+        }
+    },
+    "additionalProperties": False,
+    "required": ["resume_id", "user_id"],
+}
