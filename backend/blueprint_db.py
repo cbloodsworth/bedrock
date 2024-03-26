@@ -58,6 +58,8 @@ class DBHelper:
         )
         db.session.add(bullet)
 
+        return bullet
+
     # Adds an entry to the database session, does not commit
     def putEntry(self, json_entry):
         entry = models.Entry(
@@ -71,6 +73,8 @@ class DBHelper:
         for json_bullet in json_entry.get('bullets'):
             json_bullet['entry_id'] = entry.entry_id
             self.putBullet(json_bullet)
+
+        return entry
             
     # Adds a section to the database session, does not commit
     def putSection(self, json_section):
@@ -86,6 +90,8 @@ class DBHelper:
             json_entry['section_id'] = section.section_id
             self.putEntry(json_entry)
 
+        return section
+
     # Adds a resume to the database session, does not commit
     def putResume(self, json_resume):
         resume = models.Resume(
@@ -99,6 +105,8 @@ class DBHelper:
         for json_section in json_resume.get('sections'):
             json_section['resume_id'] = resume.resume_id
             self.putSection(json_section)
+
+        return resume
 
     def delBullet(self, bullet: models.BulletPoint):
         db.session.delete(bullet)
@@ -129,12 +137,12 @@ def createResume():
         return jsonify({'error': f'Failed to create resume, could not validate resume object. {e.message}'}), 500
 
     try:
-        dbh.putResume(json_resume)
+        res = dbh.putResume(json_resume)
         db.session.commit()
     except Exception as e:
         return jsonify({'error': f'Failed to push resume, database error: {e}'}), 500
 
-    return jsonify({'success':"Resume inserted into database!"}), 200
+    return jsonify(dbh.getResume(res)), 200
     
 @db_api.route('/read/resume')
 def readResume():
@@ -154,12 +162,16 @@ def readResume():
         return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
 
     # Returns the resume that was found
-    return jsonify(dbh.getResume(db, resume)), 200
+    return jsonify(dbh.getResume(resume)), 200
         
 @db_api.route('/update/resume', methods=['PUT'])
 def updateResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
+    json_resume = request.get_json()
+    try: validate(json_resume, models.resume_schema)
+    except Exception as e: 
+        return jsonify({'error': f'Failed to create resume, could not validate resume object. {e.message}'}), 500
 
     # Attempt to grab list of resumes based on user id, fails if invalid user_id
     if (resumes := db.session.query(models.Resume).filter_by(user_id=user_id)) is None:
@@ -169,7 +181,15 @@ def updateResume():
     if (resume := resumes.filter_by(resume_id=resume_id).first()) is None:
         return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
 
-    return jsonify({'error':"Not implemented"}), 500
+    # Delete the resume
+    dbh.delResume(resume)
+    db.session.commit()
+
+    # Recreate it
+    res = dbh.putResume(json_resume)
+    db.session.commit()
+
+    return jsonify(dbh.getResume(res)), 200
     
 
 @db_api.route('/delete/resume', methods=['DELETE'])
