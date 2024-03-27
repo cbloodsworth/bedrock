@@ -8,8 +8,38 @@ describe('API tests', () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  it('GET /db/resume/read should return 500: No user specified', async () => {
+    const res = await request(host).get('/db/resume/read');
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it('GET /db/resume/read?resume_id=3 should return 500: No user specified', async () => {
+    const res = await request(host).get('/db/resume/read?resume_id=3');
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it('POST /db/resume/create should return 415: No resume passed', async () => {
+    const res = await request(host).post('/db/resume/create');
+    expect(res.statusCode).toEqual(415);
+  });
+
+  it('POST /db/resume/create with invalid resume should return 500: Bad resume passed', async () => {
+    const res = await request(host).post('/db/resume/create?user_id=1').send({})
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it('PUT /db/resume/update should return 500: No user or resume specified', async () => {
+    const res = await request(host).put('/db/resume/update');
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it('DELETE /db/resume/delete should return 500: No user or resume specified', async () => {
+    const res = await request(host).delete('/db/resume/delete');
+    expect(res.statusCode).toEqual(500);
+  });
+
   it('POST,PUT,DELETE: Full end-to-end', async () => {
-    const post = await request(host).post('/db/resume/create').send({
+    const post = await request(host).post('/db/resume/create?user_id=1').send({
         "title": "test resume",
         "user_id": 1,
         "sections": [
@@ -18,7 +48,7 @@ describe('API tests', () => {
                     {
                         "bullets": [
                             {
-                                "content": "",
+                                "content": ""
                             }
                         ],
                         "title": ""
@@ -41,7 +71,7 @@ describe('API tests', () => {
                     {
                         "bullets": [
                             {
-                                "content": "",
+                                "content": ""
                             }
                         ],
                         "title": ""

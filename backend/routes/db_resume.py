@@ -14,6 +14,10 @@ db_resume_api = Blueprint('db_resume_api', __name__)
 @db_resume_api.route('/create', methods=['POST'])
 def createResume():
     json_resume = request.get_json()
+    user_id = request.args.get('user_id')
+
+    if user_id is None:
+        return jsonify({'error': 'Failed to create resume, no user_id given'}), 500
 
     try:
         res = dbh.addNewResume(json_resume)
@@ -29,6 +33,9 @@ def createResume():
 def readResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
+
+    if user_id is None:
+        return jsonify({'error': 'Failed to fetch resume, no user_id'}), 500
 
     # Attempt to grab list of resumes based on user id, fails if invalid user_id
     if (resumes := db.session.query(models.Resume).filter_by(user_id=user_id)) is None:
@@ -49,6 +56,10 @@ def readResume():
 def updateResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
+
+    if user_id is None:
+        return jsonify({'error': 'Failed to update resume, no user_id'}), 500
+
     json_resume = request.get_json()
     try: validate(json_resume, models.resume_schema)
     except Exception as e: 
@@ -77,6 +88,9 @@ def updateResume():
 def deleteResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
+
+    if user_id is None:
+        return jsonify({'error': 'Failed to update resume, no user_id'}), 500
 
     # Attempt to grab list of resumes based on user id, fails if invalid user_id
     if (resumes := db.session.query(models.Resume).filter_by(user_id=user_id)) is None:
