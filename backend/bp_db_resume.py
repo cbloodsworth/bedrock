@@ -4,15 +4,14 @@ from sqlalchemy import text
 from jsonschema import validate
 
 import models
-from models import db
 
-from utilities import DBHelper
+from instances import db
+from utilities import dbh
 
 # our blueprint
-db_api = Blueprint('db_api', __name__)
-dbh = DBHelper(db)
+db_resume_api = Blueprint('db_resume_api', __name__)
 
-@db_api.route('/create/resume', methods=['POST'])
+@db_resume_api.route('/create', methods=['POST'])
 def createResume():
     json_resume = request.get_json()
     try: validate(json_resume, models.resume_schema)
@@ -27,7 +26,7 @@ def createResume():
 
     return jsonify(dbh.getJsonResume(res)), 200
     
-@db_api.route('/read/resume')
+@db_resume_api.route('/read')
 def readResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
@@ -47,7 +46,7 @@ def readResume():
     # Returns the resume that was found
     return jsonify(dbh.getJsonResume(resume)), 200
         
-@db_api.route('/update/resume', methods=['PUT'])
+@db_resume_api.route('/update', methods=['PUT'])
 def updateResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
@@ -75,7 +74,7 @@ def updateResume():
     return jsonify(dbh.getJsonResume(res)), 200
     
 
-@db_api.route('/delete/resume', methods=['DELETE'])
+@db_resume_api.route('/delete', methods=['DELETE'])
 def deleteResume():
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
@@ -93,8 +92,7 @@ def deleteResume():
 
     return jsonify({'success':"Resume deleted from database!"}), 200
     
-
-@db_api.route('/connect')
+@db_resume_api.route('/connect')
 def dbConnection():
     try:
         query = text("SELECT 1")

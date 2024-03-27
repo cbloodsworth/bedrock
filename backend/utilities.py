@@ -1,8 +1,6 @@
-from flask_login import LoginManager
 from jsonschema import validate
-
 import models
-login_manager = LoginManager()
+from instances import db
 
 class DBHelper:
     """ Helper class to provide basic functionality for interacting with the database in
@@ -135,3 +133,5 @@ class DBHelper:
         # Validates this against our schema before returning
         validate(json_resume, models.resume_schema)
         return json_resume
+
+dbh = DBHelper(db)

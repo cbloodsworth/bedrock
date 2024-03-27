@@ -11,7 +11,7 @@ from sqlalchemy import text
 import models
 from models import db
 
-from utilities import login_manager
+from instances import login_manager
 
 # our blueprint
 auth_api = Blueprint('auth_api', __name__)

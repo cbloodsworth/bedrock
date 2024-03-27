@@ -5,11 +5,10 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv  
 
-from models import db
-from utilities import login_manager 
+from instances import db, login_manager
 
 from blueprint_auth import auth_api as auth_blueprint  
-from blueprint_db import db_api as db_blueprint
+from bp_db_resume import db_resume_api
 
 load_dotenv()
 
@@ -18,7 +17,7 @@ app = Flask(__name__, instance_relative_config=True)
 
 # Register the blueprints defined in routes.py
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
-app.register_blueprint(db_blueprint, url_prefix='/db')
+app.register_blueprint(db_resume_api, url_prefix='/db/resume')
 app.config.from_mapping(
     SECRET_KEY=os.getenv('SECRET_KEY'),
     SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL'),
