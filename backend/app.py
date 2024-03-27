@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 from instances import db, login_manager
 
-from blueprint_auth import auth_api as auth_blueprint  
-from bp_db_resume import db_resume_api
+from routes.auth import auth_api as auth_blueprint  
+from routes.db_resume import db_resume_api
 
 load_dotenv()
 
