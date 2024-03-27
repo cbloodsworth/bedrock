@@ -8,7 +8,7 @@ describe('API tests', () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  it('POST /db/resume/create should return 200', async () => {
+  it('POST,PUT,DELETE: Full end-to-end', async () => {
     const post = await request(host).post('/db/resume/create').send({
         "title": "test resume",
         "user_id": 1,
