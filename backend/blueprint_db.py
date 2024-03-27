@@ -10,7 +10,6 @@ from utilities import DBHelper
 
 # our blueprint
 db_api = Blueprint('db_api', __name__)
-
 dbh = DBHelper(db)
 
 def getJsonBullet(bullet: models.BulletPoint) -> dict:
