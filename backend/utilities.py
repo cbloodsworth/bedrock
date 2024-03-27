@@ -1,4 +1,5 @@
 from flask_login import LoginManager
+from jsonschema import validate
 
 import models
 login_manager = LoginManager()
@@ -92,3 +93,45 @@ class DBHelper:
             self.deleteSection(section)
 
         self.db.session.delete(resume)
+
+    def getJsonBullet(self, bullet: models.BulletPoint) -> dict:
+        """ Given a BulletPoint database model, return the json representation as a dict. """
+        json_bullet = {
+            'bulletpoint_id' : bullet.bulletpoint_id,
+            'content' : bullet.content
+        }
+        validate(json_bullet, models.bullet_schema)
+        return json_bullet
+
+    def getJsonEntry(self, entry: models.Entry) -> dict:
+        """ Given an Entry database model, return the json representation as a dict. """
+        json_entry = {
+            'entry_id': entry.entry_id,
+            'title': entry.title, 
+            'bullets': [self.getJsonBullet(bullet) for bullet in self.db.session.query(models.BulletPoint).filter_by(entry_id=entry.entry_id).all()]
+        }
+        validate(json_entry, models.entry_schema)
+        return json_entry
+
+    def getJsonSection(self, section: models.Section) -> dict:
+        """ Given a Section database model, return the json representation as a dict. """
+        json_section = {
+            'section_id': section.section_id,
+            'title': section.title,
+            'entries': [self.getJsonEntry(entry) for entry in self.db.session.query(models.Entry).filter_by(section_id=section.section_id).all()]
+        }
+        validate(json_section, models.section_schema)
+        return json_section
+
+    def getJsonResume(self, resume: models.Resume) -> dict:
+        """ Given a Resume database model, return the json representation as a dict. """
+        json_resume = {
+            'user_id' : resume.user_id,
+            'resume_id': resume.resume_id,
+            'title': resume.title, 
+            'sections': [self.getJsonSection(section) for section in self.db.session.query(models.Section).filter_by(resume_id=resume.resume_id).all()]
+        }
+
+        # Validates this against our schema before returning
+        validate(json_resume, models.resume_schema)
+        return json_resume
