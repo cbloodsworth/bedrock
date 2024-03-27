@@ -17,6 +17,14 @@ def createEntry():
     Requires: 
         Params: user_id, resume_id, 
         JSON Body: entry 
+        
+    Purpose:
+        Pushes an entry to the database under the user referenced by user_id, and onto the
+            resume referenced by resume_id.
+        Does not require an entry_id, one is generated.
+        Returns the json representation of inserted entry on success. This representation will 
+            contain generated IDs for itself and any bullet points it is a parent of.
+        Not idempotent: does not check for duplicates in any way, will always add a new entry on success.
     """
 
     json_entry = request.get_json()
@@ -53,6 +61,13 @@ def readEntry():
     """ 
     Requires: 
         Params: user_id AND/OR entry_id
+
+    Purpose:
+        Returns an entry or array of entries based on input.
+        If an entry id is provided, then a json representation of that entry is returned.
+        If a user id is provided but not an entry id, then it will return *all* entries
+            associated with that user.
+        This operation is idempotent and has no side-effects.
     """
     
     user_id = request.args.get('user_id')
@@ -83,6 +98,14 @@ def updateEntry():
     Requires: 
         Params: entry_id
         JSON Body: entry
+        
+    Purpose:
+        Updates an entry in the database to the provided json body.
+        An entry_id is required -- whatever entry this refers to is deleted, with the new
+            entry inserted in its place.
+        Not technically idempotent since new IDs are generated every time. If you are using
+            this route, make sure to take note of the new IDs for the entry and its bullet points --
+            the new json representation is returned on success.
     """
 
     entry_id = request.args.get('entry_id')
@@ -122,6 +145,11 @@ def deleteEntry():
     """ 
     Requires: 
         Params: entry_id
+        
+    Purpose:
+        Deletes the entry associated with the provided entry_id.
+        If no entry in the database has the provided entry_id, an error is thrown.
+        Not idempotent.
     """
 
     entry_id = request.args.get('entry_id')
