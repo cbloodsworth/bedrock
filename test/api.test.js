@@ -121,7 +121,8 @@ describe('Entry API tests', () => {
     })
 
     expect(entryUpdate.statusCode).toEqual(200);
-    entry_id = entryUpdate.body.section_id  // entry_id gets updated after update
+    entry_id = entryUpdate.body.entry_id  // entry_id gets updated after update
+    expect(entry_id).not.toBeNull();
     expect(entryUpdate.body.title).toEqual("New entry with new title")
 
     // Delete the test entry

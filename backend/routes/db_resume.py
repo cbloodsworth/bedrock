@@ -78,8 +78,7 @@ def updateResume():
     except Exception as e: 
         return jsonify({'error': f'Failed to create resume, could not validate resume object. {e.message}'}), 500
 
-    resume = db.session.query(models.Resume).filter_by(resume_id=resume_id).first()
-    if resume is None:
+    if (resume := db.session.query(models.Resume).filter_by(resume_id=resume_id).first()) is None:
         return jsonify({'error': 'Failed to fetch resume, invalid resume_id'}), 500
 
     # Delete the resume

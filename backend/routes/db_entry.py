@@ -85,34 +85,36 @@ def updateEntry():
         JSON Body: entry
     """
 
-    user_id = request.args.get('user_id')
     entry_id = request.args.get('entry_id')
-
-    if error := validate_params({'user_id':user_id, 'entry_id':entry_id}, "updateEntry") is not None:
+    if error := validate_params({'entry_id':entry_id}, "updateEntry") is not None:
         return error
 
-    json_resume = request.get_json()
-    try: validate(json_resume, models.resume_schema)
+    if (entry := db.session.query(models.Entry).filter_by(entry_id=entry_id).first()) is None:
+        return jsonify({'error': f'Failed to update entry, could not find entry with id {entry_id}.'}), 500
+
+    # Get the resume that the existing entry belongs to
+    # TODO: USE JOINS, NOT CONSECUTIVE QUERIES
+    section = db.session.query(models.Section).filter_by(section_id=entry.section_id).first()
+    resume = db.session.query(models.Resume).filter_by(resume_id=section.resume_id).first()
+
+    json_entry = request.get_json()
+
+    # Put it in the uncategorized section by default
+    json_entry['section_id'] = dbh.getDefaultSection(resume).section_id
+
+    try: validate(json_entry, models.entry_schema)
     except Exception as e: 
-        return jsonify({'error': f'Failed to create resume, could not validate resume object. {e.message}'}), 500
+        return jsonify({'error': f'Failed to update entry, could not validate entry object. {e.message}'}), 500
 
-    # Attempt to grab list of resumes based on user id, fails if invalid user_id
-    if (resumes := db.session.query(models.Resume).filter_by(user_id=user_id)) is None:
-        return jsonify({'error': 'Failed to fetch resume, unknown user_id'}), 500
-
-    # Attempt to grab a resume based on that id, fails if invalid resume_id
-    if (resume := resumes.filter_by(resume_id=resume_id).first()) is None:
-        return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
-
-    # Delete the resume
-    dbh.deleteResume(resume)
+    # Delete the entry
+    dbh.deleteEntry(entry)
     db.session.commit()
 
     # Recreate it
-    res = dbh.addNewResume(json_resume)
+    res = dbh.addNewEntry(json_entry)
     db.session.commit()
 
-    return jsonify(dbh.getJsonResume(res)), 200
+    return jsonify(dbh.getJsonEntry(res)), 200
     
 
 @db_entry_api.route('/delete', methods=['DELETE'])
@@ -121,18 +123,15 @@ def deleteEntry():
     Requires: 
         Params: entry_id
     """
-    user_id = request.args.get('user_id')
-    resume_id = request.args.get('resume_id')
 
-    # Attempt to grab list of resumes based on user id, fails if invalid user_id
-    if (resumes := db.session.query(models.Resume).filter_by(user_id=user_id)) is None:
-        return jsonify({'error': 'Failed to fetch resume, unknown user_id'}), 500
+    entry_id = request.args.get('entry_id')
+    if (error := validate_params({'entry_id':entry_id}, "deleteEntry")) is not None:
+        return error
 
-    # Attempt to grab a resume based on that id, fails if invalid resume_id
-    if (resume := resumes.filter_by(resume_id=resume_id).first()) is None:
-        return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
+    if (entry := db.session.query(models.Entry).filter_by(entry_id=entry_id).first()) is None:
+        return jsonify({'error': 'Failed to fetch entry, invalid entry_id'}), 500
 
-    dbh.deleteResume(resume)
+    dbh.deleteEntry(entry)
     db.session.commit()
 
-    return jsonify({'success':"Resume deleted from database!"}), 200
+    return jsonify({'success':"Entry deleted from database!"}), 200

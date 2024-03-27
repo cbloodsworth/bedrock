@@ -100,6 +100,8 @@ class DBHelper:
         for bullet in self.db.session.query(models.BulletPoint).filter_by(entry_id=entry.entry_id).all():
             self.deleteBullet(bullet)
 
+        self.db.session.delete(entry)
+
     def deleteSection(self, section: models.Section):
         """ Given a Section model, deletes it from the database, AS WELL AS ITS CHILD ENTRIES. """
         for entry in self.db.session.query(models.Entry).filter_by(section_id=section.section_id).all():
