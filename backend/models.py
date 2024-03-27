@@ -66,6 +66,7 @@ bullet_schema = {
     "type": "object",
     "properties": {
         "bulletpoint_id" : {"type" : "integer"},
+        "entry_id" : {"type" : "integer"},
         "content" : {"type" : "string"}
     },
     "additionalProperties": False,
@@ -75,6 +76,7 @@ entry_schema = {
     "type" : "object",
     "properties" : {
         "entry_id" : {"type" : "integer"},
+        "section_id" : {"type" : "integer"},
         "title" : {"type" : "string"},
         "bullets" : {
             "type" : "array",
@@ -88,6 +90,7 @@ section_schema = {
     "type": "object",
     "properties": {
         "section_id" : {"type" : "integer"},
+        "resume_id" : {"type" : "integer"},
         "title" : {"type" : "string"},
         "order_number" : {"type" : "integer"},
         "entries" : {
@@ -100,8 +103,8 @@ section_schema = {
 resume_schema = {
     "type" : "object",
     "properties" : {
-        "user_id" : {"type" : "integer"},
         "resume_id" : {"type" : "integer"},
+        "user_id" : {"type" : "integer"},
         "title" : {"type" : "string"},
         "sections" : {
             "type" : "array",

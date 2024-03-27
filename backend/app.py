@@ -7,8 +7,9 @@ from dotenv import load_dotenv
 
 from instances import db, login_manager
 
-from routes.auth import auth_api as auth_blueprint  
+from routes.auth import auth_api
 from routes.db_resume import db_resume_api
+from routes.db_entry import db_entry_api
 
 load_dotenv()
 
@@ -16,8 +17,10 @@ load_dotenv()
 app = Flask(__name__, instance_relative_config=True)
 
 # Register the blueprints defined in routes.py
-app.register_blueprint(auth_blueprint, url_prefix='/auth')
+app.register_blueprint(auth_api, url_prefix='/auth')
 app.register_blueprint(db_resume_api, url_prefix='/db/resume')
+app.register_blueprint(db_entry_api, url_prefix='/db/entry')
+
 app.config.from_mapping(
     SECRET_KEY=os.getenv('SECRET_KEY'),
     SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL'),
