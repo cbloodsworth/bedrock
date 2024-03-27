@@ -1,6 +1,14 @@
+from flask import jsonify
 from jsonschema import validate
 import models
 from instances import db
+
+def validate_params(params: dict, context=""):
+    """ Validates params are not None.
+        Context is printed, nothing more.
+    """
+    for key, value in params.items():
+        if value is None: return jsonify({'error': f'[{context}] no {key} given'}), 500
 
 class DBHelper:
     """ Helper class to provide basic functionality for interacting with the database in
@@ -73,6 +81,14 @@ class DBHelper:
             json_section['resume_id'] = resume.resume_id
             self.addNewSection(json_section)
 
+        # We add this section to any new resume that's created, so we can have uncategorized entries
+        self.addNewSection({
+            'resume_id': resume.resume_id,
+            'title': 'default',
+            'entries': [],
+            'order_number': -1
+        })
+
         return resume
 
     def deleteBullet(self, bullet: models.BulletPoint):
@@ -142,5 +158,9 @@ class DBHelper:
         # Validates this against our schema before returning
         validate(json_resume, models.resume_schema)
         return json_resume
+
+    def getDefaultSection(self, resume: models.Resume) -> models.Section:
+        """ Returns the 'default' section of a resume, i.e. the one containing uncategorized entries. """
+        return db.session.query(models.Section).filter_by(resume_id=resume.resume_id, title='default').first()
 
 dbh = DBHelper(db)

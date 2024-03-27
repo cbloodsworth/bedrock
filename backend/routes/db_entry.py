@@ -1,27 +1,48 @@
 from flask import jsonify, request, Blueprint
 
 from sqlalchemy import text
-from jsonschema import validate
+from jsonschema import validate, ValidationError
 
 import models
 
 from instances import db
-from utilities import dbh
+from utilities import dbh, validate_params
 
 # our blueprint
 db_entry_api = Blueprint('db_entry_api', __name__)
 
 @db_entry_api.route('/create', methods=['POST'])
 def createEntry():
-    json_entry = request.get_json()
+    """ 
+    Requires: 
+        Params: user_id, resume_id, 
+        JSON Body: entry 
+    """
 
-    try: validate(json_entry, models.entry_schema)
-    except Exception as e: 
-        return jsonify({'error': f'Failed to create entry, could not validate entry object. {e.message}'}), 500
+    json_entry = request.get_json()
+    user_id = request.args.get('user_id')
+    resume_id = request.args.get('resume_id')
+
+    # Validate that user_id and resume_id are both not None
+    if error := validate_params({'user_id':user_id, 'resume_id':resume_id}, "createEntry") is not None:
+        return error
+
+    # Validate that user_id is in the database
+    if (db.session.query(models.User).filter_by(user_id=user_id).first()) is None:
+        return jsonify({'error': f'Failed to create entry, could not find user by id {user_id}.'})
+
+    # Validate that resume_id is in the database
+    if (resume := db.session.query(models.Resume).filter_by(resume_id=resume_id).first()) is None:
+        return jsonify({'error': f'Failed to create entry, could not find resume by id {resume_id}.'})
+
+    # Put it in the uncategorized section by default
+    json_entry['section_id'] = dbh.getDefaultSection(resume).section_id
 
     try:
         res = dbh.addNewEntry(json_entry)
         db.session.commit()
+    except ValidationError as e:
+        return jsonify({'error': f'Failed to create entry, could not validate entry object. {e.message}'}), 500
     except Exception as e:
         return jsonify({'error': f'Failed to push entry, database error: {e}'}), 500
 
@@ -29,6 +50,11 @@ def createEntry():
     
 @db_entry_api.route('/read')
 def readEntry():
+    """ 
+    Requires: 
+        Params: user_id AND/OR entry_id
+    """
+    
     user_id = request.args.get('user_id')
     entry_id = request.args.get('entry_id')
 
@@ -53,8 +79,18 @@ def readEntry():
 
 @db_entry_api.route('/update', methods=['PUT'])
 def updateEntry():
+    """ 
+    Requires: 
+        Params: entry_id
+        JSON Body: entry
+    """
+
     user_id = request.args.get('user_id')
-    resume_id = request.args.get('resume_id')
+    entry_id = request.args.get('entry_id')
+
+    if error := validate_params({'user_id':user_id, 'entry_id':entry_id}, "updateEntry") is not None:
+        return error
+
     json_resume = request.get_json()
     try: validate(json_resume, models.resume_schema)
     except Exception as e: 
@@ -81,6 +117,10 @@ def updateEntry():
 
 @db_entry_api.route('/delete', methods=['DELETE'])
 def deleteEntry():
+    """ 
+    Requires: 
+        Params: entry_id
+    """
     user_id = request.args.get('user_id')
     resume_id = request.args.get('resume_id')
 

@@ -2,19 +2,14 @@ const request = require('supertest');
 
 host = 'http://localhost:5000'
 
-describe('API tests', () => {
+describe('Resume API tests', () => {
   it('GET /db/resume/read?user_id=1 should return 200', async () => {
     const res = await request(host).get('/db/resume/read?user_id=1');
     expect(res.statusCode).toEqual(200);
   });
 
-  it('GET /db/resume/read should return 500: No user specified', async () => {
+  it('GET /db/resume/read should return 500: No parameters specified', async () => {
     const res = await request(host).get('/db/resume/read');
-    expect(res.statusCode).toEqual(500);
-  });
-
-  it('GET /db/resume/read?resume_id=3 should return 500: No user specified', async () => {
-    const res = await request(host).get('/db/resume/read?resume_id=3');
     expect(res.statusCode).toEqual(500);
   });
 
@@ -61,7 +56,7 @@ describe('API tests', () => {
     expect(post.statusCode).toEqual(200);
     expect(post.body.title).toEqual("test resume");
 
-    let resume_id = post.body.resume_id
+    var resume_id = post.body.resume_id
     const put = await request(host).put(`/db/resume/update?user_id=1&resume_id=${resume_id}`).send({
         "title": "test resume with new title",
         "user_id": 1,
@@ -90,4 +85,51 @@ describe('API tests', () => {
     expect(del.statusCode).toEqual(200);
   });
 
+});
+
+describe('Entry API tests', () => {
+  it('POST,READ,PUT,DELETE: Full end-to-end', async () => {
+    // Create test resume
+    const resumePost = await request(host).post('/db/resume/create?user_id=1').send({
+        "title": "test resume",
+        "user_id": 1,
+        "sections": []
+    });
+
+    expect(resumePost.statusCode).toEqual(200);
+    var resume_id = resumePost.body.resume_id
+
+    // Create test entry
+    const entryPost = await request(host).post(`/db/entry/create?user_id=1&resume_id=${resume_id}`).send({
+        "bullets": [],
+        "title": "New entry"
+    });
+    expect(entryPost.statusCode).toEqual(200);
+    expect(entryPost.body.title).toEqual("New entry");
+    var entry_id = entryPost.body.entry_id;
+
+    // Read that test entry
+    const entryGet = await request(host).get(`/db/entry/read?entry_id=${entry_id}`)
+
+    expect(entryGet.statusCode).toEqual(200);
+    expect(entryGet.body.section_id).not.toBeNull();
+
+    // Update that test entry
+    const entryUpdate = await request(host).put(`/db/entry/update?entry_id=${entry_id}`).send({
+        "bullets": [],
+        "title": "New entry with new title"
+    })
+
+    expect(entryUpdate.statusCode).toEqual(200);
+    entry_id = entryUpdate.body.section_id  // entry_id gets updated after update
+    expect(entryUpdate.body.title).toEqual("New entry with new title")
+
+    // Delete the test entry
+    const entryDel = await request(host).delete(`/db/entry/delete?entry_id=${entry_id}`);
+    expect(entryDel.statusCode).toEqual(200);
+
+    // Clean up, delete the resume
+    const del = await request(host).delete(`/db/resume/delete?resume_id=${resume_id}`);
+    expect(del.statusCode).toEqual(200);
+  });
 });
