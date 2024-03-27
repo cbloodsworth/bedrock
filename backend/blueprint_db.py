@@ -11,47 +11,52 @@ from utilities import db, login_manager
 db_api = Blueprint('db_api', __name__)
 load_dotenv()
 
+def getJsonBullet(bullet: models.BulletPoint):
+    """ Given a BulletPoint database model, return the json representation. """
+    json_bullet = {
+        'bulletpoint_id' : bullet.bulletpoint_id,
+        'content' : bullet.content
+    }
+    validate(json_bullet, models.bullet_schema)
+    return json_bullet
+
+def getJsonEntry(entry: models.Entry):
+    """ Given an Entry database model, return the json representation. """
+    json_entry = {
+        'entry_id': entry.entry_id,
+        'title': entry.title, 
+        'bullets': [getJsonBullet(bullet) for bullet in db.session.query(models.BulletPoint).filter_by(entry_id=entry.entry_id).all()]
+    }
+    validate(json_entry, models.entry_schema)
+    return json_entry
+
+def getJsonSection(section: models.Section):
+    """ Given a Section database model, return the json representation. """
+    json_section = {
+        'section_id': section.section_id,
+        'title': section.title,
+        'entries': [getJsonEntry(entry) for entry in db.session.query(models.Entry).filter_by(section_id=section.section_id).all()]
+    }
+    validate(json_section, models.section_schema)
+    return json_section
+
+def getJsonResume(resume: models.Resume):
+    """ Given a Resume database model, return the json representation. """
+    json_resume = {
+        'user_id' : resume.user_id,
+        'resume_id': resume.resume_id,
+        'title': resume.title, 
+        'sections': [getJsonSection(section) for section in db.session.query(models.Section).filter_by(resume_id=resume.resume_id).all()]
+    }
+
+    # Validates this against our schema before returning
+    validate(json_resume, models.resume_schema)
+    return json_resume
+
+
 class DBHelper:
-    def getBullet(self, bullet: models.BulletPoint):
-        json_bullet = {
-            'bulletpoint_id' : bullet.bulletpoint_id,
-            'content' : bullet.content
-        }
-        validate(json_bullet, models.bullet_schema)
-        return json_bullet
-
-    def getEntry(self, entry: models.Entry):
-        json_entry = {
-            'entry_id': entry.entry_id,
-            'title': entry.title, 
-            'bullets': [self.getBullet(bullet) for bullet in db.session.query(models.BulletPoint).filter_by(entry_id=entry.entry_id).all()]
-        }
-        validate(json_entry, models.entry_schema)
-        return json_entry
-
-    def getSection(self, section: models.Section):
-        json_section = {
-            'section_id': section.section_id,
-            'title': section.title,
-            'entries': [self.getEntry(entry) for entry in db.session.query(models.Entry).filter_by(section_id=section.section_id).all()]
-        }
-        validate(json_section, models.section_schema)
-        return json_section
-
-    def getResume(self, resume: models.Resume):
-        json_resume = {
-            'user_id' : resume.user_id,
-            'resume_id': resume.resume_id,
-            'title': resume.title, 
-            'sections': [self.getSection(section) for section in db.session.query(models.Section).filter_by(resume_id=resume.resume_id).all()]
-        }
-
-        # Validates this against our schema before returning
-        validate(json_resume, models.resume_schema)
-        return json_resume
-
     # Adds a bullet to the database session, does not commit
-    def putBullet(self, json_bullet):
+    def addNewBullet(self, json_bullet):
         bullet = models.BulletPoint(
             entry_id=json_bullet.get('entry_id'),
             content=json_bullet.get('content')
@@ -61,7 +66,7 @@ class DBHelper:
         return bullet
 
     # Adds an entry to the database session, does not commit
-    def putEntry(self, json_entry):
+    def addNewEntry(self, json_entry):
         entry = models.Entry(
             section_id=json_entry.get('section_id'),
             title=json_entry.get('title')
@@ -72,12 +77,12 @@ class DBHelper:
 
         for json_bullet in json_entry.get('bullets'):
             json_bullet['entry_id'] = entry.entry_id
-            self.putBullet(json_bullet)
+            self.addNewBullet(json_bullet)
 
         return entry
             
     # Adds a section to the database session, does not commit
-    def putSection(self, json_section):
+    def addNewSection(self, json_section):
         section = models.Section(
             resume_id=json_section.get('resume_id'),
             title=json_section.get('title'),
@@ -88,12 +93,12 @@ class DBHelper:
 
         for json_entry in json_section.get('entries'):
             json_entry['section_id'] = section.section_id
-            self.putEntry(json_entry)
+            self.addNewEntry(json_entry)
 
         return section
 
     # Adds a resume to the database session, does not commit
-    def putResume(self, json_resume):
+    def addNewResume(self, json_resume):
         resume = models.Resume(
             user_id=json_resume.get('user_id'),
             title=json_resume.get('title')
@@ -104,26 +109,26 @@ class DBHelper:
 
         for json_section in json_resume.get('sections'):
             json_section['resume_id'] = resume.resume_id
-            self.putSection(json_section)
+            self.addNewSection(json_section)
 
         return resume
 
-    def delBullet(self, bullet: models.BulletPoint):
+    def deleteBullet(self, bullet: models.BulletPoint):
         db.session.delete(bullet)
 
-    def delEntry(self, entry: models.Entry):
+    def deleteEntry(self, entry: models.Entry):
         for bullet in db.session.query(models.BulletPoint).filter_by(entry_id=entry.entry_id).all():
-            self.delBullet(bullet)
+            self.deleteBullet(bullet)
 
-    def delSection(self, section: models.Section):
+    def deleteSection(self, section: models.Section):
         for entry in db.session.query(models.Entry).filter_by(section_id=section.section_id).all():
-            self.delEntry(entry)
+            self.deleteEntry(entry)
 
         db.session.delete(section)
 
-    def delResume(self, resume: models.Resume):
+    def deleteResume(self, resume: models.Resume):
         for section in db.session.query(models.Section).filter_by(resume_id=resume.resume_id).all():
-            self.delSection(section)
+            self.deleteSection(section)
 
         db.session.delete(resume)
 
@@ -137,12 +142,12 @@ def createResume():
         return jsonify({'error': f'Failed to create resume, could not validate resume object. {e.message}'}), 500
 
     try:
-        res = dbh.putResume(json_resume)
+        res = dbh.addNewResume(json_resume)
         db.session.commit()
     except Exception as e:
         return jsonify({'error': f'Failed to push resume, database error: {e}'}), 500
 
-    return jsonify(dbh.getResume(res)), 200
+    return jsonify(getJsonResume(res)), 200
     
 @db_api.route('/read/resume')
 def readResume():
@@ -155,14 +160,14 @@ def readResume():
 
     # If user_id is good but we weren't given resume_id, just return list of resumes
     if resume_id is None:
-        return jsonify({resume.resume_id : dbh.getResume(resume) for resume in resumes})
+        return jsonify({resume.resume_id : getJsonResume(resume) for resume in resumes})
 
     # Attempt to grab a resume based on that id, fails if invalid resume_id
     if (resume := resumes.filter_by(resume_id=resume_id).first()) is None:
         return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
 
     # Returns the resume that was found
-    return jsonify(dbh.getResume(resume)), 200
+    return jsonify(getJsonResume(resume)), 200
         
 @db_api.route('/update/resume', methods=['PUT'])
 def updateResume():
@@ -182,14 +187,14 @@ def updateResume():
         return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
 
     # Delete the resume
-    dbh.delResume(resume)
+    dbh.deleteResume(resume)
     db.session.commit()
 
     # Recreate it
-    res = dbh.putResume(json_resume)
+    res = dbh.addNewResume(json_resume)
     db.session.commit()
 
-    return jsonify(dbh.getResume(res)), 200
+    return jsonify(getJsonResume(res)), 200
     
 
 @db_api.route('/delete/resume', methods=['DELETE'])
@@ -205,7 +210,7 @@ def deleteResume():
     if (resume := resumes.filter_by(resume_id=resume_id).first()) is None:
         return jsonify({'error': 'Failed to fetch resume, unknown resume_id'}), 500
 
-    dbh.delResume(resume)
+    dbh.deleteResume(resume)
     db.session.commit()
 
     return jsonify({'success':"Resume deleted from database!"}), 200
