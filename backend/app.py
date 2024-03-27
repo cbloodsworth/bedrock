@@ -5,8 +5,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv  
 
-from utilities import db, login_manager  # database declaration
-import models
+from models import db
+from utilities import login_manager 
 
 from blueprint_auth import auth_api as auth_blueprint  
 from blueprint_db import db_api as db_blueprint

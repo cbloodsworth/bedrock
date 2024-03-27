@@ -1,18 +1,20 @@
-from flask import jsonify, request, redirect, url_for, session, Blueprint
+from flask import jsonify, request, Blueprint
 from dotenv import load_dotenv
 
 from sqlalchemy import text
-from jsonschema import validate, ValidationError
+from jsonschema import validate
 
 import models
-from utilities import db, login_manager
+from models import db
+from utilities import DBHelper
 
 # our blueprint
 db_api = Blueprint('db_api', __name__)
-load_dotenv()
 
-def getJsonBullet(bullet: models.BulletPoint):
-    """ Given a BulletPoint database model, return the json representation. """
+dbh = DBHelper(db)
+
+def getJsonBullet(bullet: models.BulletPoint) -> dict:
+    """ Given a BulletPoint database model, return the json representation as a dict. """
     json_bullet = {
         'bulletpoint_id' : bullet.bulletpoint_id,
         'content' : bullet.content
@@ -20,8 +22,8 @@ def getJsonBullet(bullet: models.BulletPoint):
     validate(json_bullet, models.bullet_schema)
     return json_bullet
 
-def getJsonEntry(entry: models.Entry):
-    """ Given an Entry database model, return the json representation. """
+def getJsonEntry(entry: models.Entry) -> dict:
+    """ Given an Entry database model, return the json representation as a dict. """
     json_entry = {
         'entry_id': entry.entry_id,
         'title': entry.title, 
@@ -30,8 +32,8 @@ def getJsonEntry(entry: models.Entry):
     validate(json_entry, models.entry_schema)
     return json_entry
 
-def getJsonSection(section: models.Section):
-    """ Given a Section database model, return the json representation. """
+def getJsonSection(section: models.Section) -> dict:
+    """ Given a Section database model, return the json representation as a dict. """
     json_section = {
         'section_id': section.section_id,
         'title': section.title,
@@ -40,8 +42,8 @@ def getJsonSection(section: models.Section):
     validate(json_section, models.section_schema)
     return json_section
 
-def getJsonResume(resume: models.Resume):
-    """ Given a Resume database model, return the json representation. """
+def getJsonResume(resume: models.Resume) -> dict:
+    """ Given a Resume database model, return the json representation as a dict. """
     json_resume = {
         'user_id' : resume.user_id,
         'resume_id': resume.resume_id,
@@ -53,86 +55,6 @@ def getJsonResume(resume: models.Resume):
     validate(json_resume, models.resume_schema)
     return json_resume
 
-
-class DBHelper:
-    # Adds a bullet to the database session, does not commit
-    def addNewBullet(self, json_bullet):
-        bullet = models.BulletPoint(
-            entry_id=json_bullet.get('entry_id'),
-            content=json_bullet.get('content')
-        )
-        db.session.add(bullet)
-
-        return bullet
-
-    # Adds an entry to the database session, does not commit
-    def addNewEntry(self, json_entry):
-        entry = models.Entry(
-            section_id=json_entry.get('section_id'),
-            title=json_entry.get('title')
-        )
-
-        db.session.add(entry)
-        db.session.flush()
-
-        for json_bullet in json_entry.get('bullets'):
-            json_bullet['entry_id'] = entry.entry_id
-            self.addNewBullet(json_bullet)
-
-        return entry
-            
-    # Adds a section to the database session, does not commit
-    def addNewSection(self, json_section):
-        section = models.Section(
-            resume_id=json_section.get('resume_id'),
-            title=json_section.get('title'),
-        )
-        
-        db.session.add(section)
-        db.session.flush()
-
-        for json_entry in json_section.get('entries'):
-            json_entry['section_id'] = section.section_id
-            self.addNewEntry(json_entry)
-
-        return section
-
-    # Adds a resume to the database session, does not commit
-    def addNewResume(self, json_resume):
-        resume = models.Resume(
-            user_id=json_resume.get('user_id'),
-            title=json_resume.get('title')
-        )
-
-        db.session.add(resume)
-        db.session.flush()
-
-        for json_section in json_resume.get('sections'):
-            json_section['resume_id'] = resume.resume_id
-            self.addNewSection(json_section)
-
-        return resume
-
-    def deleteBullet(self, bullet: models.BulletPoint):
-        db.session.delete(bullet)
-
-    def deleteEntry(self, entry: models.Entry):
-        for bullet in db.session.query(models.BulletPoint).filter_by(entry_id=entry.entry_id).all():
-            self.deleteBullet(bullet)
-
-    def deleteSection(self, section: models.Section):
-        for entry in db.session.query(models.Entry).filter_by(section_id=section.section_id).all():
-            self.deleteEntry(entry)
-
-        db.session.delete(section)
-
-    def deleteResume(self, resume: models.Resume):
-        for section in db.session.query(models.Section).filter_by(resume_id=resume.resume_id).all():
-            self.deleteSection(section)
-
-        db.session.delete(resume)
-
-dbh = DBHelper()
 
 @db_api.route('/create/resume', methods=['POST'])
 def createResume():

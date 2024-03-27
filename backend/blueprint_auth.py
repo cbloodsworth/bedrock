@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 from sqlalchemy import text
 
 import models
-from utilities import db, login_manager
+from models import db
+
+from utilities import login_manager
 
 # our blueprint
 auth_api = Blueprint('auth_api', __name__)
