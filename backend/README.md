@@ -12,9 +12,12 @@ Replace `<port>` with the port, and `<username>` with the username. It will prom
 
 ## Python/flask Requirements
 - `pip install -r backend/requirements.txt`
-- Make sure you have the most recent .env file and place it in `bedrock/backend/.env` sent by jonathan in this chat
-└── backend/
-    ├── *.py
-    ├── requirements.txt
-    └── .env <--- NOT IN VC, YOU WILL NEED TO PUT THIS IN YOURSELF
+- Make sure you have the most recent .env file and place it in `bedrock/backend/.env`. You can find this by requesting it from someone on the team.
+    - **NOTE: This `.env` is sensitive. If you receive it, please do not check it into version control. Only use it for development purposes.**
+
+└── `backend/`\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `*.py`\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── `requirements.txt`\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── `.env` <--- NOT IN VC, YOU WILL NEED TO PUT THIS IN YOURSELF
+
 - run `npm run all`, this will start up both the frontend and backend (assuming frontend requirements are met)
